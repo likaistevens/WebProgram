@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>圣杯布局</title>
+    <style type="text/css">
+        *{margin: 0; padding: 0}
+        /*header 和 footer和在一起写*/
+        .header,
+        .footer{
+            float: left;
+            width: 100%;
+            background: #ddd;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+        }
+        .container{
+            /*内边距左边220，右边200刚好放左右两列。（其实左右不是放进去，而只是为了留出空白，再把左右分*/
+            /*别设置margin-left/right负偏移。让他们占据padding的空白位置）*/
+            padding: 0 220px 0 200px;
+        }
+        .left,
+        .middle,
+        .right{
+            position: relative;
+            float: left;
+            min-height: 300px;
+        }
+        .middle {
+            width: 100%;
+            background: #1a5acd;
+
+        }
+        .left{
+            width: 200px;
+            background: #f00;
+            /*以下两个都不设置，left处于自然流，第一行被middle占了，他的marginleft是再middle的最右边，展示不了，所以left被放到第二行左边
+            margin-left：-100%是把左边框往左偏移 100%个父容器的宽度的距离。 就贴着父容器左侧了。  然后再往左偏移自身宽度200px，使其右边框
+            贴合父容器的左边*/
+            margin-left: -100%;
+            left: -200px;
+        }
+        .right{
+            width: 220px;
+            background: #30a457;
+            margin-left: -220px;
+            right: -220px;
+        }
+    </style>
+</head>
+<body>
+
+<!--圣杯布局要求-->
+<!--1。三列布局，中间宽度自适应，两边定宽-->
+<!--2。中间栏要在浏览器中优先展示渲染-->
+<!--3。允许任意列的高度最高-->
+<div class="header">
+    <h4>这是页面头部内容</h4>
+</div>
+<div class="container">
+    <div class="middle">
+        <h4>middle</h4>
+        <p>这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容这是页面的中间内容</p>
+    </div>
+    <div class="left">
+        <h4>left</h4>
+        <p>这是页面的左侧内容</p>
+    </div>
+    <div class="right">
+        <h4>right</h4>
+        <p>这是页面的右侧内容</p>
+    </div>
+</div>
+<div class="footer">
+    <h4>这是页面的底部内容</h4>
+</div>
+
+</body>
+</html>

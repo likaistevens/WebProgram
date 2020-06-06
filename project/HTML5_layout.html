@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>html5_layout</title>
+    <style type="text/css">
+        /*一开始都先统一的格式调整，所有元素去除padding和margin，边框。  a链接标签去掉下划线   ul或ol不需要项目标的统一去掉*/
+        *{
+            font-family: Arial;
+            padding: 0;
+            margin: 0;
+            border: none;
+            font-size: 14px;
+        }
+
+        /*可以加入这个，维护兼容性。对于一些不兼容这些新标签的浏览器，告诉他们，不认识，就把他们当作块级元素*/
+        header,nav,section,aside,article,footer{
+            display: block;
+        }
+
+        a{text-decoration: none;}
+        ul{list-style: none}
+
+        header{
+            height: 80px;
+            width: 100%;
+            background: #000000;
+        }
+        header > .container{
+            /*header是最上面整个一条。可以直接不要这个container，直接在header设置样式布局里面的a和nav，但是不好。
+            我们把header直接看做背景。多设置一个container容器放在header里面，块状元素margin左右自动会居中。然后再在里面放a和nav*/
+            width: 1200px;
+            margin: 0 auto;
+        }
+        header > .container > a {
+            /*display: block;*/
+            float: left;
+            margin: 5px 25px;
+        }
+        header > .container > nav {
+            float: right;
+        }
+        header > .container > nav > a{
+            font-size: 24px;
+            /*转化为块级标签，可以设置width和height，但是元素会自动换行。设置成float可以解除*/
+            display: block;
+            float: left;
+            /*height和width只作用于块级标签或者替换标签。行内标签要用，必须转为block。  此处a为行内标签，但需要a之间有空隙，需要设置width*/
+            height: 73px;
+            width: 110px;
+            /*水平，垂直居中*/
+            text-align: center;
+            line-height: 73px;
+            color: #FFFFFF;
+        }
+        header > .container > nav >  .Home{background: #433b90}
+        header > .container > nav >  .Course{background: #017fcb}
+        header > .container > nav >  .Actual{background: #78b917}
+        header > .container > nav >  .Plan{background: #feb800}
+        header > .container > nav >  .FAQ{background: #f27c01}
+        header > .container > nav >  .Notes{background: #d40112}
+        header > .container > nav > a:hover,
+        header > .container > nav > a.active{
+            padding-bottom: 7px;
+        }
+
+        .banner{
+            background: #eaeaea;
+        }
+        .banner > ul{
+            /*对ul设置宽高，才能把banner撑起来，看到灰色的背景*/
+            /*由于ul里的li图片需要有重叠，需要进行absolute偏移，所以其父元素必须给一个relative的定位*/
+            position: relative;
+            /*老师用的1490px*/
+            /*width: 1490px;*/
+            width: 100%;
+            /*这个height很关键，他是最终被撑起来的灰色部分的整个高度。 并且下面left和right设置了margin：auto，可以实现left和right垂直居中的效果。
+            并顺带让中间的active也垂直居中。  如果不为538，left和right仍然可以居中，但是active就不一定是在中间，他的位置已经通过偏移固定了*/
+            height: 538px;
+            /*让整个ul水平居中*/
+            margin: 0 auto;
+            /*图片跟header之间有个缝隙，如果用margin-top，这是整个section的margin，会让整个section下来，实际上，我们只是要图片下来一点。
+            这里图片跟上边框距离其实是padding-top*/
+            padding-top: 10px;
+        }
+        .banner > ul > li{
+            position: absolute;
+            width: 610px;
+            height: 300px;
+            /*图片超出容器的范围会被隐藏。 不然即便图片比容器大，还是会1：1的展示出图片。超出容器范围*/
+            overflow: hidden;
+        }
+        .banner > ul > li.active{
+            z-index: 2;
+            top: 37px;
+            right: 0;
+            left: 0;
+            width: 960px;
+            height: 460px;
+            margin: auto;
+            border: 1px solid #FFFFFF;
+        }
+        .banner > ul > li.left{
+            z-index: 1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            border: 1px solid #FFFFFF;
+        }
+        .banner > ul > li.right{
+            z-index: 1;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            margin: auto;
+            border: 1px solid #FFFFFF;
+        }
+        .banner > ul > li > img{
+            /*相对于其父容器li继续偏移。 因为图片都是设置了overflow：hidden，超过边框的区域会被裁减。 此时偏移，会让图片中心的位置被展示出来，而不是展示最左上角*/
+            position: absolute;
+            left: -30%;
+            height: 100%;
+        }
+        .main{
+            width: 1200px;
+            height: 473px;
+            margin: 34px auto 0;
+        }
+        .main h1{
+            /*main部分的上面两个标题样式一样，字体一样，且下边距是对齐的。统一设置*/
+            font-size: 30px;
+            font-weight: lighter;
+            margin-bottom: 23px;
+        }
+        .main h1 > samp{
+            /*samp如果不设置字体，默认比他外面文本的字体要小一号*/
+            font-size: 30px;
+            color: #7c7c7c;
+        }
+        .main > aside{
+            float: left;
+            width: 450px;
+        }
+        .main > aside > dl{
+            /*要通过定位调整dt和dd，需要把父级元素设计为relative*/
+            position: relative;
+            /*display: block;*/
+            height: 74px;
+            margin-bottom: 17px;
+        }
+        .main > aside > dl > dt{
+            position: absolute;
+            top: -1px;
+            left: 92px;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 16px;
+            text-decoration: underline;
+        }
+        .main > aside > dl > dd:first-of-type{
+             position: absolute;
+            left: 0;
+        }
+        .main > aside > dl > dd:last-of-type {
+            position: absolute;
+            top: 20px;
+            left: 90px;
+        }
+        .main > article{
+            float: right;
+            /*必须给一个宽度，不然因为aside和article都是块级元素，不给宽度会默认100%，哪怕是float还是因为太大了会跑到第二行*/
+            width: 720px;
+            /*并且，这个元素很宽，实际我们只需要一小部分，设计宽度，然后用overflow裁剪*/
+            overflow: hidden;
+        }
+        .main > article > p,
+        .main > article > img {
+            margin-bottom: 20px;
+        }
+
+        footer{
+            background: #000000;
+        }
+        footer > .container{
+            width: 1200px;
+            height: 64px;
+            margin: 0 auto;
+        }
+        footer > .container > p{
+            line-height: 64px;
+            float: left;
+            color: #FFFFFF;
+        }
+        footer > .container > span{
+            float: right;
+            margin: 14px 40px;
+        }
+        footer > .container > span > img{
+            margin-left:  4px;
+            opacity:  .7;
+        }
+        footer > .container > span > img:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+
+
+
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <a href="index.html"><img src="../images/HTML5_layout/logo.png" alt="Logo"></a>
+        <nav>
+            <!--            也可以选择插入ul li来展示-->
+            <a class="Home active" href="index.html">Home</a>
+            <a class="Course" href="#">Course</a>
+            <a class="Actual" href="#">Actual</a>
+            <a class="Plan" href="#">Plan</a>
+            <a class="FAQ" href="#">FAQ</a>
+            <a class="Notes" href="#">Notes</a>
+        </nav>
+    </div>
+</header>
+
+<section class="banner">
+    <ul>
+        <li class="active"><img src="../images/HTML5_layout/banner/banner1.jpg" alt=""></li>
+        <li class="left"><img src="../images/HTML5_layout/banner/banner2.jpg" alt=""></li>
+        <li class="right"><img src="../images/HTML5_layout/banner/banner3.jpg" alt=""></li>
+    </ul>
+</section>
+
+<section class="main">
+    <aside>
+        <h1>Recent <samp>Course</samp></h1>
+        <dl>
+            <dt>Hyper Text Markup Language</dt>
+            <dd><img src="../images/HTML5_layout/Course/05_05.png"></dd>
+            <dd>HTML is the standard markup language used to create web pages and its elements form the building blocks
+                of all websites.
+            </dd>
+        </dl>
+        <dl>
+            <dt>Cascading Style Sheets</dt>
+            <dd><img src="../images/HTML5_layout/Course/06_04.png"></dd>
+            <dd>Cascading Style Sheets (CSS) is a simple mechanism for adding style (e.g., fonts, colors, spacing) to
+                Web documents.
+            </dd>
+        </dl>
+        <dl>
+            <dt>JavaScript</dt>
+            <dd><img src="../images/HTML5_layout/Course/09_07.png"></dd>
+            <dd>JavaScript is a high-level, dynamic, untyped, and interpreted programming language.</dd>
+        </dl>
+        <dl>
+            <dt>AngularJS</dt>
+            <dd><img src="../images/HTML5_layout/Course/02_09.png"></dd>
+            <dd>AngularJS is an open-source web application framework mainly maintained by Google and by a community of
+                individuals and...
+            </dd>
+        </dl>
+    </aside>
+    <article>
+        <h1>Welcome to <samp>Massive Open Online Course!</samp></h1>
+        <p>We provide the latest knowledge to help you cope with the changing world!</p>
+        <img src="../images/HTML5_layout/article.jpg">
+        <p>We hope that all the students who love the Internet can be more convenient access to learning resources, using the Internet thinking to change our learning.</p>
+        <p>Focus on IT skills education MOOC, consistent with the development trend of the Internet down to earth's MOOC. We are free, we only teach useful, we concentrate on education.</p>
+    </article>
+</section>
+
+<footer>
+    <div class="container">
+        <p>Copyright © 2016 imooc.com All Rights Reserved.</p>
+        <span>
+			<img src="../images/HTML5_layout/icon/weichat.png">
+			<img src="../images/HTML5_layout/icon/sina.png">
+			<img src="../images/HTML5_layout/icon/qq.png">
+		</span>
+    </div>
+</footer>
+
+
+</body>
+</html>

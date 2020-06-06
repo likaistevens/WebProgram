@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        /*body {*/
+        /*    font-size: 100px;*/
+        /*}*/
+        /*div {*/
+        /*    width: 400px;*/
+        /*    height: 400px;*/
+        /*    transition: all 1s;*/
+        /*    background: #00f;*/
+        /*}*/
+    </style>
+</head>
+<body>
+<!-- <div></div>-->
+<script>
+    function f(cb) {
+        setTimeout(function () {
+            cb && cb();    // cb是回调函数 存在就调用
+        },1000);
+    }
+    f(function () {
+        console.log(1);
+        f(function () {
+            console.log(2);
+        });
+    });
+    //
+
+</script>
+</body>
+</html>

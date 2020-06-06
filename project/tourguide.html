@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TourGuide</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            overflow: hidden;
+            height: 100%;
+            background: #93b3c6;
+        }
+        span{
+            display: block;
+            width: 10px;
+            height: 10px;
+            margin: 30px auto 40px;
+            border-radius: 50%;
+            background: #fff;
+        }
+        nav{
+            position: relative;
+            display: flex;     /* display:flex; justify-content: space-between;  两个数形结合使元素在容器水平均匀分布  */
+            width: 78.125vw;   /*  vw 相对宽度 ，1vw等于可视窗口的1%  */
+            margin: 0 auto 45px;
+            justify-content: space-between;
+        }
+        nav:before{
+            position: absolute;
+            top: 13px;
+            width: 100%;
+            height: 10px;
+            background: #fff;
+            display: block;
+            content: '';
+        }
+        nav > a{
+            position: relative;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 2px;
+            border: 2px solid #5395b4;
+            color: #255d7e;
+            background: #fff;
+        }
+        .container > div{
+            position: relative;
+            overflow: hidden;
+            width: 78.125vw;
+            height: 75vh;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 30px 0 rgba(8,1,3,0.3);
+        }
+        .container > div > img{
+            position: absolute;
+            width: 98%;
+            height: 96%;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+        }
+    </style>
+
+    <script type="text/javascript" src="../jquery-3.5.0.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <span></span>
+    <nav>
+        <a href="#">泸沽湖</a>
+        <a href="#">丽江古道</a>
+        <a href="#">茶马古道</a>
+        <a href="#">就这家*云逸客栈</a>
+        <a href="#">西双版纳</a>
+        <a href="#">云南红酒庄</a>
+        <a href="#">轿子雪山</a>
+        <a href="#">普者黑</a>
+        <a href="#">海埂大坝</a>
+        <a href="#">御龙湾</a>
+        <a href="#">郊野公园</a>
+        <a href="#">欧洲风情小镇</a>
+    </nav>
+    <div>
+        <img src="../images/tourgiude/1.jpeg" alt="">
+        <img src="../images/tourgiude/2.jpeg" alt="">
+        <img src="../images/tourgiude/3.jpeg" alt="">
+        <img src="../images/tourgiude/4.jpeg" alt="">
+        <img src="../images/tourgiude/5.jpeg" alt="">
+        <img src="../images/tourgiude/6.jpg" alt="">
+        <img src="../images/tourgiude/1.jpeg" alt="">
+        <img src="../images/tourgiude/2.jpeg" alt="">
+        <img src="../images/tourgiude/3.jpeg" alt="">
+        <img src="../images/tourgiude/4.jpeg" alt="">
+        <img src="../images/tourgiude/5.jpeg" alt="">
+        <img src="../images/tourgiude/6.jpg" alt="">
+    </div>
+
+</div>
+
+
+
+<script>
+    // var as = document.getElementsByTagName('a');
+    // for(var i = 0; i < as.length; i ++){
+    //     as[i].onclick = function () {
+    //         console.log(i);
+    //     }
+    // }
+    // console.log(as);
+    // $(document).ready(function () {
+    //     $('a').click(function () {
+    //         // console.log($(this).index());
+    //         $('img').eq($(this).index())
+    //             .css({'opacity':'1'})
+    //             .siblings()
+    //             .css({'opacity':'0'});
+    //     });
+    //     // var alinks = $('a');
+    //     // for (var i = alinks.length - 1;i >= 0; i --){
+    //     //     alinks.eq(i).css({
+    //     //         'background':'red',
+    //     //     }).html('<strong>七彩云南'+i+'</strong>')
+    //     // }
+    // });
+    $(document).ready(function(){
+        var index = 0;
+        var alink = $('.container a');          // 父元素 空格 子元素  或者用 find（）  都可以
+        var imgs = $('.container').find('img');
+        var mouseEvent = function(event){
+            console.log($(this));        // 输出当前的a标签
+            event.stopPropagation();
+            index = $(this).index();           // mouseEvent绑定的是用$('.container a')捕获的所有a标签的集合。
+            // 当某一个a标签触发的时候，这个a标签就是$(this)。    index（）  返回的是当前a标签在捕获的a标签集合中的index，从0开始
+            swip();
+        };
+        var keyEvent = function(event){
+            console.log('keydown');
+            event.stopPropagation();    // 阻止事件冒泡
+            if(event.keyCode == 37){
+                index = index > 0 ? --index : alink.length - 1;
+            }else if(event.keyCode == 39){
+                index = index < alink.length - 1 ? ++index : 0;
+            }else{
+                return true;    // 这里如果是false，那么按F12等按键都不会起作用。
+            }
+            swip();
+        };
+        var events = {
+            mouseenter: mouseEvent,
+            keydown: keyEvent
+        }
+        alink.add(document).on(events);    // 此处其实是 .on({ mouseenter: function (event) {}, keydown: function (event) {}  }); 的结构
+        var swip = function () {
+           imgs.eq(index)
+                .stop().fadeIn('slow')
+                .siblings()
+                .stop().fadeOut('slow');
+        };
+    })
+</script>
+
+
+
+</body>
+</html>

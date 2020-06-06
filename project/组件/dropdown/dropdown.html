@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>下拉菜单</title>
+    <style type="text/css">
+        /*通用样式*/
+        .dropdown{
+            position: relative;
+        }
+        .dropdown-toggle{
+            position: relative;
+            z-index: 2;
+        }
+        .dropdown-arrow{
+            display: inline-block;
+            /*background-repeat: no-repeat;*/
+            vertical-align: middle;
+        }
+        .dropdown-layer{
+            display: none;
+            position: absolute;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .dropdown-left{
+            left: 0;
+            right: auto;
+        }
+        .dropdown-right{
+            right: 0;
+            left: auto;
+        }
+
+        /*范例增加样式*/
+        .menu .dropdown-toggle{
+            display: block;
+            height: 100%;
+            padding: 0 16px 0 12px;
+            border-left: 1px solid #f3f5f7;
+            border-right: 1px solid #f3f5f7;
+        }
+        .menu .dropdown-arrow{
+            /*width: 8px;*/
+            /*height: 6px;*/
+            /*background-image: url("../购物网站/img/dropdown-arrow.png");*/
+            margin-left: 8px;
+        }
+        .menu .dropdown-layer{
+            top: 100%;
+            background: #FFFFFF;
+            border: 1px solid #cdd0d4;
+        }
+        .menu-item{
+            display: block;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 12px;
+            color: #4d555d;
+            white-space: nowrap;   /*不能换行*/
+        }
+        .menu-item:hover{
+            background: #f3f5f7;
+        }
+
+        /*只用css解决下拉菜单组件*/
+        /*.dropdown:hover .dropdown-toggle{*/
+        /*    background: #ffffff;*/
+        /*    border-color: #cdd0d4;*/
+        /*}*/
+        /*.dropdown:hover .dropdown-arrow {*/
+        /*    background: url("img/dropdown-arrow-active.png");*/
+        /*}*/
+        /*.dropdown:hover .dropdown-layer{*/
+        /*    display: block;*/
+        /*}*/
+        /*用js控制增加class属性，来实现下拉菜单*/
+
+        /*.menu.dropdown:hover .dropdown-toggle,*/
+        .menu-active .dropdown-toggle
+        {
+            background: #ffffff;
+            border-color: #cdd0d4;
+        }
+        /*.menu.dropdown:hover .dropdown-arrow,*/
+        .menu-active .dropdown-arrow
+        {
+            /*background: url("../购物网站/img/dropdown-arrow-active.png");*/
+        }
+        /*.menu.dropdown:hover .dropdown-layer,*/
+
+        /*使用showHide组件，不要别的显示样式*/
+        /*.menu-active .dropdown-layer*/
+        /*{*/
+        /*    display: block;*/
+        /*}*/
+
+        /*利用border画出正三角和倒三角作为下拉图标*/
+        /*.icon-triangle-down{*/
+        /*    width: 0;*/
+        /*    height: 0;*/
+        /*    border: 4px solid #535b62;*/
+        /*    border-right-color: transparent;*/
+        /*    border-left-color: transparent;*/
+        /*    border-bottom: none;*/
+        /*}*/
+        /*.menu-active .icon-triangle-down{*/
+        /*    border-top: none;*/
+        /*    border-bottom: 4px solid #f11c1c;*/
+        /*}*/
+
+        /*图标字体*/
+            @font-face {font-family: "iconfont";
+                src: url('../../购物网站/font/iconfont.eot?t=1588185904745'); /* IE9 */
+                src: url('../../购物网站/font/iconfont.eot?t=1588185904745#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                url('data:application/x-font-woff2;charset=utf-8;base64,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') format('woff2'),
+                url('../../购物网站/font/iconfont.woff?t=1588185904745') format('woff'),
+                url('../../购物网站/font/iconfont.ttf?t=1588185904745') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+                url('../../购物网站/font/iconfont.svg?t=1588185904745#iconfont') format('svg'); /* iOS 4.1- */
+            }
+            .iconfont {
+                font-family: "iconfont" !important;
+                font-size: 14px;
+                font-style: normal;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            .icon-pulldown01:before {
+                content: "\e73d";
+            }
+
+        /*选择所有带有 -active的类的元素*/
+        [class*="-active"] .dropdown-arrow{
+            transform: rotate(180deg);
+            transition: all 0.5s;
+        }
+
+        /*从组件showHide.js的样式里面拷贝过来*/
+        .fadeOut{
+            visibility: hidden;
+            opacity: 0;
+        }
+        .slideUpDownCollapse{
+            height: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        .slideLeftRightCollapse{
+            width: 0 !important;
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+        }
+        .transition{
+            transition: all 0.5s;
+        }
+        .dropdown-loading{
+            width: 32px;
+            height: 32px;
+            background: url("../img/loading.gif") no-repeat;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!--通用-->
+<!--<div class="dropdown">-->
+<!--&lt;!&ndash;    下拉按钮&ndash;&gt;-->
+<!--    <div class="dropdown-toggle">我的慕淘<i class="dropdown-arrow"></i></div>-->
+<!--&lt;!&ndash;    下拉层内容&ndash;&gt;-->
+<!--    <div class="dropdown-layer dropdown-left">-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--范例-->
+<div class="menu dropdown fl" data-active="menu"  data-load="dropdown.json">
+<!--    iconfont icon-pulldown01  应用图标字体。  先添加上面自己定义的字体类iconfont  在定义要哪个icon-->
+    <a href="###" target="" class="dropdown-toggle" >我的慕淘<i class="dropdown-arrow  iconfont icon-pulldown01 transition"></i></a>
+    <ul class="dropdown-layer dropdown-left">
+        <li class="dropdown-loading"></li>
+<!--        <li><a href="###" target="_blank" class="menu-item">已买到的宝贝</a></li>-->
+<!--        <li><a href="###" target="_blank" class="menu-item">我的足迹</a></li>-->
+    </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="showHide.js"></script>
+<!--<script>-->
+<!--    /*用js控制增加class属性，来实现下拉菜单*/-->
+<!--    // 但是必须在开始指定对象  .dropdown-->
+<!--    $('.dropdown').hover(function () {-->
+<!--        var $this = $(this);-->
+<!--        // data-active 是data对象下active这个key对应的value。  对于每个下拉菜单，都设置一个自己的data-active用来拼接新生成的类名，加到类中-->
+<!--        $this.addClass($this.data('active') + '-active');-->
+<!--    },function () {-->
+<!--        var $this = $(this);-->
+<!--        $this.removeClass($this.data('active') + '-active');-->
+<!--    })-->
+
+<!--    // 封装一个函数，将需要变成下拉菜单的元素传递进函数-->
+<!--    function dropdown(element) {-->
+<!--        var $elem = $(element),-->
+<!--            activeClass = $elem.data('active') + '-active';-->
+
+<!--        $elem.hover(function () {-->
+<!--            $elem.addClass(activeClass);-->
+<!--        },function () {-->
+<!--            $elem.removeClass(activeClass);-->
+<!--        })-->
+<!--    }-->
+<!--    // 这个类选择器返回的是一个数组-->
+<!--    dropdown($('.dropdown')[0])-->
+<!--    // 多个近似的下拉菜单 一起设置-->
+<!--    $('.dropdown').each(function () {-->
+<!--        dropdown($(this));-->
+<!--    })-->
+<!--    // 多个一起设置，采用jQuery插件的形式.-->
+<!--    // 自己在jQuery增加一个方法。 这个方法 前面对象是数组，就会对数组里的每一个对象执行操作-->
+<!--    // 为了保持jQuery链式操作，插件里面 函数最后都需要返回一个对象，一般返回this对象。  此处，对this的每一个元素操作之后，在返回。-->
+<!--    $.fn.extend({-->
+<!--        dropdown_extend:function () {-->
+<!--            return this.each(function () {-->
+<!--                dropdown(this);-->
+<!--            });-->
+<!--        }-->
+<!--    });-->
+<!--    $('.dropdown').dropdown_extend();-->
+<!--</script>-->
+
+<!--调用dropdown这个js模块，就可以实现-->
+<script src="dropdown_function.js"></script>
+<script>
+    // $('.dropdown').on('dropdown-show dropdown-shown dropdown-hide dropdown-hidden',function (e) {
+    //         console.log(e.type);
+    // });
+    $('.dropdown').on('dropdown-show',function (e) {
+        var $this = $(this),
+            dataLoad = $this.data('load');
+        // data-load保存需要加载的json  如果不存在就直接跳过，返回。 不执行后面加载json的函数
+        if(!dataLoad)   return;
+
+        // 给当前对象添加一个data-loaded属性，判断是否读取过json，如果没读取过，就加载json，读取过，就不加载json了。 避免每次操作都重新加载json
+        if(!$this.data('loaded')){
+            var $layer = $this.find('.dropdown-layer'),
+                html = '';
+            $.getJSON(dataLoad,function (data) {
+                // console.log(data);
+                setTimeout(function () {
+                    for(var i = 0; i < data.length; i++){
+                        html += '<li><a href="'+ data[i].url + '" target="_blank" class="menu-item">' + data[i].name + '</a></li>'
+                    }
+                    $layer.html(html);
+                    // $this.data('loaded',true);
+                },1000);
+            });
+        }
+    })
+
+    $('.dropdown').dropdown_extend({
+        event : 'hover',
+        css3 : false,
+        js : true,
+        delay: 0,
+        animation : 'slideUpDown',
+    });
+</script>
+
+</body>
+</html>

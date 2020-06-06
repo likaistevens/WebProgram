@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+</head>
+<body>
+
+<!--------------------jQuery的引入-------------------------->
+<!--head中引入-->
+<!--<script src="jQueryPath/jquery.js"></script>-->
+<!--$是jQuery的别名。   window.jQuery <&ndash;&gt;  window.$     如果$已经被占用，就改成jQuery-->
+<script>
+    // 原生：
+    window.onload=function(){
+
+    }
+    // 原始：  推荐使用
+    $(document).ready(function () {
+        $('div').addClass('div');
+    });
+    // 缩写一：
+    $().ready(function () {
+        $('div').addClass('div');
+    });
+    // 缩写二：
+    $(function () {
+        $('div').addClass('div');
+    });
+
+    // jQuery选择器
+    // 返回对象都是jQuery对象，类似数组，每个元素都是一个引用了DOM节点的对象。  不会反悔undefined或者null
+    $(document).ready(function(){
+        var divfirst = $('#first');   // id选择器  虽然id唯一，但返回的还是一个数组，只有一个元素，0号元素即选中的div
+        var divsecond = $('div');     // 标签选择器。   返回数组，包含所有div标签元素。    $(this).index()  $('div')[index] 两种方式获取选中的元素的index
+        var divthird = $('.third');   // class选择器   同标签选择器
+        var all = $('*');             // 通配符选择器   选中所有的元素，包含<html> <head>
+        // 多项选择器，每一个选择器匹配到的元素合并后返回。  可以多个类型选择器混用。   数组中元素顺序遵守DOM原来的顺序
+        var multiple = $('#first,.third,div, .div');   // 如果有多个选择器指向同一个元素，这个元素只出现一次
+        // 后代选择器  祖先元素在前 后代元素在后，中间空格隔开   祖先元素下所有后代选择器选中的后代元素都会被选中
+        var descendants = $('ancestor descendant');      // 返回的顺序也是遵循DOM原来的顺序
+        // 直系父子选择器   父元素在前，子元素在后，中间用 > 链接。   只有这个父元素下直系的子元素才会被选中
+        var children = $('parent > child');
+        // next选择器   匹配所有紧接在prev元素后的next元素    （"所有"意思是： 可能会有多个prev。每个prev之后都有一个next）
+        var next = $('prev + next');        // prev和next是同级元素，且必须紧邻，才会被选取
+        // 兄弟选择器   匹配同一父元素下所有兄弟元素中被选择器选中的元素
+        var brothers = $('brother1 ~ brother2');  // brother1的父元素下，符合brother2的元素
+        // 属性名 选择器   匹配所有具有这个属性的元素
+        var all = $('[type]');    // 只需要有type就行了，不管他的值
+        // 属性值 选择器   匹配所有具有这个属性，且值也符合要求的元素
+        var all = $('[class=tool]');     // class属性值等于tool的元素
+        var all = $('[class!=tool]');    // class属性值不等于tool的元素
+        var all = $('[class^=tool]');    // class属性值以tool开头的元素，包含 tool。
+        var all = $('[class$=tool]');    // class属性值以tool结尾的元素，包含 tool。
+        var all = $('[class*=tool]');    // class属性值包含tool的元素，  包含 tool。
+        var all = $('[class=tool][type*=text][src]')  // class属性等于tool，且，type属性包含text，且，有src属性 的元素
+        // 过滤器
+        // child系列
+        // :first-child
+        var first = $('details > p:first-child');      // 必须details标签下直系的p标签，且details下面第一个标签是p标签，才会选中。  并不是第一个p标签，而是过滤，要求p是第一个标签
+        // :last-child
+        var last = $('details > p:last-child');        // 与first同理，必须要求details直系子标签里，最后一个标签是p，才会选择这个p
+        // :nth-child(n|even|odd|formula)
+        var nthF = $('details > p:nth-child(1)');       // 与first，last同理。 不过括号内，下标从1开始。  :nth-child(1) = :first-child.  括号里还可以写odd｜even｜包含n的公式（必须是n）
+        // :nth-last-child(n|even|odd|formula)
+        var nthL = $('details > p:nth-last-child(1)');  // details下倒数第一个为p标签才可以
+        // :only-child
+        var only = $('details > p:only-child');      // details下p标签是唯一的，才可以被选中
+        // type系列
+        // :first-of-type
+        var first = $('details > p:first-of-type');      // 必须details标签下直系的p标签，且details下面第一个标签是p标签，才会选中。  并不是第一个p标签，而是过滤，要求p是第一个标签
+        // :last-of-type
+        var last = $('details > p:last-of-type');        // 与first同理，必须要求details直系子标签里，最后一个标签是p，才会选择这个p
+        // :nth-of-type(n|even|odd|formula)
+        var nthF = $('details > p:nth-of-type(1)');       // 与first，last同理。 不过括号内，下标从1开始。  :nth-child(1) = :first-child.  括号里还可以写odd｜even｜包含n的公式（必须是n）
+        // :nth-last-of-type(n|even|odd|formula)
+        var nthL = $('details > p:nth-last-of-type(1)');  // details下倒数第一个为p标签才可以
+        // :only-of-type
+        var only = $('details > p:only-of-type');      // details下p类型标签是唯一的，才可以被选中
+        // 表单元素，表单相关
+        var inputs = $(':input');    // 匹配所有的<input>,<textarea>,<select>,<button>
+        var text = $(':text');       // 匹配所有单行文本框，和input[type='text']一样
+        // 其他input的type还有   :password/:radio/:checkbox/:image/:reset/:button/:file
+        var enabled = $(':enabled');   // 可用元素
+        var disabled = $(':disabled');  // 不可用元素
+        var checked = $(':checked');    // 复选框，单选框，select中的option
+        // 注意两点：一、选中的是单选复选这个input元素，以及select里的option这个元素，并不直接是选中的值，  二、必须是有checked，selected属性才可以，即被勾选了，才能选中
+        // 单选<input type="radio" checked> 多选<input type="checkbox" checked> 下拉选择<select> <option value="" selected>B</option> </select>
+        var selected = $(':selected');   // 只会匹配 selected的option元素
+        // 查找与过滤
+        var js = $('aside').find('.javascript');    // 在标签aisde里面查找类为javascript 的所有元素。    两个括号内都是选择器
+        var js = $('aside').children('.javascript');  // 在标签aisde里面查找类为javascript 的直系子元素。    两个括号内都是选择器
+        // 两个很类似，但是区别在于，find会找到父标签里面所有符合要求的，哪怕是隔代，children只会找直系
+        var js_parent = js.parent();      // 找到Js这个元素的父亲元素。
+        var next = js.next();      // 取得包含匹配元素集合中每一个元素紧邻后面的同级的元素的集合   （可能js本来就是多个元素，每个js后的同级元素都会被找到）
+        var prev = js.prev();      // 同next（）
+        var lis = $('li').eq(8);        // 获取当前链式操作中第N个jQuery对象   找到所有的li里面的第8个  （负数表示为倒数第几）
+        var siblings = $('.php').siblings();     // 取得包含匹配元素集合中每一个元素的所有唯一同辈元素的元素集合  找到类名为php的元素的同级所有兄弟元素
+        var python = $('li').filter('.python');   // filter(expr|object|element|fn);    // 筛选出与指定表达式匹配的元素的集合   类似于find，但是可以代替以上很多查找方法
+        // expr字符串值，包含选择器表达式   object现有的jQuery对象   element用于匹配的DOM元素  fn一个函数用来作为测试元素的集合
+        var allLis = $('li').filter(function (index) {    // 会一条一条打印出所有的li
+            console.log(index);
+        });
+    })
+
+
+    // 事件
+    $(document).ready(function(){
+        $('a').click();
+        $('a').dblclick();   // 双击事件，如果同一个目标同时绑定了单机和双击，双击会触发单击事件。
+        $('a').mousedown();  // 鼠标按下
+        $('a').mouseup();    // 鼠标松开   click = mousedown + mouseup
+        $('a').mouseenter(); // 鼠标进入   只要在这个元素内，不管有没有在子元素之间切换，就不会触发。 区别于mouseover
+        $('a').mouseleave(); // 鼠标移开
+        $('a').hover();      // 鼠标经过  hover = mouseenter + mouseleave   可以传入一个function,也可以传入两个function，分别是鼠标进入和鼠标移出的操作
+        // $('a').hover(function(){console.log('这里是鼠标进入的操作')},function(){console.log('这里是鼠标离开的操作')});
+        $('a').mouseover();      // 鼠标进入指定元素及其子元素时触发   从一个子元素进入父元素，或者一个子元素进入另一个同级子元素，都会触发
+        $('a').mouseout();       // 鼠标移出指定元素及其子元素时触发
+        $('a').mousemove();      // 在DOM内部移动时     只要鼠标在元素内，移动一点点都会触发，频率特别高
+        $('a').scroll();         // 鼠标在指定元素内 且滚动指定元素的时候触发   不管是拖动滚动条，还是鼠标滚轮，还是键盘，都会触发
+        $(document).keydown();   // 按下键盘任意键
+        $(document).keyup();     // 按钮松开时，触发，它发生在当前获得焦点的元素上。   如果对document和一个元素都绑定了事件，则触发的会触发两次。
+        // $(document).keydown(function (event) {console.log(event);});   任何事件默认有个event对象，里面包含了key 和keycode属性，表明按下哪个键
+        $(document).keypress();  // 按下键盘。  在获得焦点的文本框，输入内容，不包含shift ctrl 上下左右等辅助输入的按钮。
+    })
+
+    $(document).ready(function() {});    // DOM载入完成，可以查询及操作时，绑定一个函数    通常，所有jQuery代码都写在这一个ready里面，不会污染外部代码
+    $(window).resize(function () {});    // 调整浏览器窗口大小时触发。  resize事件，必须绑定window。   window是最大的，document只是window下最大的标签
+    $('input').focus(function () {});    // 获得焦点
+    $('input').blur(function () {});     // 失去焦点
+    $('input').change(function () {});   // 值 发生改变时，触发。    失去焦点，或者点击按钮刺激的时候才会去检查是否改变。
+    $('input').select(function () {});   // 可编辑的文本，拖选中，才会触发。  input，textarea都可以。    单选复选，date，元素上的不可编辑内容被选中等都不能。
+    // submit事件
+    // <button>放到<form>标签下，会自动绑定submit事件。    相当于  <input type="submit">.    <input type="button">没有这个功能
+    $('input[type=button]').click(function () {
+        $('form').submit();                         // submit 的对象是form表单，但是必须在按钮按下时触发。
+    })
+    $('form').submit(function () {
+        var inputValue = $('input[type=text]').val();
+        if(inputValue !== 'www.imooc.com'){
+            return false;                   // submit里面return false可以组织表单提交。   且之前可以进行一些操作。 例如表单验证，不通过就return false
+        }
+    });
+    // event参数                通过event对象，获取事件相关参数，进行操作
+    $(document).ready(function(){
+        var index = $(this).index();
+        $(document).keydown(function (event) {
+            console.log(event.keyCode);
+            if(event.keyCode == 37){
+                if(index == 0){
+                    index == $('a').length - 1;
+                }else{
+                    index --;
+                }
+                swip();
+            }else if(event.keyCode == 39){
+                if(index == $('a').length - 1){
+                    index = 0;
+                }else{
+                    index ++;
+                }
+                swip();
+            }
+        });
+        var swip = function () {
+            $('img').eq(index)
+                .css({'opacity':'1'})
+                .siblings()
+                .css({'opacity':'0'});
+        };
+    })
+    // 事件绑定与取消
+    // 事件绑定  on(event,[selector],[data],function);  可以在选择元素上绑定一个或多个事件的处理函数
+    $(document).keydown(function (event){});
+    // 改写成
+    $(document).on('keydown',function (event){});
+    // 对一个元素 a 绑定事件
+    $(document).on('keydown','a',function (event){});
+    // 对元素a绑定鼠标事件，同时document也要绑定按键事件
+    $('a').add(document).on({
+       mouseenter: function (event) {
+            event.stopPropagation();
+            index = $(this).index();
+            swiper();
+       },
+       keydown: function (event) {
+            event.stopPropagation();
+            if(event.keyCode == 37){
+                index = index > 0 ? --index : $('a'),length - 1;
+            }else if(event.keyCode == 39){
+                index = index < $('a').length - 1 ? ++index : 0;
+            }else{
+                return true;    // 这里如果是false，那么按F12等按键都不会起作用。
+            }
+            swiper();
+       }
+    });
+    // 事件的绑定和取消
+    /*
+    <button class="one">这个按钮点击没有效果</button>
+    <button class="bind">绑定</button>
+    <button class="unbind">取消绑定</button>
+    <div class="button" style="display: none">第一个按钮被点击了！</div>
+     */
+    function flash(){
+        $('.button').show().fadeOut('slow');
+    };
+    $('.bind').click(function () {
+        $(document).on('click','.obj',flash())         // on
+        .find('.obj').text('点击按钮有效果');
+    });
+    $('.unbind').click(function () {
+        $(document).off('click','.obj',flash())        // off
+            .find('.obj').text('点击按钮没有效果');
+    });
+    // one(type,[data],fn)   为每一个匹配元素的特定事件绑定一个一次性的函数
+    $('.one').click(function () {
+        $(document).one('click','.obj',flash())        // one
+            .find('.obj').text('点击按钮没有效果');
+    });
+    // jQuery动画      以固定的时间间隔（如0.1s） 每次DOM的css样式修改一点（如：宽高各增加10%）
+    // animate()      实现任意动画效果，传入参数  DOM元素最终的css状态和时间
+    $('#test-animate').animate({opacity:0.25,width:'256px',height:'256px'},3000);
+    var swip = function () {
+        $('img').eq(index)
+            .stop()                             // 如果有动画就停下来。   不是必要
+            .animate({'opacity':'1'},3000)
+            .siblings()
+            .animate({'opacity':'0'},3000);
+    };
+    // delay()  动画暂停，延迟  串行动画
+    var swip = function () {
+        $('div').stop()
+            .animate({'width':'0%'},1000)
+            .siblings()
+            .animate({'width':'100%'},1000);
+    };
+    // show() / hide()    无参数的形式 显示/隐藏DOM元素，只需要一个时间参数，就变成动画   也可以用slow， slow=600
+    var swip = function () {
+        $('div').stop()
+            .show('slow')
+            .siblings()
+            .stop().hide('600');
+    };
+    // toggle()   根据当前的状态确定 是show或者hide    toggle/show/hide 都是元素收缩到左上角。
+    var swip = function () {
+        $('div').stop()
+            .toggle('slow');
+    };
+    // fadeIn() / fadeOut()    动画淡入/淡出
+    var swip = function () {
+        $('div')
+            .stop().fadeIn('slow')
+            .siblings()
+            .stop().fadeOut('600');
+    };
+    // fadeToggle()     根据当前状态决定fadeIn还是fadeOut
+    // slideUp() / slideDown()    在垂直方向逐渐展开或者收缩
+    // slideToggle()    根据当前状态决定slideUp还是slideDown
+    // 计时器
+    // setTimeOut()     设置时间延迟
+    // setInterval()    设置时间间隔
+
+
+
+    // each()
+    // 遍历一维数组
+    var arr1=['aa','bb','cc','dd'];
+    $.each(arr1,function(i,val){ //两个参数，第一个参数表示遍历的数组的下标，第二个参数表示下标对应的值
+        console.log(i+'```````'+val);
+    });
+
+    // 遍历二维数组
+    var arr2=[['aaa','bbb'],['ccc','ddd'],['eee','fff']];
+    $.each(arr2,function(i,item){ //两个参数，第一个参数表示下标，第二个参数表示一维数组中的每一个数组
+        console.log(i+'````'+item);
+    });
+    $.each(item,function(i,val){  //遍历二维数组
+        console.log(i+'`````'+val);
+    });
+
+    // 处理json
+    var json1={key1:'a',key2:'b',key3:'c'};
+    $.each(json1,function(key,value){  //遍历键值对
+        console.log(key+'````'+value);
+    });
+
+    // 另一种方式
+    $("input:hidden").each(function(i,val){  //第一个参数表示索引下标，第二个参数表示当前索引元素
+        alert(i);
+        alert(val.name);
+        alert(val.value);
+    });
+
+</script>
+
+
+
+</body>
+</html>

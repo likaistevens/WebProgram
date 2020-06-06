@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RegExpTest</title>
+    <style>
+        dl,dd,dt{
+            padding: 0;
+            margin: 0;
+        }
+        .wrap{
+            width: 1000px;
+            margin: 100px auto;
+        }
+        #regexp{
+            float: left;
+            width: 650px;
+            font-size: 14px;
+        }
+        .title{
+            color: #777;
+            font-size: 24px;
+            text-align: center;
+        }
+        #regexp .textbox{
+            width: 638px;
+            height: 150px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            resize: none;
+        }
+        #regexp .textfield{
+            width: 215px;
+            padding: 5px;
+            borde: 1px solid #ccc;
+        }
+        #regexp .readonly{
+            background: #eee;
+        }
+        #reglist{
+            float: right;
+            width: 320px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-indent: 20px;
+
+            background: #f5f5f5;
+            padding: 20px 0;
+        }
+        #reglist dd{
+            height: 40px;
+            line-height: 40px;
+            text-indent: 20px;
+        }
+        #reglist a{
+            display: block;
+            color: #08c;
+            text-decoration: none;
+        }
+        #reglist a:hover{
+            color: #005580;
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1 class="title">正则表达式测试工具</h1>
+
+    <div id="regexp">
+        <textarea name="" id="userText" class="textbox" placeholder="请在此输入待匹配的文本"></textarea>
+        <p>正则表达式：
+            <input type="text" id="userRegExp" class="textfield" placeholder="在此输入正则表达式">
+            <input type="checkbox" name="userModifier" value="i">忽略大小写
+            <input type="checkbox" name="userModifier" value="g">全局匹配
+            <input type="checkbox" name="userModifier" value="m">多行匹配
+            <input type="button" id="matchingBtn" value="测试匹配">
+        </p>
+        匹配结果：
+        <div name="" id="matchingResult" class="textbox readonly"></div>
+        <p>替换文本：
+            <input type="text" id="userReplaceText" class="textfield" placeholder="在此输入替代文本">
+            <input type="button" id="replaceBtn" value="替换">
+        </p>
+        替换结果：
+        <div name="" id="replaceResult" class="textbox readonly"></div>
+    </div>
+
+    <div id="reglist">
+        <dt>常用正则表达式</dt>
+        <dd><a href="javascript:;" title="[\u4e00-\u9fa5]">匹配中文字符</a></dd>
+        <dd><a href="javascript:;" title="^[1-9]\d{4,10}$">匹配QQ号</a></dd>
+        <dd><a href="javascript:;" title="^[\u4e00-\u9fa5\w]{2,18}$">匹配昵称</a></dd>
+        <dd><a href="javascript:;" title="^[\w~!@#$%^\[\]]{6,16}$">匹配密码</a></dd>
+        <dd><a href="javascript:;" title="-([a-z])">去驼峰</a></dd>
+        <dd><a href="javascript:;" title='<\/?[a-zA-Z]+(\s+[a-zA-Z]+=".*")*>'>匹配HTML标签</a></dd>
+        <dd><a href="javascript:;" title="(?:\w+\.)*\w+@(?:\w+\.)+[a-z]">匹配邮箱地址</a></dd>
+        <dd><a href="javascript:;" title="^(https?:\/\/)?([^:\/])(:\d+)?(\/.*)?$">匹配URL地址</a></dd>
+    </div>
+
+</div>
+
+    <script>
+        var userText =document.getElementById('userText'),
+            userRegExp = document.getElementById('userRegExp'),
+            userModifier = document.getElementsByName('userModifier'),
+            matchingBtn = document.getElementById('matchingBtn'),
+            mathingResult = document.getElementById('matchingResult'),
+            userReplaceText = document.getElementById('userReplaceText'),
+            replaceBtn = document.getElementById('replaceBtn'),
+            replaceResult = document.getElementById('replaceResult'),
+            reglists = document.getElementById('reglist').getElementsByTagName('a');
+        var pattern;
+            modifier='';
+        // console.log(userModifier);     这是一个节点的列表
+        // 循环遍历 这个节点列表。 为每个单选框按钮添加功能。   第一层for循环只是为了循环添加功能。
+        for(var i = 0; i < userModifier.length; i ++){
+            // 每个单选框按钮添加单击事件
+            userModifier[i].onclick = function () {
+                // 每次点击一个按钮，都需要把modifier清空。 不然，就会出现，点击第一个，第一个加进去，再点击第二个，从一开始遍历，一就添加了两次
+                modifier = '';
+                // 每次点击任意一个单选框，都把modifier清空，然后再循环遍历每一个，确认每一个单选框的状态
+                for(var j = 0; j < userModifier.length ; j++){
+                    // 如果被勾选，就加在modifier上
+                    if(userModifier[j].checked){
+                        modifier += userModifier[j].value;
+                    }
+                }
+            }
+        }
+
+        matchingBtn.onclick = function () {
+            if(!userText.value){
+                alert('请输入待匹配的文本！');
+                userText.focus();
+                return;
+            }
+            if(!userRegExp.value){
+                alert('请输入正则表达式！');
+                userRegExp.focus();
+                return;
+            }
+            pattern = new RegExp('(' + userRegExp.value + ')',modifier);
+            mathingResult.innerHTML = pattern.exec(userText.value) ?
+                userText.value.replace(pattern,'<span style="background: yellow;">$1</span>') : ('没有匹配');
+        }
+
+        replaceBtn.onclick = function () {
+            if(!userText.value){
+                alert('请输入待匹配的文本！');
+                userText.focus();
+                return;
+            }
+            if(!userRegExp.value){
+                alert('请输入要替换的文本！');
+                userRegExp.focus();
+                return;
+            }
+            pattern = new RegExp('(' + userRegExp.value + ')',modifier);
+            replaceResult.innerHTML = userText.value.replace(pattern,'<span style="color: red;">'+userReplaceText.value+'</span>');
+        }
+        for(var i = 0; i< reglists.length ; i ++){
+            reglists[i].onclick = function () {
+                userRegExp.value = this.title;
+            }
+
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        body{
+            margin: 0;
+            padding: 0;
+            color:#fff;
+            text-align: center;}
+
+        .container {
+            width: 100%;
+            /*浏览器宽度大的时候，最大也只能到1000px，浏览器缩小，达不到1000px，会满足width：100%*/
+            max-width: 1000px;
+            height: 1000px;
+            background: #4c77f2;
+            /*固定了宽度的元素，左右auto，会居中。 没限制宽度，左右会自动填充*/
+            margin: 0 auto;
+            position: relative;
+        }
+        .search{
+            width: 800px;
+            height: 200px;
+            background: red;
+            top: 50%;
+            left: 50%;
+            margin-top: -100px;
+            margin-left: -400px;
+            position: absolute;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">这是页面内容
+</div>
+<div class="search">这是搜索框
+</div>
+
+
+</body>
+</html>

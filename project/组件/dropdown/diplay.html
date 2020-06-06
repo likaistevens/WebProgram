@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>显示和隐藏模块</title>
+    <link rel="stylesheet" href="../../购物网站/css/base.css">
+    <style>
+        body{
+            width: 400px;
+            margin: 0 auto;
+        }
+        .btn{
+            width: 50%;
+            height: 30px;
+        }
+        #box{
+            /*display是直接没有，无法添加动画，只在silent变化的方式下使用*/
+            /*display: none;*/
+            /*但是opacity有个问题就是，元素还是存在在那里，可以点击触发事件，也会占据位置。*/
+            /*opacity: 0;*/
+            /*添加visibility，配合opacity可以让元素不可见，无法触发事件。但是还是会占据位置。  占据位置的问题可以通过添加position：absolute解决*/
+            /*visibility: hidden;*/
+
+            /*完美的解决方案。display + opacity + visibility。 隐藏的时候，先opacity，可以动画，完毕之后， visibility和display起作用，然后消失           */
+            display: none;
+            /*这两条属性被移到fadeOut样式里面*/
+            /*visibility: hidden;*/
+            /*opacity: 0;*/
+            overflow: hidden;
+            width: 100%;
+            /*撑起box的方法有三个 padding   height  还有里面的内容*/
+            /*height: 200px;*/
+            background: red;
+        }
+        .transition{
+            transition: all 1s;
+        }
+        .fadeOut{
+            visibility: hidden;
+            opacity: 0;
+        }
+        .slideUpDownCollapse{
+            /*加一个权重，因为上面#box指定了高度，id的权重比class高，所以不加权重，这个无法生效*/
+            height: 0 !important;
+            /*有可能box没有height属性，依靠padding也可以把整个div撑开。  padding：100px 0；   上下100的padding同样可以生成200高的box*/
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        .slideLeftRightCollapse{
+            width: 0 !important;
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+        }
+
+    </style>
+</head>
+<body>
+
+<button id="btn-show" class="btn">显示</button><button id="btn-hide" class="btn">隐藏</button>
+<div id="box" class="">
+    <p>1</p>
+    <p>2</p>
+    <p>3</p>
+    <p>4</p>
+    <p>5</p>
+    <p>6</p>
+</div>
+<button id="" class="btn">占位</button>
+
+
+<script src="../../../jquery-3.5.0.js"></script>
+<script src="showHide.js"></script>
+<script>
+
+    // silent的测试代码
+    //     var $box = $('#box');
+    //     // $('#btn-show').on('click',function () {
+    //     //     silent.show($box,function () {
+    //     //         $box.html('<p>showCallback回调函数相当于在这里执行操作</p>')
+    //     //     },function () {
+    //     //         setTimeout(function () {
+    //     //             $box.html($box.html()+'<p>shownCallback回调函数相当于在这里执行操作</p>')
+    //     //         },2000);
+    //     //     });
+    //     // });
+    //
+    //     //发布-订阅模式
+    //     silent.init($box);
+    //     $('#btn-show').on('click',function () {
+    //         // 第一步 按钮点击 对$box组件执行show。
+    //         silent.show($box)
+    //     });
+    //     // 第二步 接着，到show函数里，trigger是对$box元素激发 某个事件， box绑定了两个事件，trigger传入show，触发show，所以，function里e的类型是show
+    //     $box.on('show shown hide hidden',function (e) {
+    //         if(e.type === 'show'){
+    //             $box.html('<p>showCallback回调函数相当于在这里执行操作</p>')
+    //         }else if(e.type === 'shown'){
+    //             setTimeout(function () {
+    //                 $box.html($box.html()+'<p>shownCallback回调函数相当于在这里执行操作</p>')
+    //             },2000);
+    //         }
+    //     })
+    //     // 如果此时有另外一个人需要增加新功能， 不需要修改代码（防止出现错误）只需要监听之前已经绑定了的事件，然后新增就好了
+    //     // 新增的事件和之前的互不冲突
+    //     $box.on('show shown hide hidden',function (e) {
+    //         if(e.type === 'show'){
+    //             $box.css('background','yellow')
+    //         }else if(e.type === 'shown'){
+    //             setTimeout(function () {
+    //                 $box.css('background','')
+    //             },2000);
+    //         }
+    //     })
+    //
+    //     $('#btn-hide').on('click',function () {
+    //
+    //         silent.hide($box);
+    //     })
+
+    // css3的测试代码
+    // var $box = $('#box');
+    // css3.fadeSlideLeftRight.init($box);
+    // $('#btn-show').on('click',function () {
+    //     css3.fadeSlideLeftRight.show($box);
+    // });
+    // $('#btn-hide').on('click',function () {
+    //     css3.fadeSlideLeftRight.hide($box);
+    // })
+    // $box.on('show shown hide hidden',function (e) {
+    //     // 对$box绑定事件，通过这种监听绑定trigger的方式，可以在这里新添加功能，而不与原先的功能冲突
+    //     console.log(e.type);
+    // })
+
+    // js测试代码
+    // var $box = $('#box');
+    // js.slideLeftRight.init($box);
+    // $('#btn-show').on('click',function () {
+    //     js.slideLeftRight.show($box);
+    // });
+    // $('#btn-hide').on('click',function () {
+    //     js.slideLeftRight.hide($box);
+    // })
+    // $box.on('show shown hide hidden',function (e) {
+    //     // 对$box绑定事件，通过这种监听绑定trigger的方式，可以在这里新添加功能，而不与原先的功能冲突
+    //     console.log(e.type);
+    // })
+
+    // 模块化 测试代码
+    var $box = $('#box');
+    // $box.showHide({
+    //     js : true,
+    //     css3: false,
+    //     animation: 'slideLeftRight',
+    // });
+
+    var showHide = window.mt.showHide($box,{
+        js : true,
+        css3: false,
+        animation: 'fadeSlideLeftRight',
+    });
+
+    $('#btn-show').on('click',function () {
+        showHide.show($box);
+        // $box.showHide('show');
+    });
+    $('#btn-hide').on('click',function () {
+        showHide.hide($box);
+        // $box.showHide('hide');
+    })
+    $box.on('show shown hide hidden',function (e) {
+        // 对$box绑定事件，通过这种监听绑定trigger的方式，可以在这里新添加功能，而不与原先的功能冲突
+        console.log(e.type);
+    })
+
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            background-image:url('data:image/gif;base64,R0lGODlhZABUAIMAAP/N5v7r9v7a7f////70+v7k8v7U6v7v+P7f8P///wAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAkALAAAAABkAFQAAAj+AAcIHEiwoMGDCBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMkyZYACL1vKHAgAgIECOAvMbAmAQMECAnaqFBDgoAGhKQEgJIrUJIGgB3ES8NlUJFOEBrIWrQoS5kICBQxs5cpRANWFMcmWHbsQqNqNXhvGfYvxKkOlJgXUBFDg7Mi5Cp+SJBCAr0+wfUsSOMoQ58jFUAkGsCsSb0LIfjuCNZuQ8d+sU0MTFgB6JOWlOh9DNiCgtdnMHsGyHQi2oGe6FsUmFJBaIGDcEhcv5E37NvCIgiUbv238+MPkBIkPvDrZOcXmA24KJLDXpnWKYdn5Qobp9vvFxVltMn7Z2/x59/Djy59Pv779+/jz69/Pv7///wAGKOCABPInW3sFElQAX0D1lGBx7T2lW4KcGfQUgv89BZuCBmy4X4cEbQidalOl5FhxCD0120ekZcXaiiDdJlxCYZk21lSnfXTiAIv5haFlH1VnEIgjebbjAAE0B6RHFf4UWUi84aSdQEIWtGRHTYb4ZEjs1TjAghhOiGVNWxJEpEmFARAUUQG0GRaGGCUJZ0FZqpQTbx5edCVWed4n5nB92ocdnwAeqVCd+xnaWaD27Wlhmfy1BqNkkBpI2m88hlcge93VJNakD4Yq6qiklmrqqaimGmBAADs=');
+        }
+        .message{
+            font-size: 80px;
+            color: red;
+            width: 1000px;
+            height: 500px;
+            position: relative;
+            text-align: center;
+            top: 100px;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+            white-space: nowrap;
+        }
+        #clock {
+            color: #000000;
+            position: absolute;
+            font-size: 50px;
+            width: 1000px;
+            height: 100px;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+        }
+        #clock .digit {
+            color: #4c77f2;
+            font-size: 100px
+        }
+    </style>
+</head>
+<body>
+
+<div class="message" style="display: block">
+    我们在一起了
+    <div id="clock"></div>
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    var together = new Date();
+    together.setFullYear(2010, 0, 0);
+    together.setHours(0);
+    together.setMinutes(0);
+    together.setSeconds(0);
+
+    function timeElapse(c) {
+        var e = Date();
+        var f = (Date.parse(e) - Date.parse(c)) / 1000;
+        var g = Math.floor(f / (3600 * 24));
+        f = f % (3600 * 24);
+        var b = Math.floor(f / 3600);
+        if (b < 10) {
+            b = "0" + b
+        }
+        f = f % 3600;
+        var d = Math.floor(f / 60);
+        if (d < 10) {
+            d = "0" + d
+        }
+        f = f % 60;
+        if (f < 10) {
+            f = "0" + f
+        }
+        var a = '<span class="digit">' + g + '</span> 天 <span class="digit">' + b + '</span> 小时 <span class="digit">' + d + '</span> 分钟 <span class="digit">' + f + "</span> 秒";
+        $("#clock").html(a)
+    }
+
+    timeElapse(together);
+    setInterval(function () {
+        timeElapse(together);
+    }, 500);
+
+</script>
+</body>
+</html>

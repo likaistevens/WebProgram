@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS布局实战</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .header{
+            width: 100%;
+            height: 100px;
+            background: #eee;
+        }
+        .header img{
+            width: 300px;
+            height: 85px;
+            padding-left: 100px;
+            padding-top: 8px;
+        }
+        .header .logo{
+            float: left;
+        }
+        .header .nav{
+            float: right;
+        }
+        .header .nav ul{
+            padding-right: 100px;
+        }
+        .header .nav ul li{
+            float: left;
+            list-style: none;
+            width: 80px;
+            height: 100px;
+            line-height: 100px;
+            font-size: 15px;
+            color: #7d7d7d;
+            font-weight: bold;
+        }
+
+        .main .top{
+            width: 100%;
+            height: 600px;
+        }
+        .main .top img{
+            width: 100%;
+            height: 600px;
+        }
+        /*遮罩效果*/
+        .main  .topLayer{
+            position: absolute;
+            top: 100px;
+            left: 0;
+            background: #000;
+            width: 100%;
+            height: 600px;
+            /*透明度属性*/
+            opacity: 0.5;
+        }
+        .main .topLayer-top{
+            width: 500px;
+            height: 300px;
+            /*background: blue;*/
+            position: absolute;
+            /*为了达到居中效果*/
+            top: 400px;
+            margin-top: -150px;
+            right: 50%;
+            margin-right: -250px;
+            z-index: 2;
+        }
+        .main .topLayer-top .word{
+            padding-top: 100px;
+            color: #fff;
+            font-size: 45px;
+            font-weight: bold;
+            text-align: center;
+            font-family: "Apple Braille";
+        }
+        .main .topLayer-top button{
+            width: 200px;
+            height: 60px;
+            margin-top: 50px;
+            background-color: #f5704f;
+            font-family: "Times New Roman";
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            /*设置圆角*/
+            border-radius: 8px;
+            margin-left: 150px;
+        }
+
+        .main .middle{
+            /*background: #1a5acd;*/
+            width: 1000px;
+            height: 250px;
+            margin: 0 auto;
+        }
+        .main .middle .m-top .commen{
+            float: left;
+            width: 33.3%;
+            padding-top: 50px;
+            text-align: center;
+        }
+        .main .middle .m-top .commen img{
+            width: 100px;
+            height: 100px;
+        }
+        .main .middle .m-top .commen .com{
+            font-size: 20px;
+            color: #7d7d7d;
+            font-weight: bold;
+            padding-top: 20px;
+        }
+
+        .main .middle .m-middle{
+            font-size: 20px;
+            color: #e19796;
+            font-weight: bold;
+            padding-top: 50px;
+            font-style: italic;
+            text-align: center;
+            padding-bottom: 50px;
+        }
+
+        .clear{clear: both}
+        
+        .main .middle .m-bottom .m-com{
+            float: left;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .main .middle .m-bottom .m-com img {
+            width: 310px;
+            height: 260px;
+        }
+        .main .middle .m-bottom .m-com .des1 {
+            color: #7d7d7d;
+            padding-top: 20px;
+        }
+        .main .middle .m-bottom .m-com .des2 {
+            color: #BDBDBD;
+            padding-top: 10px;
+        }
+
+        .main .bottom{
+            background: #F9F9F9;
+        }
+        .main .bottom .content{
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .main .bottom .content .title{
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: #7d7d7f;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .main .bottom .content .pic-content dl{
+            float: left;
+            width: 470px;
+            margin: 10px 12px ;
+        }
+        .main .bottom .content .pic-content dl img{
+            height: 460px;
+            width: 470px;
+        }
+        .main .bottom .content .pic-content dl .word{
+            padding-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+            color: #7d7c7f;
+            padding-bottom: 50px;
+        }
+
+        .footer{
+            width: 100%;
+            height: 100px;
+            background: #292c35;
+            color: #FFFFFF;
+            font-size: 15px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<!--头部-->
+<div class="header">
+    <div class="logo">
+            <img src="../images/layoutimg/logo.png" alt="">
+    </div>
+    <div class="nav">
+        <ul>
+            <li>首页</li>
+            <li>图片</li>
+            <li>视频</li>
+            <li>手记</li>
+        </ul>
+    </div>
+</div>
+<!--主体-->
+<div class="main">
+    <div class="top">
+        <img src="../images/layoutimg/1.jpeg" alt="">
+    </div>
+<!--    遮罩层-->
+    <div class="topLayer"></div>
+    <div class="topLayer-top">
+        <div class="word">MY BEAUTIFUL LIFE</div>
+        <button>LOOK MORE &gt;</button>
+    </div>
+    <div class="middle">
+        <div class="m-top">
+            <div class="commen weibo">
+                <img src="../images/layoutimg/weibo.png" alt="">
+                <div class="com">BLOG</div>
+            </div>
+            <div class="commen weixin">
+                <img src="../images/layoutimg/weixin.png" alt="">
+                <div class="com">WECHAT</div>
+            </div>
+            <div class="commen qq">
+                <img src="../images/layoutimg/QQ.png" alt="">
+                <div class="com">QQ</div>
+            </div>
+        </div>
+<!--        清除上一个浮动元素的浮动效果，不然下面文字部分无法正常显示-->
+        <div class="clear"></div>
+        <div class="m-middle">
+            "I want to give good things to record down, <br>after the recall will be very beautify."
+        </div>
+        <div class="m-bottom">
+            <div class="m-com">
+                <img src="../images/layoutimg/03-01.jpg" alt="">
+                <div class="des1">Cool Image</div>
+                <div class="des2">Record The Picture</div>
+            </div>
+            <div class="m-com">
+                <img src="../images/layoutimg/03-02.jpg" alt="">
+                <div class="des1">Cool Image</div>
+                <div class="des2">Record The Picture</div>
+            </div>
+            <div class="m-com">
+                <img src="../images/layoutimg/03-03.jpg" alt="">
+                <div class="des1">Cool Image</div>
+                <div class="des2">Record The Picture</div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="bottom">
+        <div class="content">
+            <div class="title">
+                FROM THE PHOTO ALBUM
+            </div>
+            <div class="pic-content">
+                <dl>
+                    <dt><img src="../images/layoutimg/04-01.jpg" alt=""></dt>
+                    <dd class="word">Life is like a cup of tea, let people lead a person to endless aftertastes. You again good
+                        taste, it will always have a different taste, different people will have different taste more.</dd>
+                </dl>
+                <dl>
+                    <dt><img src="../images/layoutimg/04-02.jpg" alt=""></dt>
+                    <dd class="word">Life is like a cup of tea, let people lead a person to endless aftertastes. You again good
+                        taste, it will always have a different taste, different people will have different taste more.</dd>
+                </dl>
+            </div>
+<!--            清除浮动，不然.botton处的背景会断掉，只包含title部分呢，不包含下面的pic-content-->
+            <div class="clear"></div>
+
+        </div>
+    </div>
+</div>
+<!--底部-->
+<div class="footer">
+    @ 2016 imooc.com 京ICP备1230482719号
+</div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:float="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        /*消除所有元素的内外边框*/
+            *{margin: 0; padding: 0; }
+        /*消除列表前的项目标志*/
+            ul{
+                list-style: none;
+            }
+            /*消除链接的下划线*/
+            a{
+                text-decoration: none;
+            }
+        .container{
+            /*宽度1200px没有充满浏览器，上下边距为0，左右自动，左右就会自动居中*/
+            width: 1200px;
+            margin: 0 auto;
+        }
+        /*子标签logo设置了浮动，父容器需要设置overflow*/
+        .header{
+            width: 1200px;
+            background: #ccc;
+            overflow: hidden;
+        }
+        .header .logo{
+            width: 200px;
+            height: 80px;
+            float: left;
+            margin: 0 40px;
+        }
+        .nav{
+            float: right;
+            padding-right: 40px;
+            /*子元素设置了浮动，父元素需要设置overflow来消除塌陷*/
+            overflow: hidden;
+        }
+        .header .nav li{
+            float: right;
+            margin-right: 20px;
+        }
+        .header .nav li a{
+            padding: 0 20px;
+            height: 80px;
+/*logo图片高度为80px。导致header自动高度变为80px. li容器的高度为80，就可以保证整个li垂直方向上充满了header。从而相当于li处于header中间。
+然后行高line-height设置为80，保证li里面字能在li的中间。就使得li里的字处于header的中间   如果height变为50，然后line-height也变为50。那
+么li是处于header的上半部分，li里面的字还是处于li的中间*/
+            line-height: 80px;
+            display: block;
+            font-size: 16px;
+        }
+        .header .nav li a:hover{
+            color: #ffffff;
+        }
+/*main的宽度和header一样1200px，高度就让里面的子容器撑开*/
+        .main{
+            width: 1200px;
+            /*content和sidebar设置了浮动，就从main容器中脱离了，main容器会高度塌陷，如果不清除，footer就会顶到main的最上面，无法展示*/
+            overflow: hidden;
+        }
+        .main .content{
+            width: 1000px;
+            height: 500px;
+            background: blue;
+            float: left;
+        }
+        .main .sidebar{
+            width: 200px;
+            height: 500px;
+            background: orange;
+            float: left;
+        }
+        .footer{
+            width: 1200px;
+            height: 100px;
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <a href="#"><img src="../images/example/logo.png" alt=""></a>
+        </div>
+        <ul class="nav">
+            <li><a href="#">手记</a></li>
+            <li><a href="#">猿问</a></li>
+            <li><a href="#">实战</a></li>
+            <li><a href="#">职业路径</a></li>
+            <li><a href="#">免费课程</a></li>
+        </ul>
+    </div>
+    <div class="main">
+        <div class="content">content</div>
+        <div class="sidebar">sidebar</div>
+    </div>
+    <div class="footer">footer</div>
+
+</div>
+
+
+</body>
+</html>

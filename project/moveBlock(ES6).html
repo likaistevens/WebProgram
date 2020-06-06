@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    #el{
+        width: 100px;
+        background: green;
+        transition: all 1s;
+        color: white;
+        line-height: 100px;
+        text-align: center;
+        font-size: 40px;
+    }
+</style>
+<body>
+
+<div id="el">哦</div>
+<button id="btn">开始</button>
+
+<script>
+    function moveTo(el,x,y,cb) {
+        el.style.transform = `translate(${x}px, ${y}px)`;
+        setTimeout(function () {
+            cb && cb();
+        },1000);
+    }
+    let el = document.querySelector('div');
+    document.querySelector('button').addEventListener('click',e => {
+        moveTo(el, 100, 100, function () {
+            console.log(1);
+        })
+    })
+</script>
+
+</body>
+</html>

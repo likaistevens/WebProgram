@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        body{
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+        .container{
+            /*设置百分比可以自适应浏览器，同时也可以设置最大最小宽*/
+            width: 90%;
+            height: 10000px;
+            margin: 0 auto;
+            /*position: relative;*/
+        }
+        .left{
+            width: 60%;
+            height: 1000px;
+            background: #1a5acd;
+            /*position: absolute;*/
+            /*top: 0;*/
+            /*left: 0;*/
+            /*实现两列排列，可以用float，最简单，同时也可以用注释掉的position*/
+            float: left;
+        }
+        .right{
+            width: 40%;
+            height: 1000px;
+            background: #5880f9;
+            /*position: absolute;*/
+            /*top: 0;*/
+            /*right: 0;*/
+            float: left;
+        }
+    </style>
+
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="left">这是页面的左侧</div>
+        <div class="right">这是页面的右侧</div>
+    </div>
+</body>
+</html>

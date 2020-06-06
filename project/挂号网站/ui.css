@@ -1,0 +1,237 @@
+.ui-search{
+    position: relative;
+
+}
+.search-icon{
+    height: 38px;
+    width: 38px;
+    position: absolute;
+    right: -4px;
+    top: 6px;
+}
+.search-icon img{
+    height: 26px;
+    width: 26px;
+}
+.ui-search-selected{
+    height: 38px;
+    width: 67px;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    line-height: 38px;
+    color: #eeeeee;
+}
+.ui-search-selected img{
+    height: 16px;
+    width: 16px;
+    position: relative;
+    top: 4px;
+}
+.ui-search-select-list{
+    display: none;
+    position: absolute;
+    width: 67px;
+    font-size: 14px;
+    line-height: 24px;
+    background-color: #fff;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+    top: 38px;
+    z-index: 2;
+}
+.ui-search-select-list a{
+    display: block;
+    color: #a5a2a2;
+    text-align: center;
+}
+.ui-search-select-list a:hover {
+    background-color: #ebeef5;
+}
+.ui-search-input{
+    width: 208px;
+    height: 26px;
+    top: 3px;
+    position: absolute;
+    left: 71px;
+    line-height: 26px;
+    font-size: 13px;
+    color: #a5a2a2;
+}
+
+/* ui-menu */
+.ui-menu{}
+.ui-menu-item{
+    height: 22px;
+    line-height: 22px;
+    padding: 8px 5px 9px 6px;
+}
+.ui-menu-item:hover{
+    background-color: #fff;
+}
+.ui-menu-item-department:before {
+    content: ' ';
+    display: block;
+    width: 22px;
+    height: 21px;
+    position: absolute;
+    left: 0;
+    top: 2px;
+    background: url("img/icon-doctor-white.png") no-repeat;
+}
+.ui-menu-item:hover .ui-menu-item-department:before{
+    background-image: url("img/icon-doctor-blue.png");
+}
+.ui-menu-item-department {
+    float: left;
+    height: 22px;
+    color: #d7f3ff;
+    line-height: 22px;
+    position: relative;
+    padding-left: 30px;
+    font-size: 13px;
+}
+.ui-menu-item-disease {
+    float: right;
+    padding-left: 5px;
+    font-size: 12px;
+    color: #d7f3ff;
+}
+.ui-menu-item:hover .ui-menu-item-department{
+    color: #333;
+}
+.ui-menu-item:hover .ui-menu-item-disease{
+    color: #868686;
+}
+.ui-menu-item:hover .ui-menu-item-detail{
+    display: block;
+    z-index: 9;
+}
+.ui-menu-item-detail{
+    display: none;
+    position: absolute;
+    width: 500px;
+    height: 392px;
+    padding: 20px 10px 10px 29px;
+    background-color: #FFFFFF;
+    top: 0px;
+    left: 190px;
+    box-shadow: 5px 5px 2px rgba(0,0,0,.1);
+}
+.ui-menu-item-detail-group{
+    padding-bottom: 20px;
+    text-align: left;
+}
+.ui-menu-item-detail-group-caption{
+    width: 100%;
+    display: block;
+    height: 34px;
+    line-height: 34px;
+    color: #666;
+    font-size: 16px;
+    font-weight: bold;
+}
+.ui-menu-item-detail-group-list{
+    line-height: 23px;
+}
+.ui-menu-item-detail-group-list a{
+    display: inline-block;
+    color: #868686;
+    margin-right: 8px;
+    font-size: 12px;
+    padding-bottom: 5px;
+}
+.ui-menu-item-detail-group-list a:after {
+    content: ' |';
+    color: #dddddd;
+    margin-left: 8px;
+}
+
+/* 回到顶部 */
+.ui-backTop{
+    display: block;
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
+    z-index: 9;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    background: url("img/icon-backTop.png");
+}
+
+/* 幻灯片组件 */
+.ui-slide{
+    width: 544px;
+    height: 414px;
+    position: relative;
+    overflow: hidden;
+}
+.ui-slide-wrap{
+    width: 9999px;
+    height: 414px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    /* 切换的时候缓动 */
+    transition: all  .5s;
+}
+.ui-slide-wrap .item{
+    display: block;
+    float: left;
+    width: 544px;
+    height: 414px;
+}
+.ui-slide-wrap .item img{
+    width: 544px;
+    height: 414px;
+}
+.ui-slide-arrow{
+    width: 544px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    margin-top: -20px;
+}
+.ui-slide-arrow .item{
+    display: block;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+}
+.ui-slide-arrow .left{
+    left: 10px;
+    background: url("img/icon-left.png");
+}
+.ui-slide-arrow .right{
+    right: 10px;
+    background: url("img/icon-right.png");
+}
+.ui-slide-process{
+    width: 544px;
+    height: 12px;
+    text-align: center;
+    position: absolute;
+    left: 0;
+    bottom: 20px;
+}
+.ui-slide-process .item{
+    display: inline-block;
+    margin-right: 4px;
+    width: 13px;
+    height: 13px;
+    background: #dddddd;
+    border-radius: 50%;
+}
+.ui-slide-process .item:hover{
+    width: 15px;
+    height: 15px;
+    /*background: #1a5acd;*/
+    box-shadow: 0px 0px 5px 3px #1a5acd inset;
+}
+.ui-slide-process .item_focus{
+    width: 15px;
+    height: 15px;
+    box-shadow: 0px 0px 5px 3px #1a5acd inset, 0px 0px 2px 2px #1a5acd ;
+}
+

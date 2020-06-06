@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        这种混合布局
+        /*实现方式1：此代码中，把这四块宽高设置好之后，用定位做。*/
+        /*实现方式2：把这四块宽高设置好之后，全部设置成float。（不太好）*/
+        /*实现方式3；把页面分成三部分，header。container。footer，其中container包含left和right。然后把这三块设置成float(最好)*/
+        body{
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+        .container{
+            width: 80%;
+            height: 10000px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .header{
+            width:100%;
+            height: 100px;
+            font-size: 16px;
+            line-height: 100px;
+            text-align: center;
+            color: #FFFFFF;
+            background-color: #30a457;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .left{
+            width: 60%;
+            height: 1000px;
+            background: #1a5acd;
+            position: absolute;
+            top: 100px;
+            left: 0;
+            /*float: left;*/
+        }
+        .right{
+            width: 40%;
+            height: 1000px;
+            background: #5880f9;
+            position: absolute;
+            top: 100px;
+            right: 0;
+            /*float: left;*/
+        }
+        .footer{
+            width: 100%;
+            height: 100px;
+            font-size: 16px;
+            line-height: 100px;
+            text-align: center;
+            color: #FFFFFF;
+            background-color: #30a457;
+            position: absolute;
+            top: 1000px;
+            /*float: left;*/
+        }
+    </style>
+
+
+
+</head>
+<body>
+<div class="container">
+    <div class="header">这是页面头部</div>
+    <div class="left">这是页面的左侧</div>
+    <div class="right">这是页面的右侧</div>
+    <div class="footer">这是页面底部</div>
+</div>
+</body>
+</html>

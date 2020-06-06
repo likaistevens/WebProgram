@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+        }
+
+        a:link, a:visited {
+            color: #5e5e5e;
+        }
+
+        body {
+            font-family: Arial;
+            color: #14191e;
+        }
+
+        .main {
+            width: 1200px;
+            height: 460px;
+            margin: 30px auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .banner {
+            width: 1200px;
+            height: 460px;
+            overflow: hidden;
+        }
+
+        .banner-slide {
+            width: 1200px;
+            height: 460px;
+            float: left;
+            display: none;
+        }
+        .slide-active{
+            display: block;
+        }
+
+        .slide1 {
+            background-image: url("../images/JavaScriptProject/img2/bg1.jpg");
+        }
+
+        .slide2 {
+            background-image: url("../images/JavaScriptProject/img2/bg2.jpg");
+        }
+
+        .slide3 {
+            background-image: url("../images/JavaScriptProject/img2/bg3.jpg");
+        }
+
+        .button {
+            position: absolute;
+            transform:rotate(180deg);
+            top: 50%;
+            left: 244px;
+            height: 80px;
+            width: 40px;
+            margin-top:-40px;
+            background: url("../images/JavaScriptProject/img2/arrow.png") center center no-repeat;
+
+        }
+
+
+        .next {
+            /*不设置left的话，right和left冲突，会优先套用上面button的left。 */
+            ransform:rotate(0deg);
+            left:auto;
+            transform: rotate(0deg);
+            right:0;
+        }
+
+        .button:hover{
+            background-color: #333;
+            opacity: 0.8;
+            filter: alpha(opacity=80);
+        }
+        .dots {
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+        }
+
+        .dots span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(7, 17, 27, 0.4); /*透明度0.4*/
+            margin-left: 8px;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8) inset; /*通过阴影设置元素旁边的白边框*/
+        }
+
+        .dots span.active {
+            /*按钮被激活的时候，阴影和里面的颜色颠倒。*/
+            background-color: #fff;
+            /*box-shadow：h-shadow（水平偏移） v-shadow（垂直偏移） blur（值为像素大小。模糊） spread（值为像素，往四周扩展） color inset（变成内阴影）*/
+            box-shadow: 0 0 0 2px rgba(7, 17, 27, 0.4) inset;
+        }
+
+        .menu-box {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 244px;
+            height: 460px;
+            background: rgba(7, 17, 27, 0.5);
+            z-index: 1;
+        }
+
+        .menu-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 244px;
+            height: 460px;
+            z-index: 2;
+        }
+
+        .menu-item {
+            height: 64px;
+            line-height: 66px;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 24px;
+
+        }
+
+        .menu-item a {
+            display: block;
+            color: #fff;
+            font-size: 16px;
+            /*菜单中间隔线可以通过border来画*/
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            height: 63px;
+            /*文本跟下面的线不要对的太齐*/
+            padding: 0 8px;
+            /*把a标签设为绝对定位，作为右侧小箭头的父标签，它可以当作参考点。*/
+            position: relative;
+        }
+
+        .menu-item:last-child a {
+            border-bottom: none;
+        }
+
+        .menu-item i {
+            /*父标签是a标签，每个a都是依靠自然流排列，然后都是绝对定位的。这样子，每个i相对于各自的父标签是absolute的*/
+            position: absolute;
+            right: 32px;
+            top: 2px;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: normal;
+            font-weight: normal;
+        }
+
+        .sub-menu {
+            width: 730px;
+            height: 458px;
+            position: absolute;
+            left: 244px;
+            background: #fff;
+            top: 0;
+            z-index: 500;
+            border: 1px solid #d9dde1;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .inner-box {
+            width: 100%;
+            height: 100%;
+            background: url("../images/JavaScriptProject/img2/fe.png") no-repeat;
+            display: none;
+        }
+
+        .sub-inner-box {
+            width: 652px;
+            margin-left: 40px;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 16px;
+            color: #f01414;
+            line-height: 16px;
+            font-weight: bold;
+            margin: 28px 0 30px 0;
+        }
+
+        .bold {
+            font-weight: 700;
+        }
+
+        .mr10 {
+            margin-right: 10px;
+        }
+
+        .ml10 {
+            margin-left: 10px;
+        }
+
+        .sub-row {
+            margin-bottom: 25px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<div class="main" id="main">
+    <div class="menu-box"></div>
+    <!--    子菜单-->
+    <div class="sub-menu hide" id="sub-menu">
+        <div class="inner-box">
+            <div class="sub-inner-box">
+                <div class="title">手机、配件</div>
+                <div class="sub-row">
+                    <span class="bold mr10">手机通讯：</span>
+                    <a href="">手机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">手机维修</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">以旧换新</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">手机配件：</span>
+                    <a href="">手机壳</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">手机存储卡</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">数据线</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">充电器</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">电池</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">运营商：</span>
+                    <a href="">中国联通</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">中国移动</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">中国电信</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">智能设备：</span>
+                    <a href="">智能手环</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">智能家居</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">智能手表</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">其他配件</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">娱乐：</span>
+                    <a href="">耳机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">音响</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">收音机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">麦克风</a>
+                </div>
+            </div>
+        </div>
+        <div class="inner-box">
+            <div class="sub-inner-box">
+                <div class="title">电脑</div>
+                <div class="sub-row">
+                    <span class="bold mr10">电脑：</span>
+                    <a href="">笔记本</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">平板</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">一体机</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">电脑配件：</span>
+                    <a href="">显示器</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">CPU</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">主板</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">硬盘</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">电源</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">显卡</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">其他配件</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">游戏设备：</span>
+                    <a href="">游戏机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">耳机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">游戏软件</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">网络产品：</span>
+                    <a href="">路由器</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">网络机顶盒</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">交换机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">存储卡</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">网卡</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">外部产品：</span>
+                    <a href="">鼠标</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">键盘</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">U盘</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">移动硬盘</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">鼠标垫</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">电脑清洁</a>
+                </div>
+            </div>
+        </div>
+        <div class="inner-box">
+            <div class="sub-inner-box">
+                <div class="title">家用电器</div>
+                <div class="sub-row">
+                    <span class="bold mr10">电视：</span>
+                    <a href="">国产品牌</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">韩国品牌</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">欧美品牌</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">空调：</span>
+                    <a href="">显示器</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">柜式</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">中央</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">壁挂式</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">冰箱：</span>
+                    <a href="">多门</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">对开门</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">三门</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">双门</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">洗衣机：</span>
+                    <a href="">滚筒式洗衣机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">迷你洗衣机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">洗烘一体机</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">厨房电器：</span>
+                    <a href="">油烟机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">洗碗机</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">燃气灶</a>
+                </div>
+            </div>
+        </div>
+        <div class="inner-box">
+            <div class="sub-inner-box">
+                <div class="title">家具</div>
+                <div class="sub-row">
+                    <span class="bold mr10">家纺：</span>
+                    <a href="">被子</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">枕头</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">四件套</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">床垫</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">灯具：</span>
+                    <a href="">台灯</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">顶灯</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">节能灯</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">应急灯</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">厨具：</span>
+                    <a href="">烹饪锅具</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">餐具</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">菜板刀具</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">家装：</span>
+                    <a href="">地毯</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">沙发垫套</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">装饰字画</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">照片墙</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">窗帘</a>
+                </div>
+                <div class="sub-row">
+                    <span class="bold mr10">生活日用：</span>
+                    <a href="">收纳用品</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">浴室用品</a>
+                    <span class="ml10 mr10">/</span>
+                    <a href="">雨伞雨衣</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--        主菜单-->
+    <!--        menu-content 不放在menu-box里面。  因为box是半透明的。content如果有背景。放到里面就不透明了。两个分开，通过定位重叠，效果更好-->
+    <div class="menu-content" id="menu-content">
+        <div class="menu-item">
+            <a href="">
+                <span>手机配件</span>
+                <i class="icon">&#xe665;</i>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="">
+                <span>电脑</span>
+                <i class="icon">&#xe665;</i>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="">
+                <span>家用电器</span>
+                <i class="icon">&#xe665;</i>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="">
+                <span>家具</span>
+                <i class="icon">&#xe665;</i>
+            </a>
+        </div>
+    </div>
+    <!--        焦点图-->
+    <div class="banner" id="banner">
+        <a href="">
+            <div class="banner-slide slide1 slide-active"></div>
+        </a>
+        <a href="">
+            <div class="banner-slide slide2"></div>
+        </a>
+        <a href="">
+            <div class="banner-slide slide3"></div>
+        </a>
+    </div>
+    <a href="javascript:void(0)" class="button prev" id="prev"></a>
+    <a href="javascript:void(0)" class="button next" id="next"></a>
+    <div class="dots" id="dots">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+
+<script>
+    // 声明全局变量
+    var index = 0,   // 当前图片的索引。
+        pre = byId("prev"),  // 上一张
+        next = byId("next"),
+        main = byId("main"),
+        menuContent = byId("menu-content")
+        menuItems = menuContent.getElementsByClassName("menu-item"),
+        timer = null,
+        subMenu = byId("sub-menu"),
+        banner = byId("banner"),
+        innerBox = subMenu.getElementsByClassName("inner-box"),
+        pics = byId("banner").getElementsByTagName("div"),
+        dots = byId("dots").getElementsByTagName("span"),
+        size = pics.length;
+
+
+
+    // 封装getElementById（）
+    function byId(id){
+        return typeof(id)==="string" ? document.getElementById(id) : id;
+    }
+    // 兼容IE和非IE绑定事件方法
+    function addHandler(element, type, handler) {
+        if (element.addEventListener) {
+            element.addEventListener(type, handler, true);
+        }
+        else if (element.attachEvent) {
+            element.attachEvent('on' + type, handler);
+        }
+        else {
+            element['on' + type] = handler;
+        }
+    }
+    // 点击上一张按钮显示上一张图片
+    addHandler(next,"click",function () {
+        index++;
+        if(index >= size) index=0;
+        changeImg();
+    })
+    addHandler(pre,"click",function () {
+        index--;
+        if(index < 0) index= size-1;
+        changeImg();
+    })
+    // 切换图片时，修改图片和原点的指示
+    function changeImg() {
+        for(var i = 0; i < size ; i++){
+            pics[i].style.display = "none";
+            dots[i].className ="";
+        }
+        pics[index].style.display = "block";
+        // 修改元素的class值
+        dots[index].className = "active";
+    }
+    // for是方便循环给每个原点都添加一个id，然后绑定事件，不用重复操作。而不是时间循环。
+    for(var d = 0; d<size; d++){
+        // 修改元素的id值
+        dots[d].id = d;      // dots[d].setAttribute("data-id",d);    可以用自定义属性，但是设置跟获取的方式都需要修改
+        addHandler(dots[d],"click",function () {
+            // 修改index后执行更换图片操作
+            index= this.id;   // index = this.getAttribute("data-id");   获取自定义属性
+            changeImg();
+        })
+    }
+    // 自动轮播
+    function startAutoPlay() {
+        timer = setInterval(function () {
+            index++;
+            if (index>=size)    index=0;
+            changeImg();
+        },3000)
+    }
+    startAutoPlay();
+
+    // 清除定时器
+    function stopAutoPlay() {
+        if(timer){
+            clearInterval(timer);
+        }
+    }
+    // 鼠标滑入main，停止
+    addHandler(main,"mouseover",stopAutoPlay);
+    // 鼠标滑出main，继续
+    addHandler(main,"mouseout",startAutoPlay);
+
+    // 鼠标滑过主菜单
+    for(var m = 0,idx,mlen = menuItems.length;m<mlen; m++){
+        // 给所有主菜单定义属性，标明他的索引
+        menuItems[m].setAttribute("data-index",m);
+        addHandler(menuItems[m],"mouseover",function () {
+            // 显示子菜单所在的背景  消除class里面的hidden类
+            subMenu.className = "sub-menu";
+            // 遍历所有的子菜单innerBox，将他们隐藏
+            for(var j = 0,jlen = innerBox.length; j<jlen;j ++){
+                //隐藏所有子菜单
+                innerBox[j].style.display = "none";
+                //所有主菜单的阴影消失
+                menuItems[j].style.background = "none";
+            }
+            // 找到当前子菜单 获取索引  让其显现
+            idx = this.getAttribute("data-index");
+            innerBox[idx].style.display = "block";
+            // 当前主菜单背景阴影
+            menuItems[idx].style.background = "rgba(0,0,0,0.1)";
+        })
+
+    }
+
+    // 鼠标移开banner，隐藏子菜单
+    addHandler(subMenu,"mouseover",function(){
+        this.className = "sub-menu";
+    });
+
+    addHandler(subMenu,"mouseout",function(){
+        this.className = "sub-menu hide";
+    });
+
+    addHandler(banner,"mouseout",function(){
+        subMenu.className = "sub-menu hide";
+    });
+
+    addHandler(menuContent,"mouseout",function(){
+        subMenu.className = "sub-menu hide";
+    });
+
+
+
+</script>
+</body>
+</html>

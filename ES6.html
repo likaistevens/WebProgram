@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<script>
+    // 变量的命名
+    // 全局下的变量，相当于对window下的变量。
+    if (window.location.href === location.href) {
+    }
+
+    // let 声明的变量只在当前（块级）作用域内有效。 不能被重复声明。不存在变量提升
+    // 块级作用域：一对花括号中的区域   {}  if(){}   for(){}  try{}catch(){}   块级作用域可以嵌套   注意：var obj = {}  这里是对象，不是块级作用域
+    {
+        var a = 1;
+        let b = 2;
+    }
+    console.log(a);    // 1  对于a来说，有没有块级作用域，效果一样.都可以在外面正常访问
+    console.log(b);    // error  对于b来说，只能在块级作用域内访问
+
+    {
+        let a = 1;
+        {
+            console.log(a);    // 1   a作用范围包括了内部的块级作用域
+            let b = 2;
+        }
+        console.log(b);   // error   b仅仅存在于内部那个作用域
+    }
+
+    for (var i = 0; i < 3; i++) {
+        console.log(i);   // 0 1 2
+    }
+    console.log(i);       // 3      var声明了变量之后，就一直存在，for循环结束后，他还在。
+    for (var i = 0; i < 3; i++) {    // 可以继续声明i，并重新赋值
+        console.log(i);   // 0 1 2
+    }
+    var dad = '我是爸爸';
+    console.log(dad);
+    var dad;
+    console.log(dad);   // 依旧输出 '我是爸爸'
+
+    let son = '我是儿子';
+    let son;   // error 变量已经声明过了
+
+    // 变量提升
+    console.log(mom);    // undefined  虽然开始没有声明mom但是，默认赋值undefined。
+    var mom = '我是妈妈';   //
+    // 整个过程相当于
+    var mom;
+    console.log(mom);
+    mom = '我是妈妈';
+
+    console.log(mom);    // error 报错
+    let mom = '我是妈妈';
+
+    // 暂存死区
+    var monkey = '111';
+    {
+        console.log(monkey);   //  111 块级作用域对于var没效果，会自动查找上面的变量
+        var monkey = '222';
+    }
+    console.log(monkey);     // 222  块级作用域中修改了变量，生效了
+
+    let monkey = '111';
+    {
+        console.log(monkey);   //  error  let直接封闭作用域，这里的变量，不能向上找了，向下又找不到
+        let monkey = '222';
+    }
+    console.log(monkey);
+
+    // Question： 生成十个按钮，每个点击的时候弹出1 - 10
+    var i = 0;
+    for (i = 1; i <= 10; i++) {
+        // 一个自运行的函数 (function (i))(i)       相当于(function (i))(1)   (function (i))(2)   (function (i))(3) ...
+        // 这个函数里面的i是独立的作用域，是最后（i）传进来的
+        (function (i) {
+            var btn = document.createElement('button');
+            btn.innerText = i;
+            btn.onclick = function () {
+                alert(i);
+            };
+            document.body.appendChild(btn);
+        })(i)
+    }
+    // 去掉自运行的函数，结果会生成1-10个按钮，但是弹出来的永远是11
+    var i = 0;
+    for (i = 1; i <= 10; i++) {
+        var btn = document.createElement('button');
+        // 这个i会遵循1-10的循环，所以生成按钮内容都是1-10
+        btn.innerText = i;
+        //  这里的i并不参与循环，相当于给每个按钮绑定一个事件。此时alert里面的值没确定。，每次点击按钮的时候，alert（i）就会向上去找i，此时i已经结束循环了，变成11
+        btn.onclick = function () {
+            alert(i);
+        };
+        document.body.appendChild(btn);
+    }
+    // 用let就和其他java等语言一样，这个i只作用于当前for循环的作用域内，不需要自运行函数
+    for (let i = 1; i <= 10; i++) {
+        var btn = document.createElement('button');
+        btn.innerText = i;
+        btn.onclick = function () {
+            alert(i);
+        };
+        document.body.appendChild(btn);
+    }
+
+    // 常量const
+    // 声明常量
+    const a = 1;   // 常量在声明的时候必须被初始化
+    a = 2;   // error  常量不能被修改
+
+    // 这是一个引用类型的常量  里面的内容可以修改
+    const xiaoming = {
+        age: 14,
+        name: 'xiaoming',
+    };
+    xiaoming.age = 22;    // const只会保证这个引用常量的地址不发生改变，修改里面的值不会改变地址。
+    console.log(xiaoming);   // 此处age变成了22
+    xiaoming = {};          // 报错
+
+    const ARR = [];
+    ARR.push(1);   // 可以改变数组中的元素。
+
+    // Question: 解决引用类型的常量可以被修改的问题
+    // Object.freeze()
+    const xiaoming = {
+        age: 14,
+        name: 'xiaoming',
+    };
+    Object.freeze(xiaoming);
+    xiaoming.age = 22;
+    console.log(xiaoming);   // 虽然不会报错，但是没有任何修改
+
+    // Question： ES6之前怎么声明常量
+    // Object.defineProperty();
+    var CST = {};
+    Object.defineProperty(CST, 'BASE_NAME',{
+        value: 'xiaoming',   // BASE_NAME = 'xiaoming'
+        writable: false,    // 该对象，不可被修改
+    });
+    // 上面这样只是不能修改里面的属性。但是可以加属性   例如： CST.a = 2;   就可以加进去
+    Object.seal(CST);  // 只有freeze一半的功能，不允许拓展，但是可以修改内部的值
+
+    // SE6之前声明常量  （实现freeze效果）
+    // 1.遍历属性和方法
+    // 2.修改遍历到的属性和描述
+    // 3.Object.seal()
+    Object.defineProperty(Object, 'freezePolyfill', {
+        // 相当于 Object.freezePolyfill = function(){}  这是自己定义一个函数
+        value: function (obj) {
+            var i;
+            for(i in obj){
+                // for(i in obj)  不光会遍历到obj下的属性，还会遍历到obj._proto_下的属性。  hasOwnProperty确保遍历到的只是obj下的属性
+                /*
+                var obj1 = {a:1 , b :2,};
+                var obj2 = Object.create(obj1);   // 把obj1作为原型创建obj2，此时obj1的属性就会作为obj2._proto_ 保存
+                obj2.c = 3;                       // obj2 = { c: 3, d : 4, _proto : {a : 1, b : 2,} }
+                obj2.d = 4;
+                for(let i in obj2){ document.body.innerHTML += (i + ': ' + obj2[i] + '<br>');    }    // 此处会遍历出所有a，b，c，d
+                */
+                if(obj.hasOwnProperty(i)){
+                    Object.defineProperty(obj, i, {
+                        writable: false,
+                    });
+                }
+            }
+            Object.seal(obj);
+        }
+    });
+    const xiaoming = {
+        age: 14,
+        name: 'xiaoming',
+    };
+    Object.freezePolyfill(xiaoming);   // 此时  这个引用类的常量内部的属性都不能修改了
+
+
+    // --------------------------解构赋值--------------------------
+    // 解构赋值：是JavaScript表达式，可以将值从数组或属性从对象中提取到不同的变量中
+    // 数组的解构赋值
+    const arr = [1,2,3,4];
+    let [a,b,c,d] = arr;          // 直接让a=1，b=2... 不用一个个的 a = arr[0],b = arr[1]...
+
+    const arr = ['a','b',['c','d',['e','f','g']]];
+    const [a,b] = arr;            // 可以获取到a,b，后面没有变量，就不会得到第三个变量，只会获取到a和b
+    const [ ,b] = arr;            // 只需要b的话，就把前面的空出来。  同样获取到b
+    const [ , , g] = arr;         // 此时g是一个数组，再对g进行解构赋值，继续获得数组，再解构一次
+    const [ , , [ , , [ , , g]]] = arr;  // 此时可以获取到g
+    // 扩展运算符  ...
+    const arr1 = [1,2,3];
+    const arr2 = ['a','b'];
+    const arr3 = ['zz',1];
+    const arr4 = [arr1,arr2,arr3];   // arr4 包含三个元素，每个元素都是数组
+    const arr5 = [...arr1, ...arr2, ...arr3];  // arr5 包含7个元素 【1,2,3，'a','b'，'zz',1】
+
+    const arr = [1,2,3,4,5,6];
+    const [a, b, ...c] = arr;      // c = [3, 4, 5, 6]
+    const [a, b, ...c, d] = arr;    // 报错   使用拓展运算符的变量必须是最后一个
+    // 默认值
+    const arr = [1, undefined, undefined];
+    const [a, b, c , d] = arr;          // 此时 a=1   b，c，d都是undefined   d是多出来的，未匹配到的都会赋值为undefined
+    const [a, b=2, c, d='aaa'] = arr;   // a=1,b=2,c=undefined,d='aaa'    给b和d默认值，变量是undefined的时候，就会采用默认值。   只有undefined， 取值为null的时候不会
+    // 交换变量
+    [a, b] = [b, a]       // 不需要中间变量，直接交换a和b
+    // 接受多个 函数返回值
+    function getUserInfo(id) {
+        // ...ajax  执行ajax
+
+        return [
+            true,
+            {
+                name: 'xiaoming',
+                gender: 'female',
+                id: idx,
+            },
+            '请求成功'
+        ];
+    };
+    const [status, data, msg] = getUserInfo(123);
+
+    // 对象的解构赋值
+    const {a,b} = {a:1, b:2};       // 等号两边都是对象结构
+    const obj = {
+        saber: '阿尔托莉雅',
+        archer: '卫宫'
+    };
+    // 左边变量的值必须跟结构对象里面的key对应，不然匹配不到，返回undefined  且可以不按顺序。   数组是有序的，对象是无序的
+    const {archer,saber} = obj;
+
+    const player = {
+    	nickname: '感情的戏∫我没演技∆',
+    	master: '东海龙王',
+    	skill: [{
+    		skillName: '龙吟',
+    		mp: '100',
+    		time: 6000
+    	},{
+    		skillName: '龙卷雨击',
+    		mp: '400',
+    		time: 3000
+    	},{
+    		skillName: '龙腾',
+    		mp: '900',
+    		time: 60000
+    	}]
+    };
+    const {nickname} = player;    // 直接通过key寻找value，不需要预留空格
+    // 保持左边跟右边形式一样。直接提取skill里的第一项，{skillName: '龙吟',mp: '100',time: 6000}    此时skill是没有被提取，没有值。
+    const {skill: [skill1] } = player;    // skill1 是对数组解构，得到的变量，这个变量名只要合法就可以
+    const {skill: [skill1,{skillName}] } = player;  // 再对skill1进行对象解构赋值，提取skillName
+    const {skill: [skill1,{skillName}, {skillName}] } = player;    // 想要提取 龙腾 这个名字。   采取这种办法会报错，skillName重复使用
+    const {skill: [skill1,{skillName}, {skillName: skillName3}] } = player;    // 可以在key后面 冒号再加一个自定变量名。  会自动把提取到的value放入变量中。
+
+    const obj = {
+    	saber: '阿尔托利亚',
+    	archer: '卫宫',
+    	lancer: '瑟坦达'
+    };
+    const {archer, ...oth} = obj;    // 配合扩展运算符    其他两个没有匹配的被作为一个对象放入oth变量中
+    const obj = {
+        saber: '阿尔托利亚',
+        ...{                        // 对象扩展，相当于obj里有三个值
+            archer: '卫宫',
+            lancer: '瑟坦达'
+        },
+    };
+    // 等价于
+    const obj1 = {
+        archer: '卫宫',
+        lancer: '瑟坦达'
+    };
+    const obj = {
+        saber: '阿尔托利亚',
+        ... obj1,
+    };
+    // 对已声明的变量进行对象解构赋值
+    let age ;
+    const obj = {
+        name: 'xiaoming',
+        age: 22,
+    };
+    {age} = obj;   // 这样会报错，编译器把前面的大括号当作了块级作用域
+    ({age} = obj);   // 外面加一个小括号就可以了
+    // 默认值
+    let girlfriend = {
+    	name: undefined,
+    	age: 22,
+    };
+    let { name = 'xiaohong', age = 24, hobby = ['学习'] } = girlfriend;   // 匹配不到或者undefined就会采用默认值。 结果  name = 'xiaohong',age = 22，hobby = ['学习']
+
+    const { name, hobby: [ hobby1 ], hobby } = {    // 如果只写了hobby: [ hobby1 ]，此时拿不到hobby这个变量。  所以在后面再加一个hobby就可以拿到hobby了
+    	name: '小红',
+    	hobby: ['学习']
+    };
+    // 使用对象传入乱序的函数参数
+    // 直接对传入的对象进行解构赋值，然后在传入函数    不需要关注传入对象的值的顺序
+    function Ajax({
+        url,
+        data,
+        type = 'get'    // 默认值为'get'
+                  }) {
+        // 传统的，如果想表达传入的 option有type就用传入的type，没有就采用'get'就需要采用以下方法判断
+        // var type = option.type || 'get';
+    }
+    Ajax({
+        data: {
+            a: 1,
+        },
+        url: '/getInfo',
+    })
+    // 获取多个函数返回值
+    function getUserInfo(uid) {
+    	// ...ajax
+    	return {
+    		status: true,
+    		data: {
+    			name: '小红'
+    		},
+    		msg: '请求成功'
+    	};
+    };
+    const { status, data, msg: message } = getUserInfo(123);
+
+    // 字符串的解构赋值
+    // 跟数组一样，只是把字符串拆成一个个字符，  注意：空格也算一个字符
+    const str = 'I am the bone of my sword'; // 我是剑骨头
+    const [ a, b ,c, ...oth ] = str;     // a='I' b=' ' c='a' oth = ['m',' ','t'....]      剩余没匹配的。作为一个数组返回
+    // 下面这三个 都是一样的内容，将整个字符串分割成一个个字符
+    const [ ...spStr1 ] = str;
+    const spStr2 = str.split('');
+    const spStr3 = [ ...str ];
+    // 提取字符串的属性和方法
+    const {length, split} = str;    // length = 25     split  = function(){}   获取到字符串的长度，已经他的分割方法
+    split.call('1,2,3',',');        // 使用call调用提取到的方法
+
+    // 数值与布尔值的解构赋值
+    const {valueOf} = 1;        // 提取数值的valueOf方法    实际实现把1转化成包装类，然后包装类对象有方法可以被提取
+    const {valueOf : vo} = 1;   // 将提取到的方法放到 vo这个变量中
+    const {toString: ts} = false;  // 提取布尔值的toString方法到变量ts中
+
+
+    // 函数参数的解构赋值
+    function swap([x, y]) {   // 交换数组中的元素
+    	return [y, x];
+    };
+
+    function Computer({
+          cpu,
+          memory,
+          software = ['ie6'],
+          OS = 'windows 3.5'
+    }) {
+        console.log(cpu);
+        console.log(memory);
+        console.log(software);
+        console.log(OS);
+    };
+
+    new Computer({
+        memory: '128G',
+        cpu: '80286',
+        OS: 'win',
+    });
+
+
+    // 模版字符串
+    // ` `    数字1 旁边"～"键打出的反单引号   表明是模版字符串
+    const xiaoming = {
+        name: 'xiaoming',
+        age: 14,
+        say1: function () {
+            // 常规 用 + 拼接
+            console.log('I am ' + this.name + ', I am ' + this.age + ' years old');
+        },
+        say2: function () {
+            // 用 ` ` 配合 + 效果一样
+            console.log(`I am ` + this.name + `, I am ` + this.age + ` years old`);
+            // 利用模版字符串  里面的变量用 ${} 包裹，直接放到模版字符串里面代替内容
+            console.log(`I am ${this.name}, I am ${this.age}years old`);
+            // 模版字符串里面嵌套模版字符串
+            console.log(`I am ${ `Mr.${this.name} `}, I am ${this.age}years old`);
+            // 正常的字符串方法也可以对其中的字符串使用
+            console.log(`I am ${ `Mr.${this.name.toUpperCase()} `}, I am ${this.age}years old`);
+        },
+    }
+    xiaoming.say2();
+
+
+    const getImoocCourseList = function() {
+        // ajax
+        return {
+            status: true,
+            msg: '获取成功',
+            data: [{
+                id: 1,
+                title: 'Vue 入门',
+                date: 'xxxx-01-09'
+            }, {
+                id: 2,
+                title: 'ES6 入门',
+                date: 'xxxx-01-10'
+            }, {
+                id: 3,
+                title: 'React入门',
+                date: 'xxxx-01-11'
+            }]
+        }
+    };
+
+    const {data: listData, status, msg} = getImoocCourseList();
+    function foo(val) {
+        return val.replace('xxxx','2020');
+    }
+    if(status){
+        let arr = [];
+        // forEach 回调函数拿到的是遍历的每个对象  对每个对象都进行解构
+        listData.forEach(function ({date,title}) {
+            /*arr.push(
+                '<li>\
+                    <span>'+ title +'</span>\
+                    <span>'+ date +'</span>\
+                </li>'
+            )*/
+
+            arr.push(
+                `<li>
+                    <span>${ `课程名称：${ title }`}</span>
+                    <span>${ foo(date) }</span>
+                </li>`
+            )
+        });
+
+        let ul = document.createElement('ul');
+        ul.innerHTML = arr.join('');
+        document.body.appendChild(ul);
+    }else{
+        alert(msg);
+    }
+
+    // padStart   padEnd
+    {
+        let str = 'i';
+        let str1 = str.padStart(6,'mooc');  // 'moocmi'     在前面 补全到六位  传入的字符串长度不够 会自动重复 裁剪
+        let str2 = str.padEnd(6,'mooc');    // 'imoocm'     在后面 补全六位
+    }
+    // repeat
+    {
+        console.log('i'.repeat(10));    // iiiiiiiiii
+        console.log('i'.repeat(2.33));  // iii       小数会被向上取整
+        console.log('i'.repeat(-0.88));  // ' '     不能传入小于-1的负数  大于-1的负数 会被取为0
+
+        // 自己写一个repeat方法
+        function repeat(str, num) {
+            return new Array(num + 1).join(str);
+        }
+        console.log('s',3);             // sss
+    }
+
+    // startsWith endsWith
+    {
+        const str = 'A promise is a promise';
+
+        console.log(str.startsWith('B'));     // false
+        console.log(str.startsWith('A pro')); // true
+
+        console.log(str.endsWith('promise')); // true
+        console.log(str.endsWith('A'));       // false
+    }
+
+    // includes
+    {
+        const str = 'A promise is a promise';
+
+        // 不存在 indexOf 会返回 -1
+        if (str.indexOf('promise') !== -1) {
+            console.log('存在1');
+        }
+        // 用 按位取反替代判断    ~x = -(x + 1)   相当于把数字 + 1 然后取负数
+        // 返回 -1 表示不存在，按位取反得到 0 相当于 false   其他数值都相当于true
+        if (~str.indexOf('promise')) {
+            console.log('存在1');
+        }
+
+        if (str.includes('a promise')) {
+            console.log('存在2');
+        }
+    }
+
+    // 遍历字符串
+    // for循环
+    let str = 'PROMISE';
+    for(var i = 0, len = str.length; i < len; i++){
+        console.log(str[i]);
+        console.log(str.charAt(i));
+    }
+    // 转成数组后遍历
+        // 两种分割方法 转成数组
+    var oStr1 = Array.prototype.slice.call(str);    // ["P", "R", "O", "M", "I", "S", "E"]
+    var oStr2 = str.split('');                      // ["P", "R", "O", "M", "I", "S", "E"]
+        // 拓展运算符  转成数组    ...object 相当于把对象的每个属性都给拆开 并列存放   此处字符串 也相当于把字符串拆开 并列存放
+    const oStr3 = [...str];                         // ["P", "R", "O", "M", "I", "S", "E"]
+        // 赋值给字符串 字符串解构赋值 得到数组
+    const [...oStr] = str;
+    console.log(oStr);                              // ["P", "R", "O", "M", "I", "S", "E"]
+    // forEach循环遍历数组   回调函数里面是遍历的每个元素
+    oStr.forEach(function (word) {
+        console.log(word);
+    });
+    // 有时候遍历是为了操作字符串
+    // 对全是英文的字符串中的大写字符加密 A -> 100  B -> 99。。。
+    const map = {A: '100', B: '99', C: '98', D: '97', E: '96', F: '95', G: '94', H: '93', I: '92', J: '91', K: '90', L: '89', M: '88', N: '87', O: '86', P: '85', Q: '84', R: '83', S: '82', T: '81', U: '80', V: '79',W: '78',X: '77',Y: '76', Z: '75'};
+    const words = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    oStr.forEach(function(word, index) {
+        // 判断是不是大写
+        if (words.includes(word))
+            oStr[index] = map[word];
+    });
+    // 将包含数字的数组 拼成字符串
+    console.log(oStr.join(''));
+
+    // for-of 遍历
+    for(let word of str){
+        console.log(word);
+    }
+    // for-of 循环可以直接操作字符串
+    let newStr = '';
+    for(let word of str){
+        if(word.includes(word))
+            newStr += map[word];
+    }
+    console.log(newStr);
+
+    // unicode表示法  码点
+    // 正常js只能识别 0000-ffff之间的unicode    ES6中可以通过大括号扩起来 让浏览器去解析超出范围的unicode
+    // \u1f436    -->   '\u{1f436}' "🐶"   记住要带引号
+
+    // codePointAt 获取字符串中对应字符的一个码点
+    "🐶".codePointAt(0);                // 128054
+    "🐶".codePointAt(0).toString(16);   // "1f436"  转化成16进制
+
+    // 正则表达式
+    const regexp1 = /^a/g;
+    const regexp2 = new RegExp('^a', 'g');
+    const regexp3 = new RegExp(/^a/g);
+    // 上面三个正则表达式 是一模一样的
+    const regexp4 = new RegExp(/a/g);    // 不需要a顶头
+    const regexp5 = new RegExp(/a/);     // 不需要a顶头 且不需要全局匹配
+
+    console.log('aabbcc'.match(regexp1));   // a
+    console.log('babbcc'.match(regexp1));   // null
+    console.log('aabbccaabbaa'.match(regexp4));   // 匹配到6个 "a"
+    console.log('aabbccaabbaa'.match(regexp5));   // 只会匹配第一个 "a"
+
+    // 构造函数的变化
+    // ES6 中   构造函数前面正则表达式写了修饰符，后面还加入一个修饰符的参数，不会报错，前面的会被后面覆盖    ES6之前，这样做会报错。
+    const regexp5 = new RegExp(/a/giuy, 'ig');
+
+    // uy修饰符
+    // u.  unicode
+    console.log(/^\ud83d/.test('\ud83d\udc36'));      // true   能在'\ud83d\udc36' 中匹配到 /^\ud83d/   因为匹配的时候是把这两个unicode当作字符串去处理
+    // 但是实际上"\ud83d" = "�"    而"\ud83d\udc36" = "🐶"
+    console.log(/^\ud83d/u.test('\ud83d\udc36'));     // false  将两个unicode作为unicode去处理  匹配不到
+
+    // y 粘连修饰符   sticky
+    const r1 = /imooc/g;   // 不用管粘不粘连 都可以匹配
+    const r2 = /imooc/y;   // 相当于全局 但是 匹配到第一个之后 紧接的下面的也必须匹配
+    const str = 'imoocimooc-imooc';
+    // exec不会全局匹配，不管有没有g。   都只匹配第一个，但是执行一次会把 lastIndex放到上一次匹配的末尾。 因此可以反复调用，遍历
+    console.log(r1.exec(str));   // imooc   index = 0
+    console.log(r1.exec(str));   // imooc   index = 5
+    console.log(r1.exec(str));   // imooc   index = 11
+    console.log(r1.exec(str));   // null
+
+    console.log('-----------------');
+
+    console.log(r2.exec(str));   // imooc   index = 0
+    console.log(r2.exec(str));   // imooc   index = 5
+    console.log(r2.exec(str));   // null      第三个 imooc和第二个之间有个 -   没有粘连 所以不能匹配到第三个
+
+
+    // 数值 扩展
+    // 新的进制
+    // 0o 或者 0O    octonary
+    // 0b 或者 0B    binary
+    console.log(0o16);    // 14
+    console.log(0b1111);  // 15
+    // 新的方法与安全数
+    // Number.parseInt Number.parseFloat
+    // ES6之前 挂在window上   不过以下两种写法还是可以用
+    console.log(window.parseInt('1.23'));    // 1    可以传入字符串 转为整数 也可以穿入 小数转为整数
+    console.log(parseFloat('1.23'));         // 1.23
+    // ES6之后 挂载在 Number上
+    console.log(Number.parseInt(1.23));   // 1
+    console.log(Number.parseFloat(1.23)); // 1.23
+
+    // Number.isNaN Number.isFinite
+    // isNaN
+    console.log(Number.isNaN(NaN));    // true
+    console.log(Number.isNaN(-NaN));   // true
+    console.log(Number.isNaN(1));      // false
+    console.log(Number.isNaN('1'));    // false
+    console.log(Number.isNaN(true));   // false
+    // 自己写一个 isNaN    NaN 有个特性   NaN == NaN  返回false
+    function isNaN(value) {
+    	return value !== value;
+    }
+    // isFinite   判断是否有限   字符串 无限 结果为无限的计算式  NaN  boolean  都是无限的，返回false
+    console.log(Number.isFinite(Infinity));  // false
+    console.log(Number.isFinite(2 / 0));     // false
+    console.log(Number.isFinite(2 / 4));     // true
+    console.log(Number.isFinite(1234));      // true
+    console.log(Number.isFinite('1234'));    // false
+    console.log(Number.isFinite(true));      // false
+    console.log(Number.isFinite(NaN));       // false
+
+    // Number.MAX_SAFE_INTEGER Number.MIN_SAFE_INTEGER
+    // 判断一个数是否是安全整数  即是否超过了整数范围  整数范围是  - (2^53 - 1)  到  2^53 - 1
+    Number.isSafeInteger();
+    console.log(Number.MAX_SAFE_INTEGER);   // 2^53 - 1
+    console.log(Number.MIN_SAFE_INTEGER);   // - (2^53 - 1)
+    console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER - 1));  // true
+    console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1));  // false  比最大安全数还大 1
+    // 幂运算
+    let a = 2 ** 10;         // 1024
+    let a = 2 ** 10 ** 0;    // 2      从右往左计算
+    let a = (2 ** 10) ** 0;  // 1
+
+
+    // 函数的扩展
+    // 函数参数默认值
+    function add(a, b = 999, c = 1 + a) {       // 后一个参数默认值可以是前面参数的表达式
+        // 没有默认值 需要  b = b || 999;
+        console.log(a,b,c);
+    }
+    add(2);     // 2 999 3     如果只传入一个参数，其他参数就采用默认值
+    add(2,3);   // 2 3 3      传入两个，默认是前两个
+    add(2,undefined,10)    // add2 999 10   如果是中间一个参数不需要，需要用undefined占位，不能用空格占位
+    // 配合解构
+    // function People({name, age = 38}) {}    //   如果是这样 不穿参数  会报错  name没有定义
+    function People({name, age = 38} = {}) {   // {name, age = 38} 这整个对象 是函数的一个参数，  {}  是这个参数的默认值。    age = 38 是这个参数对象默认属性
+        console.log(name,age);
+    }
+    People();    // undefined 38       对象默认设置为{}  即参数对象默认的所有参数都是 undefined  如果有参数，就使用传入的参数
+    function People({name, age = 38} = { name : 1}) {   // 解构赋值，让参数对象 的name属性 默认为 1
+        console.log(name,age);
+    }
+    People();   // 1 38
+    People(3);  // 3  38
+
+    // 剩余参数 ...
+    function sum() {
+        console.log(arguments);   // arguments 是所有函数都有的一个类数组对象
+        console.log(arguments instanceof Array);   // false    它不是一个数组
+        let args = Array.prototype.slice.call(arguments);   // 把 类数组对象转化成数组   args 包含 arguments所有的属性内容  含有数组的方法
+        // let [...args] = arguments;    // 解构赋值， 数组里面有一个变量 args , ...args 表明用args装所有的内容，   [b, ...a] = [1,2,3,4]   b = 1, a = [2,3,4]
+        // let args = [...arguments];    // ...arguments 相当于 把arguments的所有内容 暴露出来 放到一个数组。      [...a, ...b]  把 a b合成到一个数组
+        // 这三个都可以把 类数组转化为数组
+    }
+    // 还可以直接在函数传参的时候处理   此处  是剩余操作符   扩展运算符 是做展开   剩余操作符 是做聚合
+    function sum(...args) {
+    }
+
+    function op(type, ...nums) {    // 包含 剩余操作符的变量必须在最后
+        console.log(type);
+        console.log(nums);
+        let sum = 0;
+        if(type === 'sum'){
+            for(let i of nums){
+                sum += i;
+            }
+        }
+        return sum;
+    }
+    op('sum',1,2,3,4,5);
+    // 另一种方法实现 加法
+    function sum(...nums) {
+        // reduce是一个累加器    第一个参数，传入回调函数，回调函数至少两个参数，第一个是 累加初始值，第二个是当前值。    reduce的第二个参数可选，是初始值（a）的起始值
+        return nums.reduce(function (a,b) {
+            return a + b;      // 0 + 1 = 1    1 + 2 = 3   3 + 3 = 6    6 + 4 = 10
+        },0);
+    };
+    console.log(sum(1,2,3,4));
+
+    // 箭头函数
+    const add1 = (a,b) => a + b;
+    const add2 = function (a,b) {
+        return a + b;
+    }
+    // 上述 add1 和 add2 等价。
+    const add1 = (a,b) => {      // 有多行执行语句，就把函数体包起来
+        a += 1;
+        return a + b;
+    }
+    const add2 = function (a,b) {
+        a += 1;
+        return a + b;
+    }
+    // 上述 两个一样
+
+    // 执行函数 有返回值  但我们自己的最终函数不希望有返回值。
+    const pop = arr => arr.pop();     // 数组最后一个元素出队  并返回这个元素  此时 pop 即为最后一个元素
+    const pop = arr => {              // 只有一个参数 不需要括号
+        arr.pop();                    // 分行写，就不会有返回值了，此时  pop 为 undefined
+    }
+    const pop = arr => void arr.pop();   // 加一个 void 也不会有返回值  此时  pop 为 undefined
+    // 与普通函数的区别  没有 arguments
+    const log = () => {
+        console.log(arguments);     // 报错   箭头函数没有 arguments
+    }
+    const log = (...args) => {      // 需要用 剩余参数 接受 传入的参数
+        console.log(args);
+    }
+    // 与普通函数的区别  this指向
+    const xiaoming = {
+        name: 'xiaoming',
+        say1: function () {
+            console.log(this);    // 输出 xiaoming 这个对象
+        },
+        say2: () => {
+            console.log(this);     // 输出 window   箭头函数没有自己的this， 他是和当前对象并列，他的this指向他所属对象的this， xiaoming这个对象属于window下。
+        },
+    }
+
+    const xiaoming = {
+        name: 'xiaoming',
+        age: null,
+        getAge1: function(){
+          // ...  Ajax
+            setTimeout(function(){
+                console.log(this);   // window       在setTimeOut这个闭包中 拿不到外面 对象下的this 属性
+            },1000);
+        },
+        getAge2: function(){
+            let _this = this;
+            // ...  Ajax
+            setTimeout(function(){
+                console.log(_this);   // xiaoming     可以在外面保存this，然后拿到里面的闭包中使用
+                _this.age = 14;
+            },1000);
+        },
+        getAge3: function(){
+            // ...  Ajax
+            setTimeout(() => {
+                console.log(this);   // xiaoming     对于箭头函数，他没有自己的this，他的this就是所处环境的this，此处的环境是xiaoming这个对象下，所以，此处箭头函数可以用this拿到这个对象
+                this.age = 14;
+            },1000);
+        },
+    };
+
+
+    // 对象的扩展
+    // 传统表示方法
+    const getUserInfo = (id = 1) => {
+        // Ajax 。。。
+        const name = 'xiaoming';
+        const age = 10;
+        return {
+            name: name,
+            age: age,
+            say: function () {
+                console.log(this.age + this.name);
+            }
+        };
+    };
+    const xiaoming = getUserInfo();
+    // ES6中的简洁表示法
+    const getUserInfo = (id = 1) => {
+        // Ajax 。。。
+        const name = 'xiaoming';
+        const age = 10;
+        return {
+            name,           // 对象的属性 直接放属性名就可以自动匹配
+            age,
+            say() {         // 对象的方法  直接 方法名 + （） + { 函数体 }
+                console.log(this.age + this.name);
+            }
+        };
+    };
+    const xiaoming = getUserInfo();
+
+    // 属性名表达式
+    const obj = {
+        a: 1,                   // obj.a     obj['a']
+        $abc: 2,
+        // FDGJ$%#@%&**&^: 3,    // 这个属性名是不符合规范的属性名，会报错。   且无法通过 点 的方式获取。
+        'FDGJ$%#@%&**&^': 3,     // 非法的属性名，可以用引号扩起来  但是调用的时候 也要用[] 来调用    obj['FDGJ$%#@%&**&^']
+    };
+    // ES6 中 属性名可以是简单的表达式
+    const key = 'age';
+    const xiaoming = {
+        name: 'xiaoming',
+        [key]: 14,                   // 中括号中放一个表达式
+        ['a' + 'ge' + 123]: 14,   // 中括号中放一个表达式
+        age: 14,
+        [`${key}123`]: 14,        // 也可以放模版字符串
+    }
+    // 对象 与扩展运算符
+    const obj1 = {
+        a: 1,
+        b: 2,
+        d: {
+            aa: 1,
+            bb: 2,
+        }
+    };
+    const obj2 = {
+        c: 3,
+        a: 9
+    };
+    const copyObj1 = { ...obj1 };    // 复制了 obj1    但是注意，这个复制是浅拷贝
+    console.log(copyObj1.d.aa);
+    copyObj1.d.aa = 999;             // 999  对复制的对象 改变属性值
+    console.log(copyObj1.d.aa);      //
+    console.log(obj1.d.aa);          // 999  发现原对象的属性 也发生了改变
+
+    // 合并对象
+    const newObj = {
+        ...obj1,
+        ...obj2,
+    }
+    console.log(newObj);
+    /*
+    newObj = {
+        a: 9,        // 相同的属性  会取最后出现的那个对象
+        b: 2,        // 其他属性按顺序合并
+        d: {
+            aa: 1,
+            bb: 2,
+        }
+        c: 3,
+    }
+    */
+    newObj.d.aa = 22;
+    console.log(obj1);    // 发现obj1 的属性被改变了
+    // 所以 注意：   扩展运算符 对 对象的合并 拷贝都是浅拷贝，会改变原对象
+
+    // 对象的新方法
+    Object.is()  // 相当于  ===   但是  === 更为严格
+    // 区别
+    console.log(Object.is(+0,-0));     // false
+    console.log(+0 === -0);            // true
+    console.log(Object.is(NaN,NaN));   // true
+    console.log(NaN === NaN);          // false
+    Object.assign();
+    const obj = Object.assign({a: 1},{b: 2}, {c: 3}, {d: 4, e: 5});
+    console.log(obj);   //    {a: 1, b: 2, c: 3, d: 4, e: 5}      把函数里面穿入的里面所有参数合并   相当于  {...obj1, ...obj2,}   同样 都是浅拷贝
+
+    const obj = {"a" : 1, "b": 2, "c": 3};
+    Object.keys(obj);       // 所有的key  放在一个 列表里 []          ["a","b","c"]
+    Object.values(obj);     // 所有的value  放在一个 列表里 []        [1,2,3]
+    Object.entries(obj);    // 所有的键值对  放在一个 列表里 []        [["a": 1], ["b":2], ["c": 3]]
+
+    for(let e of Object.entries(obj)){     // 不需要像  for in   判断 hasOwnProperty
+        console.log(e);        //  ["a": 1]      ["b":2]        ["c": 3]
+    }
+    for(let [k, v] of Object.entries(obj)){
+        console.log(k, v);    //  a 1   b 2   c 3
+    }
+    // Object.setPrototypeOf     修改对象的原型
+    const obj1 = {
+        a: 1,
+    };
+    const obj2 = {
+        b: 2,
+    };
+    const obj = Object.create(obj1);   // 第一个参数是需要修改原型的对象  第二个是新的原型
+    console.log(obj.__proto__);        // {a: 1}
+    Object.setPrototypeOf(obj, obj2);
+    console.log(obj.__proto__);        // {b: 2}
+    // Object.getPrototypeOf()  获取原型  跟 ._proto_ 结果一样     查看 修改原型 最好使用setPrototypeOf 和 getPrototypeOf
+    console.log(obj.__proto__ === Object.getPrototypeOf(obj));    // true
+    // super         指代原型对象     函数必须采用 ES6简写的方式 才可以
+    const obj3 = {name: 'xiaoming'};
+    const cObj = {
+        say() {                                      // say: function{  }    和   say: () => {  }   都不可以使用super
+            console.log(`My name is ${super.name}`);
+        }
+    }
+    Object.setPrototypeOf(cObj, obj3);
+    cObj.say();               // My name is xiaoming
+
+    // 数组扩展  扩展运算符
+    function foo(a,b,c) {
+        console.log(a,b,c);
+    }
+    foo(...[a,b,c]);     // 扩展运算符 把数组里的元素释放
+
+    const user = ['小明', 14, ['吃饭', '打游戏'], '我没有女朋友'];
+    function say(name, age, hobby, desc) {
+    	console.log(`我叫${ name }, 我今年${ age } 岁, 我喜欢${ hobby.join('和') }, ${ desc }`);
+    }
+    say(user[0], user[1], user[2], user[3]);     // 原始方法，一个个传参数
+    say(...user);                                // 使用扩展运算符，直接释放数组里的内容
+    //  任何函数都有call和apply， call后面一个个传参数，apply第二个参数是数组用于传参数  不改变指向，第一个参数就写null
+    say.apply(null, user);        // 效果一样   call apply改变函数 this的指向，也可以用于传参数
+    // 再举个例子
+    const arr = [1, 2, 233, 3, 4, 5];
+    console.log(Math.max(...arr));             // 233
+    console.log(Math.max.apply(null, arr));    // 233
+
+    const arr1 = [1, 2, 3, 4];
+    const arr2 = [4, 2, 2, 1];
+    const arr3 = [2.2, '123', false];
+
+    const cArr1 = [1, 2, 3, ...arr3];    // [1, 2, 3, 2.2, "123", false]   数组与已有元素合并  扩展运算符释放数组内的元素
+    // 数组赋值  两种方法 复制数组
+    const cArr2 = [...arr1];             // [1, 2, 3, 4]
+    const [...cArr3] = arr3;             // [2.2, "123", false]
+    // 数组合并  扩展运算符释放数组内的元素
+    const cArr4 = [...arr1, ...arr2, ...arr3];   // [1, 2, 3, 4, 4, 2, 2, 1, 2.2, "123", false]
+
+    // 函数生成器 function* g(){}  或者 function *g() {} 都可以
+    // 每次对函数调用 next() 都会执行到下一个next暂停，并返回yield后面的内容，外加一个done属性，函数没有return之前done为false，return之后，done就是true，返回值为undefined
+    function *g() {
+        console.log("第一次yield");
+        yield 'hello~';
+        console.log("第二次yield");
+        yield 'world~';
+        console.log("yield完了，要return了");
+        return 'Bye~';
+    };
+    let fun = g();
+    console.log(fun.next());   // 第一次yield  done: false  value: "hello~"
+    console.log(fun.next());   // 第二次yield  done: false   value: "world~"
+    console.log(fun.next());   // yield完了，要return了  done: true  value: "Bye~"
+    console.log(fun.next());   // done: true  value: undefined
+
+    const arr = [...g()];     // ["hello~", "world~"]
+
+    let set = new Set([1, 2, 2, 3]);    // Set里面的元素不能重复
+    console.log([...set]);             // [1,2,3]   对Set运用扩展运算符 变成数组。      达到去重的目的
+
+
+    // Array.from()   把类数组对象 ArrayLike 或者Iterable对象转化成一个Array
+    const obj = {   // 这种类数组的属性名key 必须为数值型，或者字符串型的数字
+        0: 1,
+        1: '22',
+        2: false,
+        length: 2    // 规定转化数组的长度   [1,'22']  长度尽为2
+    };
+    console.log(Array.from(obj));   //  [1,'22']  长度尽为2
+    console.log(Array.from(obj, item => item * 2));  // [2, 44]  还可以传入一个回调函数 对每个元素进行操作  字符串型的数值会被运算符自动转化成数值
+
+    // ES6之前 三种方法 将类数组对象转化成数组的方法
+    Array.prototype.slice.call(obj);    // [1, "22"]
+    [].slice.call(obj);                 // [1, "22"]
+    // [...]     // 不适用于这个 obj    可以参照上面 arguments 的处理
+
+    // Array.of    把传入的参数合成数组
+    console.log(Array.of(1, 2, '123', false));    // [1, 2, "123", false]
+
+    // Array#fill   填充数组
+    let arr = new Array(10);                 // [empty x 10]
+    let arr = new Array(10).fill(0);         // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    console.log([1, 2, 3].fill(0));          // [0,0,0]   数组里已经有元素 会覆盖填充
+    let arr = new Array(10).fill(0, 0, 3);   // [0, 0, 0, empty × 7]      fill(a, b, c)   传入三个参数  是从第b个到第c个（不包括c），用a填充   下标从0开始计数
+
+    // Array.includes     是否包含元素
+    var arr = [1, 2, 3, 4];
+    console.log(arr.includes(1));    // true
+    console.log(arr.includes(55));   // false
+
+    // keys
+    const arr = [1, 2, 3, 444];
+    console.log(arr.keys());         // Array Iterator {}    输出的是一个迭代器借口 并不会展示出来key()内容
+    for (let i of arr.keys()) {      // for-of遍历迭代器
+    	console.log(i);              // 0 1 2 3  循环输出数组的下标
+    }
+
+    // values
+    for (let v of arr.values()) {
+    	console.log(v);             // 1 2 3 44   循环输出数组的值
+    }
+
+    // entries
+    for (let [i, v] of arr.entries()) {    // entries() 里面是   [0,1] [1,2]  [2,3]  [3,44]   用解构赋值 获取里面的值
+    	console.log(i, v);           // 0 1     1 2    2 3     3 444
+    }
+
+    // find 根据条件(回调) 按顺序遍历数组 当回调返回true时 就返回当前遍历到的值    只会返回第一个符合条件的值
+    const res = [1, 7 ,6 ,3 ,8].find(function (value, index, arr) {     // 回调函数默认拿到三个参数
+        console.log('value',value);
+        console.log('index',index);
+        console.log('arr',arr);
+        return value %2 === 0;       // 返回第一个value
+    });
+    console.log(res);   // 6
+    // 写成箭头函数
+    const res = [1, 7, 6, 3, 8].find((value, index, arr) => value % 2 === 0);
+    console.log(res);
+    // findIndex 根据条件(回调) 按顺序遍历数组 当回调返回true时 就返回当前遍历到的下标     同find一样，只是返回的是下标   效果同indexOf  但是indexOf没法判断NaN
+    const res = [1, 7, 6, 3, NaN].findIndex((value, index, arr) => Number.isNaN(value));      //   可以自己写一个判断函数，来获取NaN
+    console.log(res);
+
+
+
+    // ----------------------------------Promise----------------------------------
+    // 传统异步方法  回调函数
+    function f(cb) {
+        setTimeout(function () {
+            cb && cb();    // cb是回调函数 存在就调用
+        },1000);
+    }
+    f(function () {
+        console.log(1);
+        f(function () {
+            console.log(2);
+        });
+    });
+
+    // promise
+    function f() {
+        return new Promise(resolve => {
+            setTimeout(function () {
+                resolve();
+            },1000);
+        })
+    }
+    f()
+        .then(function () {
+            console.log(1);
+            return f();
+        })
+        .then(function () {
+            console.log(2);
+            return f();
+        })
+
+
+</script>
+
+</body>
+</html>

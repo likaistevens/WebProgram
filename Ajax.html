@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        .banner{
+            width: 600px;
+            height: 338px;
+            overflow: hidden;
+            position: relative;
+            margin: 50px auto;
+        }
+
+        .banner a{
+            display: block;
+            float: left;
+            width: 600px;
+            height: 338px;
+        }
+
+        .banner a img{
+            display: block;
+            width: 600px;
+            height: 338px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="banner" id="banner"></div>
+
+<script type="text/javascript">
+    // 封装通用的XHR对象，兼容各个版本浏览器
+    function createXHR(){
+        // 判断浏览器是否能将XHLHttpRequest作为本地对象实现，针对IE7，firefox，opera等
+        if(typeof XMLHttpRequest != "undefined"){
+            return new XMLHttpRequest();
+        }else if(typeof ActiveXObject != "undefined"){
+            // 将所有可能出现的ActiveXObject版本放在一个数组中
+            var xhrArr = ['Microsoft.XMLHTTP','MSXML2.XMLHTTP.6.0','MSXML2.XMLHTTP.4.0',
+                'MSXML2.XMLHTTP.4.0','MSXML2.XMLHTTP.3.0','MSXML2.XMLHTTP.2.0']
+            // 遍历创建XMLHttpRequest对象
+            var len = xhrArr.length;
+            for(var i = 0; i < len; i++){
+                try{
+                    // 创建XMLHttpRequest对象
+                    xhr = new ActiveXObject(xhr[i]);
+                    break;
+                }catch (e) {
+
+                }
+            }
+            return xhr;
+        }else{
+            throw new Error('No XHR object available.');
+        }
+    }
+    // 一、创建XMLHttpRequest对象
+    var xhr = createXHR(),
+        data = null;
+    // console.log(xhr);
+
+    // 三、设置响应HTTP请求变化的函数   创建响应HTTP请求变化的函数  onreadystatechange在readystatechange属性发生改变时触发
+    xhr.onreadystatechange = function (){
+        // 异步调用成功
+        // 0：未调用send方法  1:已经调用send方法，正在发送请求  2：send方法已经执行完成  3：正在解析响应的内容  4：异步调用成功，响应内容解析完成
+        if(xhr.readyState === 4){   // 初步判断异步调用成功
+            if(xhr.status >= 200 && xhr.status < 300 || xhr.status === 304){
+                // 进行操作，获得服务器返回的数据
+                // responseText   从服务器进程返回数据的字符串形式    eval("("+ xhr.responseText +")") 转化为JSON的Object
+                // console.log( eval("("+ xhr.responseText +")") );
+                // console.log( JSON.parse(xhr.responseText).slider);    // eval和parse都可以实现转化JSON代码为对象，但是eval可能不安全
+                data = JSON.parse(xhr.responseText)
+                // 渲染数据到页面中
+                renderDataToDom();
+            }
+        }
+    }
+    // 二、创建新的HTTP请求，并指定该请求的方法、URL
+    xhr.open("get","./server/slider.json",true);
+    // 四、发送HTTP请求
+    xhr.send(null);
+    // 本案例不需要传参，所以用不到
+    // xhr.send({user:'zhangsan',id:6});
+    // xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+    // 渲染数据
+    function renderDataToDom(){
+        var img = data.slider,
+            len = img.length,
+            banner = document.getElementById('banner'),
+            str = "" ;
+        // 最终的目的
+        // banner.innerHTML = '<a href="#"><img src="../Ajax/images/2.jpeg"></a>';
+        for(var i = 0; i < len ; i++){
+            // 方法一：
+            // var a = document.createElement("a");
+            // a.href =
+            // a.innerHTML = '<img src=>'
+            // banner.appendChild(a);
+            // 方法二：
+            str += '<a href="' + img[i].linkUrl + '"><img src="' + img[i].picUrl + '"></a>';
+            banner.innerHTML = str;
+            console.log(str);
+        }
+    }
+</script>
+
+<script>
+    // Ajax   Asynchronous JavaScript and XML  异步JS和XML。   无需重新加载整个网页，更新部分网页的技术
+    // js本身是单线程。   Ajax可以将部分任务转移给服务器
+    // XMLHttpRequest对象。   可以向服务器提出请求并处理响应而不阻塞用户，可以在页面加载以后进行局部更新
+    // 使用Ajax步骤：一、创建XMLHttpRequest对象   二、创建新的HTTP请求，并指定该请求的方法、URL  三、设置响应HTTP请求变化的函数
+    //              四、发送HTTP请求              五、获取异步调用返回的数据                   六、使用JavaScript和DOM实现局部刷新
+    //  一、创建XMLHttpRequest对象
+    //  二、创建新的HTTP请求，并指定该请求的方法、URL
+    //      XMLHttpRequest.open()     method:请求类型，get或post    url:文件在服务器上的位置    async:true异步 false同步
+    //          （open只是建立初始化请求，不会发送真正的请求）   url是必须的参数，其他两个不是必须
+    //      与post相比，get更简单更快，大部分情况适用。   必须使用post的情况：一、无法使用缓存文件（更新服务器上的文件或数据库）  二、向服务器发送大量数据（post没有数据量限制  三、发送包含未知字符的用户输入时，post更稳定可靠）
+    //      同步：提交请求 --> 等待服务器处理 --> 处理完毕返回       整个期间客户端浏览器不能干任何事情    客户机需要等待服务器响应，才能做其他事情
+    //      异步：请求通过事件触发 --> 服务器处理（浏览器可以做其他事）-->  处理完毕                     客户机不等待服务器响应
+    //
+    //  三、设置响应HTTP请求变化的函数
+    //      xhr.onreadystatechange = function (){}
+    //  四、发送HTTP请求
+    //      send(string)  将请求发送到服务器，string仅用于post请求。   注意：仅在post请求时才可以传入参数，不需要则发送null，在调用send之后请求被发送到服务器
+    //          关于send传参的补充：向服务器发送请求的时候，是可以传入参数的。 例如：登录的时候传入用户名和密码
+    //          对于get，可以  xhr.open("get","./server/slider.json?user=zhangsan&password=123",true);    在json后面接参数
+    //          对于post，不能这样，只能在send()传入参数   xhr.open("get","./server/slider.json",true);   xhr.send({user:"zhangsan",password:123});
+    //      xmlhttp.setRequestHeader(header,value)    添加HTTP头
+    //          如果需要像HTML表单那样post数据，需要使用setRequestHeader来添加HTTP头。 然后在send方法中规定要发送的数据
+    //          xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+    //  五、获取异步调用返回的数据
+    //      收到响应后响应数据会被填充到XHR对象的属性，有四个相关属性会被填充：
+    //         responseText   从服务器进程返回数据的字符串形式
+    //         responseXML    从服务器进程返回的DOM兼容的文档数据对象
+    //         status        从服务器返回的数字代码，如：404未找到 200已就绪
+    //         status Text   伴随状态码的字符串信息
+    //  六、使用JavaScript和DOM实现局部刷新
+
+
+
+    // JSON   JavaScript Object Notation  javascropt对象表示法，一种数据交换的文本格式，用于读取结构化数据。 取代XML格式
+    // JSON语法三种类型值：
+    //      1、简单值   字符串、数值、布尔值、null。   字符串必须用双引号。不能用单引号。   数值必须是十进制。不支持NaN、Infinity、undefined
+    //      2、对象     一组有序的键制对，JSON中对象的键名必须放在双引号里。因为JSON不是JavaScript语句，所以没有末尾的分号
+    //      3、数组    复杂的数据类型，表示一组有序的值的列表，可以通过数值索引来访问其中的值。   数组或对象最后一个成员后面不能加逗号
+    // JSON可以吧JSON数据结构解析为JavaScript对象。
+    // JSON
+    // JSON.parse() 把JavaScript对象序列化为JSON字符串     JSON.stringify()  用于将JSON字符串转化为对象（跟parse相反）
+    // JavaScript.eval()  把JSON字符串转化为JSON对象，但是eval()可以执行不符合JSON格式的代码。可能包含恶意代码，慎用
+
+    // jQuery的Ajax方法
+    // $.ajax()
+    // $.get()
+    // $.post()
+    // $.getJson()
+
+    // 同源策略
+    // 同源：域名、协议、端口 相同
+    // 跨域：从一个域名的网页去请求另一个域名的资源。   严格：只要 协议、域名、端口有一个不同，就是跨域
+    // 跨域方法：一、跨域资源共享（CORS）  二、使用JSONP（常用）   三、修改document.domain   四、使用window.name
+    // JSONP：JSON with padding填充式JSON    一种跨域解决方案   JSONP = 回调函数 + 数据     回调函数：得到响应时页面调用的函数  数据：传入回调函数中的JSON数据
+    //      原理：XMLHttpRequest请求不同域上的数据，不可以，但是可以引用不同域上的js脚本文件。  通过script标签引入js文件 ---> js文件载入 ---> 执行url参数中的函数
+
+
+</script>
+<script>
+    // jQuery的Ajax
+    // 省去了创建XMLHttpRequest对象，直接传入请求参数
+    $.ajax({
+        url:"./server/slider.json",    // 请求地址
+        type:"post",                   // 请求方式 默认get
+        async:true,                    // 同步异步
+        dataType:"json",               // 服务器端返回的数据格式
+        success:function (imgData) {          // 判断请求成功 的回调函数   回调函数内的参数 相当于  xhr.responseText
+            jQrenderDataToDom(imgData.slider);             // 不需要用parse来转换格式，因为上面指定了返回数据类型为json
+        }
+    })
+    // 渲染数据
+    function jQrenderDataToDom(data){
+        var str = "";
+        $.each(data,function (index,obj) {  // 遍历data的每一个属性，index是key，obj是value
+            // console.log(obj);
+            str += '<a href="' + obj.linkUrl + '"><img src="' + obj.picUrl + '"></a>';
+        })
+        $(".banner").html(str);
+    }
+</script>
+
+<script>
+    // 封装JSONP
+    function getJSONP(url,callback) {
+        if(!url){
+            return;
+        }
+        // 跨域url地址形如：http://www.baidu.com?id=6
+        // 普通JSON数据格式：  [{user:1},{id:4}]
+        // JSONP数据格式：  abc([{user:1},{id:4}])      JSONP = 回调函数 + 数据   JSON外部填充回调函数
+        // 对于js，要调用一个abc（）函数，对于服务器端，传给我们里面的JSON数据
+        // 所以，我们需要提供给服务器端 abd（）这个函数名，然后服务器端返回 abc([{user:1},{id:4}])， 再被js调用
+        // 函数名是通过url传递。  如： http://www.baidu.com?id=6&callback=abc
+
+        // 声明数组来随机生成函数名
+        var a = ['a','b','c','d','e','f','g','h','i','j'],
+            r1 = Math.floor(Math.random()*a.length),
+            r2 = Math.floor(Math.random()*a.length),
+            r3 = Math.floor(Math.random()*a.length),
+            name = 'getJSONP' + a[r1] + a[r2] + a[r3];   // 这里的getJSONP是前缀，随便取什么都可以  返回结果举例：  getJSONPghf
+            cbname = 'getJSONP.' + name;                 //  这里的getJSONP.  是作为getJSONP函数的一个参数，需要再次传入。 让服务器返回 形如 getJSONP.ABC() 这样的
+        // console.log(cbname);    // getJSONP.getJSONPfdi
+        if(url.indexOf('?') === -1){
+            url += '?json=' + cbname;
+        }else{
+            url += '&json=' + cbname;
+        }
+        // console.log(url);       // http://www.baidu.com?json=getJSONP.getJSONPgfb
+        // 相当于返回 接口 getJSONP.getJSONPgfb(JSON)    里面的JSON参数是服务器端返回的
+
+        // 动态创建script标签
+        var script = document.createElement('script');
+        // 定义被脚本执行的回调函数
+        getJSONP[name] = function(data){
+            try{
+                callback && callback(data);
+            }catch(e){
+                //
+            }finally {
+                // 最后删除该函数
+                delete getJSONP[name];
+                script.parentNode.removeChild(script);
+            }
+        }
+        // 定义script的src
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    }
+    getJSONP("http://www.baidu.com?pid=90889",function(data){
+        console.log(data);
+    });
+</script>
+
+
+</body>
+</html>

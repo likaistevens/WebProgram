@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background: gray;
+        }
+        #calculator{
+            margin: 100px 0 0 150px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div id="calculator">
+        <p>
+            <input type="text" class="formerInput" value="1">
+            <span class="sign">+</span>
+            <input type="text" class="laterInput" value="1">
+            <span>=</span>
+            <span class="resultOutput">3</span>
+        </p>
+        <p>
+<!--            <input type="button" value="+" onclick="addHandler();">-->
+<!--            <input type="button" value="-" onclick="subtractHandler();">-->
+<!--            <input type="button" value="*" onclick="multiplyHandler();">-->
+<!--            <input type="button" value="/" onclick="divideHandler();">-->
+
+<!--            自定义属性，虽然value值也可以用，但是避免冲突-->
+            <input type="button" value="+" class="btn" title="add">
+            <input type="button" value="-" class="btn" title="subtract">
+            <input type="button" value="*" class="btn" title="multiple">
+            <input type="button" value="/" class="btn" title="divide">
+        </p>
+
+
+    </div>
+</div>
+
+
+<script>
+    // var calculator = document.querySelector('#calculator');
+    // var formerInput = calculator.querySelector('.formerInput');
+    // var laterInput = calculator.querySelector('.laterInput');
+    // var sign = calculator.querySelector('.sign');
+    // var resultOutput = calculator.querySelector('.resultOutput');
+    //
+    // function addHandler() {
+    //     sign.innerHTML = '+';
+    //     //从对象里获取的属性值都是字符串类型，字符串可以相加。相当于StringBuilder     可以在前面加上 + 强制转化为数字。  也可以用Number（）  或  parseInt（）
+    //     resultOutput.innerHTML = +formerInput.value + +laterInput.value;
+    // }
+    // function subtractHandler() {
+    //     sign.innerHTML = '-';
+    //     // 字符串不能相减，因此会自动识别成数字  再相减
+    //     resultOutput.innerHTML = formerInput.value - laterInput.value;
+    // }
+    // function multiplyHandler() {
+    //     sign.innerHTML = '*';
+    //     // 字符串也没有乘除
+    //     resultOutput.innerHTML = formerInput.value * laterInput.value;
+    // }
+    // function divideHandler() {
+    //     sign.innerHTML = '/';
+    //     resultOutput.innerHTML = formerInput.value / laterInput.value;
+    // }
+
+
+    var calculator = document.querySelector('#calculator');
+    var formerInput = calculator.querySelector('.formerInput');
+    var laterInput = calculator.querySelector('.laterInput');
+    var sign = calculator.querySelector('.sign');
+    var resultOutput = calculator.querySelector('.resultOutput');
+    var btns = calculator.querySelectorAll('.btn');
+
+    // 这些变量都是相关的，可以放到对象作为一个对象的属性，集中管理
+    // var wrapElem = document.querySelector('#calculator');
+    // var calculatorElem = {
+    //     formerInput : calculator.querySelector('.formerInput'),
+    //     laterInput : calculator.querySelector('.laterInput'),
+    //     sign : calculator.querySelector('.sign'),
+    //     resultOutput : calculator.querySelector('.resultOutput'),
+    //     btns : calculator.querySelectorAll('.btn'),
+    // }
+
+    for (var i = 0; i < btns.length; i++){
+        btns[i].onclick = function () {
+            switch(this.title){
+                case 'add':
+                    addHandler();
+                    break;
+                case 'subtract':
+                    subtractHandler();
+                    break;
+                case 'multiple':
+                    multiplyHandler();
+                    break;
+                case 'divide':
+                    divideHandler();
+                    break
+            }
+        }
+    }
+    // 所有函数也可以封装在一个变量下面
+    // var operation = {
+    //     add : function (num1,num2) {
+    //         return +num1 + + num2;
+    //     },
+    //     subtract: function (num1,num2) {
+    //         return num1 - num2;
+    //     },
+    //     multiple : function (num1,num2) {
+    //         return num1 * num2;
+    //     },
+    //     divide : function (num1,num2) {
+    //         return num1 / num2;
+    //     },
+    //     addOperation:function (name,fn) {
+    //         // 判断没有重名方法
+    //         if(!this[name]){
+    //             // 创建一个name这个属性，属性值是一个fn这个 function
+    //             this[name] = fn;
+    //         }
+    //         // 返回operation这个对象。  这个return不是必须，只是为了方便链式调用
+    //         return this;
+    //     }
+    // }
+
+    function addHandler() {
+        sign.innerHTML = '+';
+        //从对象里获取的属性值都是字符串类型，字符串可以相加。相当于StringBuilder     可以在前面加上 + 强制转化为数字。  也可以用Number（）  或  parseInt（）
+        resultOutput.innerHTML = +formerInput.value + +laterInput.value;
+    }
+    function subtractHandler() {
+        sign.innerHTML = '-';
+        // 字符串不能相减，因此会自动识别成数字  再相减
+        resultOutput.innerHTML = formerInput.value - laterInput.value;
+    }
+    function multiplyHandler() {
+        sign.innerHTML = '*';
+        // 字符串也没有乘除
+        resultOutput.innerHTML = formerInput.value * laterInput.value;
+    }
+    function divideHandler() {
+        sign.innerHTML = '/';
+        resultOutput.innerHTML = formerInput.value / laterInput.value;
+    }
+
+
+</script>
+
+</body>
+</html>
