@@ -1030,6 +1030,959 @@
             return f();
         })
 
+    /*<style>
+		#el{
+			width: 100px;
+			background: green;
+			transition: all 1s;
+			color: white;
+			line-height: 100px;
+			text-align: center;
+			font-size: 40px;
+		}
+	</style>
+	<div id="el">O</div>
+	<button id="btn">start</button>*/
+    // function moveTo(el, x, y, cb){
+    // 	el.style.transform = `translate(${x}px, ${y}px)`;
+    // 	setTimeout(function(){
+    // 		cb && cb();
+    // 	},1000);
+    // }
+
+    // let el = document.querySelector('div');
+    // document.querySelector('button').addEventListener('click', e => {
+    // 	moveTo(el, 100, 100, function(){
+    // 		moveTo(el, 200, 200, function(){
+    // 			moveTo(el, 100, 300, function(){
+    // 				moveTo(el, 130, 20, function(){
+    // 					moveTo(el, 0, 0, function(){
+    // 						console.log('移动结束！');
+    // 					})
+    // 				})
+    // 			})
+    // 		})
+    // 	})
+    // })
+
+    function moveTo(el, x, y){
+        // 此处resolve 和下面计时器里的resolve是可以自定义的函数名，习惯性用resolve
+        return new Promise(resolve => {
+            el.style.transform = `translate(${x}px, ${y}px)`;
+            setTimeout(function(){
+                resolve();
+            },1000);
+        })
+    }
+    let el = document.querySelector('div');
+    document.querySelector('button').addEventListener('click', e => moveTo(el, 100, 200)
+        .then(function(){
+            console.log('第一次移动');
+            return moveTo(el, 100, 100);
+        })
+        .then(function(){
+            console.log('第二次移动');
+            return moveTo(el, 200, 200);
+        })
+        .then(function(){
+            console.log('第三次移动');
+            return moveTo(el, 100, 300);
+        })
+        .then(function(){
+            console.log('第四次移动');
+            return moveTo(el, 130, 20);
+        })
+        .then(function(){
+            console.log('第五次移动');
+            return moveTo(el, 0, 0);
+        })
+    )
+
+    // 信任问题
+    // 回调函数来自 第三方的某个库
+    function method(cb) {
+        // 未按所想的预期执行回调
+        setTimeout(function() {
+            cb && cb();  // 执行了一次回调
+            cb && cb();  // 因为某种原因，又执行了一次
+        }, 1000);
+    }
+
+    // promise一但被确定为成功或者失败 就不能再被更改
+    function method() {
+        return new Promise(resolve => {
+            setTimeout(function() {
+                resolve();  // 成功执行  之后就不会再执行resolve
+                resolve();  // 上面一个成功了 这个不会再执行
+            }, 1000);
+        });
+    }
+
+    // 控制反转
+    function method(cb){
+        setTimeout((function){
+            cb && cb.call({a: 1, b:2});      // 回调的时候可能有额外操作，但是不是我们想要的
+        },1000);
+    }
+    function method(cb){
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve;   // 调用的resolve全为自己书写。
+            })
+        })
+    }
+
+    // 错误的处理
+    // 成功与错误 的处理都是异步的  所以 try catch没有用
+    // 方法一  then(resolve , reject)     reject为失败时的回调函数
+    function f(val){
+        // 这里参数的名字自定  只是习惯性这么取名
+        return new Promise((resolve, reject) => {
+            if(val){
+                // 但是只能传递一个参数 第二个参数是拿不到的
+                resolve({name: 'xiaoming'});
+            }else{
+                // 可以传入参数
+                reject('404');
+            }
+        }
+    }
+    f(true)
+        // 在then中传入两个函数 分别作为 resolve和reject
+        .then(data => {
+            // 只能接受一个参数
+            console.log(data);
+            // 可以接收参数
+        }, e =>{
+            console.log(e);
+        })
+
+    // 方法二  catch捕获
+    f(true)
+        .then(data => {
+            console.log(data);
+            return f(false);
+        })
+        .then( () => {
+            // 上面 return回来 f(false) 此处的then必须调用reject函数，但是此处没有传reject函数，所以永远不会被执行
+            console.log('此处是成功的处理，永远不会输出。')
+        })
+        .then(() => {
+
+        },e => {
+            console.log('e');     //   404
+            console.log('这里有对失败的处理，则函数会执行，然后停止，不会执行下面的catch')
+        })
+        .catch(e => {
+            console.log(e);    // 如果没有上面那个对失败的处理，就会执行到catch然后停止
+            // return f(true);    // 可以继续返回
+        })
+    // ES6中 catch有个bug无法解决。  就是如果catch{ return f(false)} 即catch执行操作中继续返回一个决议失败的对象，这个错误又需要一个catch去捕获，如此就会有个错误循环
+
+    // finally   不论成功还是失败 都会执行
+    f(true)
+        .then(data => {
+            console.log(data);
+            return f(false);
+        })
+        .catch(e => {
+            console.log(e);
+            return f(true);
+            // return f(false);   // 哪怕是返回错误处理  依旧会执行finally，但是会报错，错误没有处理
+        })
+        .finally(() => {
+            console.log(100);
+        })
+
+    // promise三种状态
+    // pending   --> fulfilled
+    //           --> rejected
+    // 状态一旦被决议，就不能被修改。
+
+    // Promise.all()   将多个Promise实例包装成一个新的Promise实例
+    // Promise.all([promise1, promise2])
+    // 传入一个 promise的数组  返回新的promise对象。   注意： 传入的需要是promise对象， 我们定义的函数返回值才是promise对象，所以，传入的内容必须是函数返回值， 要么是函数返回值传入一个变量保存，然后放到数组，要么就传入函数的执行, [getData1(), getData2(), getData3()]
+    // Promise。all() 传入的数组如果不是Promise对象数组，会自动对数组中的每一项进行Promise.resolve()包装。
+    // 数组中所有promise决议成功，最后的promise就成功，有一个失败就是失败
+    // 模拟需要获取多个数据才能执行的案例
+    function getData1(){
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log('第一条数据加载成功');
+                resolve('data1');
+            },1000);
+        });
+    }
+    function getData2(){
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log('第二条数据加载成功');
+                resolve('data2');
+            },1000);
+        });
+    }
+    function getData3(){
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                // console.log('第三条数据加载成功');
+                reject('data3 error');
+            },500);
+        });
+    }
+    // 注意：数组中传入 primise对象，函数执行后返回值才是promise对象
+    let p = Promise.all([getData1(), getData2(), getData3()]);
+    // p 仍然相当于一个Promise，有then方法，接受的是一个promise数组
+    p.then(arr => {
+        console.log(arr);
+    },e => {
+        console.log(e);
+    })
+    // data3 error        第一条数据加载成功       第二条数据加载成功
+    // 可以获取到原promise对象成功或者失败的参数，有一个失败，新的promise会执行失败，但是原来的其他promise 的resolve一样会执行
+
+    let p2 = Promise.all([]);
+    p2.then(() => {             // 没有参数传进来，会直接执行resolve
+        console.log(arr);
+    })
+
+    // 没有promise实现上述功能
+    let count = 0;       // 统计执行成功的方法个数
+    let err = false;     // 判断是否有失败
+
+    function fun(){
+        if(count < 3)	return;
+        if(err)	{
+            console.log('执行失败操作');
+        }
+        console.log('数据全部拿到了');
+    }
+    function getData1(){
+        setTimeout(() => {
+            console.log('第一条数据加载成功');
+            // if(status)	err = true;   设置一个状态参数，判断是否失败
+            count ++;      // 当前函数执行成功，计数器加1
+            fun();         // 判断是否全部执行完，是否有错
+        },1000);
+    });
+    function getData2(){
+        setTimeout(() => {
+            console.log('第二条数据加载成功');
+            count ++;
+            fun();
+        },1000);
+    });
+    function getData3(){
+        setTimeout(() => {
+            console.log('第三条数据加载成功');
+            count ++;
+            fun();
+        },500);
+    });
+    getData1();
+    getData2();
+    getData3();
+
+    // Promise.race([promise1, promise2])  返回一个新的Promise
+    // 有一个决议为失败或者成功，立刻生成新的promise并对应决策为失败或成功
+    function getData1(){
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log('第一条数据加载成功');
+                resolve('data1');
+            },300);
+        });
+    }
+    function getData2(){
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log('第二条数据加载成功');
+                resolve('data2');
+            },1000);
+        });
+    }
+    function getData3(){
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log('第三条数据加载失败');
+                reject('data3 error');     // 这个最先决策，所以会返回
+            },500);
+        });
+    }
+    let p = Promise.race([getData1(), getData2(), getData3()]);
+    p.then(data => {
+        console.log(data);
+    }, e => {             // 同样可以获取参数
+        console.log(e);
+    })
+    //  以上代码执行结果   第一条数据加载成功   data1   第三条数据加载失败   第二条数据加载成功
+    // getData1最快，先输出，然后立刻生成新的Promise并决议为成功，获取到data1并输出，然后getData3执行，能输出，决议为失败，但是getData3没有失败处理，同时新的Promise也不会因此决策失败，所以什么都不做，继续执行getData2，输出
+
+    let p2 = Promise.race([]);
+    p2.then(() => {             // 没有参数传进来，就会被挂起，什么都不做
+        console.log(arr);
+    })
+
+    // 没有Promise.race实现上述功能
+    let flag = false;          // 判断是否有成功的
+    function fun(data){
+        if(flag)	return;    // 如果没有成功执行的，该函数什么都不会做
+        flag = true;           // 一旦有成功的，该函数修改flag为true，并且根据获取到的数据执行了对应操作。  由于flag被修改了，之后的fun什么都不会做，直接return
+        console.log(data);
+    }
+    function getData1(){
+        setTimeout(() => {
+            console.log('第一条数据加载成功');
+            fun({name: 'xiaoming'});
+        },500);
+    }
+    function getData2(){
+        setTimeout(() => {
+            console.log('第二条数据加载成功');
+            fun({name: 'xiaohong'});
+        },600)
+    }
+    getData1();
+    getData2();
+    // 结果  第一条数据加载成功    name: 'xiaoming'    第二条数据加载成功
+
+
+    // Promise.resolve    生成已经决议为成功的Promise实例，并可以传递参数
+    // 一、传递一个普通的值
+    let p1 = new Promise(resolve => {
+        resolve('success');
+    })
+    let p2 = Promise.resolve('success');   // 跟上述功能一样
+    // 所以可以脱离写函数，来创建新的promise对象，直接使用Promise.resolve。  之前写函数，只有一个功能，return一个Promise实例，实例里面包含resolve和reject方法。
+
+    // 二、传递一个promise对象     相当于直接吧这个Promise实例传递到新的变量。
+    let promise11 = new Promise(resolve => {
+        resolve('success');
+    });
+    let p = Promise.resolve(promise11);
+    p.then(data => void console.log(data));
+    // 相当于promise11.then(data => void console.log(data));
+    console.log(p == promise11);    // true
+
+    // 三、接受一个thenable对象(具有then方法的对象，跟promise类似)   可以转化成promise
+    let obj = {        // 一个thenable对象，包含then方法
+        then(cb) {
+            console.log('run');
+            cb('11');
+        },
+        oth() {
+            console.log('drop');
+        }
+    }
+    // 立即执行thenable对象的then方法   并可以传入一个回调，
+    Promise.resolve(obj).then(data => {
+        console.log(data);      //  输出 11  相当于thenable对象then方法的回调函数
+    })
+
+    // Promise.reject()   不管传入什么都原封不动的传递出去
+    Promise.reject({ then() {console.log(1)}})
+        .then( () => {
+            console.log('永远不会被执行');
+        }, e => {
+            console.log(e);         // {then: f}   返回{ then() {console.log(1)}}这个函数。
+        })
+
+    // 小案例
+    console.log(1);
+    let p = new Promise(resolve => {
+        console.log(2);
+        resolve();
+        console.log(3);
+    });
+    console.log(4);
+    p.then( () => {
+        console.log(5);
+    });
+    console.log(6);
+    // 输出 1 2 3 4 6 5
+    // 除了 p.then( () => {} )  其他所有 1 2 3 4 6 都是同步任务，直接按顺序输出。   2输出完了，resolve()的时候，调用异步任务，但是是排在所有同步任务之后
+
+    // 把同步任务转成异步任务
+    function createAsyncTask(syncTask){
+        // 传入一个同步任务，利用Promise.resolve()生成一个决议成功操作是syncTask的Promise对象,并将syncTask传入，然后这个对象的then方法就可以拿到并 调用syncTask
+        return Promise.resolve(syncTask).then(syncTask => syncTask())
+        // syncTask => syncTask()   接受的变量为syncTask函数，然后调用执行这个变量。  这里的变量名可以修改。
+        // return Promise.resolve(syncTask).then(task => task())
+    }
+    // 调用 传入一个函数
+    createAsyncTask( () => {
+        console.log('被修改为异步任务了');
+        return 1 + 1;
+    }).then( res => {
+        // then 里面第一个参数res拿到的是promise对象resolve函数的返回值。即syncTask函数的返回值，即 1 + 1
+        console.log(res);
+    });
+    console.log('这里是同步任务');
+    // 输出： 这里是同步任务      被修改为异步任务了      2
+    // 尽管同步任务在后面，还是先执行同步任务，然后执行异步任务的resolve函数，执行完了在执行then里面调用成功的操作
+
+
+
+    // 案例
+    // 页面中有板块 需要多张图片加载完之后才能进行显示
+    const loadImg = (src) => {
+        // 返回的Promise对象需要传入resolve和reject参数
+        return new Promise((resolve, reject) => {
+            const img = new Image();  // new 一个Image对象
+            img.src = src;
+            // Image对象自带onload参数，Image加载完成的时候会自动执行。 相当于图片加载完成自动执行resolve函数
+            img.onload = () => {
+                resolve(img);
+            }
+            // 同理 图片加载失败调用reject， onerror默认会传入一个错误信息e
+            img.onerror = (e) => {
+                reject(e);
+            }
+            // img.onload = resolve(img); 这样写是错误的，这样会先调用resolve，然后返回值传给img.onload 。
+        })
+    }
+    const imgs = [
+        'http://a0.att.hudong.com/64/76/20300001349415131407760417677.jpg',
+        'http://img0.imgtn.bdimg.com/it/u=2608870614,758445612&fm=26&gp=0.jpg',
+    ];
+    // Promise。all() 传入的数组如果不是Promise对象数组，会自动对数组中的每一项进行Promise.resolve()包装。
+    // 对数组imgs建立一个map映射， 传入一个函数， 对imgs数组中每一个对象进行操作，返回值传回到数组中。 现在 all里面传入的是一个Promise数组
+    // 对于每个图片都有一个Promise对象，每个Promise对象都成功执行(成功加载图片)的时候，才会调用resolve(img)，传入Image对象， 所有Promise对象都创建完切成功执行，才会forEach循环添加图片。
+    Promise.all(imgs.map(src => loadImg(src))).then((arr) => {
+        console.log(arr);     // 这里then里面传入的是resolve传入的参数，即两个Image对象， 然后执行 决议成功的操作。
+        arr.forEach((img) => {
+            // forEach遍历数组对象，获取到每个Image对象，然后添加到页面
+            document.body.appendChild(img);
+        })
+    });
+    // 可以拆开理解
+    const promises = imgs.map((src) => {
+        return loadImg(src);
+    });
+    Promise.all(promises).then((arr) => {
+        arr.forEach((img) => {
+            document.body.appendChild(img);
+        })
+    }).catch((e) => {     // 可以加入错误捕获。 没有reject函数，就会运行到catch。 默认传入错误信息e。
+        console.log(e);
+    });
+    // 在图片地址数组中传入一个错误地址，图片无法加载，就会调用Image.onerror() 即调用reject。 没有reject方法，但是Promise对象的决议已经变成了失败，所以一直会执行到catch。
+    const imgs = [
+        'http://a0.att.hudong.com/64/76/20300001349415131407760417677.jpg',
+        'aa',
+    ];
+    // 结果
+    // aa:1 GET file:///C:/Users/82601/aa net::ERR_FILE_NOT_FOUND
+    // Event {isTrusted: true, type: "error", target: img, currentTarget: img, eventPhase: 2, …}
+
+
+    // 类  面向对象
+    // 利用自运行的函数 实现贪吃蛇。   当要新添一条蛇的时候，需要复制，然后修改变量名
+    (function() {
+        let snake = []; //存放蛇身的
+        let food = { x: 0, y: 0 }; // 食物的坐标
+        function move() {
+            // 处理蛇的移动
+        }
+        start();
+    })();
+
+    class Car {
+        // 构造函数的名字 是固定的 必须是constructor
+        constructor(...args){
+
+        };
+    }
+    new Car('blue',2);    // 这样 args = ['blue',2]
+
+    class Car {
+        // 构造函数
+        constructor(color,wheels,length,width){
+            this.color = color;
+            this.wheels = wheels;
+            this.length = length;
+            this.width = width;
+
+            this.speed = 0;
+        };
+        // 方法
+        speedUp(){
+            this.speed += 1;
+        }
+    }
+    const car = new Car('blue',4,20,40);    // 这样 args = ['blue',2]
+    console.log(car.color);
+    console.log(car.speed);
+    car.speedUp();
+    console.log(car.speed);
+
+
+    // 范例  音乐播放器
+    class AudioPlayer{
+        constructor(container){
+            this.container = document.querySelector(container);
+            this.songsList = [];  // 歌单列表
+            this.dom = null;      // 存放dom
+            this.audio = new Audio();    // Audio对象
+            this.status = 0;      // 标记播放器状态
+
+            this.getSongs();
+            this.createElement();
+            this.bindEvents();
+            this.render();
+        }
+
+        getSongs(){
+            //  ... ajax
+            this.songsList = {
+            {
+                cover: '',
+                    url: '  .mp3',
+                singer: {},
+                name: '',
+            }
+        }
+        }
+
+        createElement(){
+            const div = document.createElement('div');
+            div.innerHTML = `
+    			<div class='btn'>播放按钮</div>
+    			<div>进度条</div>`;
+            this.dom = div;
+        }
+
+        bindEvents(){
+            this.dom.querySelector('.btn').addEventListener('click', () => {
+                console.log('开始播放');
+            });
+        }
+
+        render(){
+            this.container.appendChild(this.dom);
+        }
+    }
+
+    new AudioPlayer('#app');
+    new AudioPlayer('#bpp');
+
+    // 静态方法和属性     静态方法用static声明  静态属性通过 类名.属性名 =
+    // 静态方法和属性不能通过类的实例对象调用，  只能通过类调用
+    class Car{
+        constructor(){
+            this.speed = 0;
+        }
+        speedUp(){
+            this.speed += 1;
+        }
+        static repair(carNumber){
+            console.log('我是修车的');
+            console.log('我现在要修的车是：',car);
+        }
+    }
+    Car.repair('1号车');        // '我是修车的'    '我现在要修的车是：1号车'
+    new Car().repair('1号车');   // 报错 找不到这个方法
+
+    class Car{
+        constructor(){
+            Car.totalCar += 1;    // 每次new一个对象，都把这个类的统计数量的静态属性加一
+            this.speed = 0;
+        }
+        speedUp(){
+            this.speed += 1;
+        }
+        static repair(car){
+            if(!car.speed){
+                car.speed = 0;
+            }
+            console.log(car);   // color: "blue"   speed: 0
+        }
+
+        checker(){                 //  普通方法和静态方法重名 没有问题的
+
+        }
+        static checker(){
+
+        }
+    }
+    // 例如 经过一系列操作，丢失了car这个实例对象的spedd属性，只剩下color，可以调用类的静态方法执行处理修复
+    Car.repair({color: 'blue'});      // 这个car只有 color属性了
+
+    // 静态属性  类名.属性名 =     来声明    也通过这种方式来访问
+    Car.totalCar = 0;    // 计算总共生成了多少个实例对象
+    Car.config = {
+        wheels: 4,
+        color: 'white',
+    }
+
+    class Character {
+        constructor(pfs){
+            this.pfs = pfs;
+        }
+    }
+    class Profession{
+
+    }
+    Profession.config = {
+        profession:{
+            '咒术师': 1,
+            '弓箭手': 2,
+        }
+    }
+    new Character(Profession.config.profession['咒术师'])；
+
+    // 类 之间转换
+    class Person{
+        static format = programmer => {
+            programmer.haveGirlfriend = true;
+            programmer.hair = true;
+        }
+    }
+    class programmer{
+        constructor(){
+            this.haveGirlfriend = false;
+            this.hair = false;
+        }
+    }
+    const programmer = new Programmer();
+    console.log(programmer);
+    Person.format(programmer);
+    console.log(programmer);      // 属性值已经发生了改变
+
+    // 类表达式
+    // 最简单的形式
+    const Person = class {
+        constructor(){
+            console.log('I am person');
+        }
+    }
+    // class后面可以加类名，但是只能在类里面访问
+    const Person = class P{
+        constructor(){
+            console.log(P);
+            console.log(P == Person);     // true
+            console.log('I am person');
+        }
+    }
+    new Person();
+    console.log(P);    // 报错
+
+
+    // getter / setter
+    // ES5 中
+    // 1.在对象字面量中书写get/set方法   相当于钩子，在获取/设置属性值的时候进行额外的操作
+    const obj = {
+        _name: '',
+        // 这里get后面的方法名 是自己设置，表示 获取/设置 对象的这个属性名的时候会调用这个方法。  如果有个属性名是name,然后get name(){ return this.name }; 会出现无限循环，this.name 会继续调用get name方法。
+        get name(){
+            console.log('getter');
+            return this._name;
+        },
+        // set 方法里面必然要传入一个参数，这个参数是赋值操作右边的值。  如下面的 222
+        set name(val){
+            console.log('setter');
+            this._name = val;
+        }
+        // 这样相当于对 obj.name属性操作的时候 都是对 _name 进行操作
+    }
+    obj.name = 222;                // 自动执行set操作   输出 getter
+    const objName = obj.name;      // 自动执行get操作   输出 setter
+    console.log(obj);              // {name: '222'}
+    // 2. Object.defineProperty
+    var obj = {
+        _name: '',
+    };
+    Object.defineProperty(obj, 'age', {
+        value: 19,
+        enumerable: true,   // 是否可被枚举的描述符。 如果为false，obj里面有这个属性，但是遍历的时候无法遍历到这个属性
+    });
+    for(var i in obj){
+        console.log(i);
+    }
+
+    var obj = {
+        _name: '',
+    };
+    Object.defineProperty(obj, 'name', {
+        get: function(){
+            console.log('正在访问name');
+            return this._name;
+        },
+        set: function(val){
+            console.log('正在修改name');
+            this._name = val;
+        }
+    });
+    obj.name = 10;
+    console.log(obj);
+
+    class Person{
+        constructor(){
+            this._name = '';
+        }
+        get name(){
+            console.log('正在访问name');
+            return `我的名字是${ this._name }`;
+        }
+        set name(val){
+            console.log('正在修改name');
+            this._name = val;
+        }
+    }
+    const person = new Person();
+    person.name = 'xiaoming';      // '正在修改name'
+    console.log(person.name);      // '正在访问name'   我的名字是xiaoming
+
+
+    // Audio Player例子
+    class AudioPlayer{
+        constructor(){
+            // 0-pause   1-play    2-loading
+            this._status = 0;
+            this.status = 0;   // 初始化调用set 把它设置为0
+            this.init();
+        }
+
+        init(){
+            const audio = new Audio();   // 自带的对象Audio
+            audio.src = '.....';
+
+            audio.oncanplay = () => {    // 这里如果不用箭头函数 用 function(){}   那么里面的this指向就是audio，但此时我们要这个this指向AudioPlayer。   箭头函数里面的this并不是当前小环境，而是函数所处的大环境
+                audio.play();
+                this.status = 1;
+            }
+        }
+        get status(){
+            return this._status;
+        }
+        set status(val){
+            const STATUS_MAP = {
+                0: 'Pause',
+                1: 'Play',
+                2: 'loading',
+            };
+            // 修改按钮里面的内容
+            document.querySelector('#app .play-btn').innerHTML = STATUS_MAP[val];
+            this._status = val;
+        }
+    }
+    const audio = new AudioPlayer
+    audio.status = 1;    // 按钮的文字会变成 Play
+
+
+    // name     返回类的名字   用得少
+    // 直接声明类
+    class Person{
+    }
+    console.log(Person.name);    // Person
+    // 类表达式
+    const Human = class {}
+    console.log(Human.name);     //   Human
+    const Human = class P{}
+    console.log(Human.name);     //    P
+    // new.target
+
+    // new.target
+    class Car {
+        constructor(){
+            console.log(new.target);
+        }
+    }
+    new Car();     // new.target属性没法直接 访问，只能在类里面访问。 返回的就是 new出来的这个类
+
+    // ES5中模拟类
+    function Car(){
+        console.log(new.target);
+        if(new.target !== Car){
+            throw Error('必须使用new关键字调用');
+        }
+    }
+    // new 一个方法，就是把他当做构造函数。 new.target会返回这个函数本身。    如果没有new,直接 Car()， 输出的new.target 就是undefined。  所以可以利用和new.target是否等于函数本身，判断是不是通过new调用
+    new Car();
+
+    function Person(name, age){
+        this.age = age;
+        this.name = name;
+    }
+    // 利用函数模拟构造函数， 如果没有返回值，且用new调用函数，就会返回一个对象。
+    console.log(new Person('张三',11));  // Person {age: 11, name: "张三"}
+    // new 关键字调用函数的时候，发生了什么，为什么会得到一个新对象
+    // 1.创建一个空对象
+    // 2.把构造函数的prototype属性 作为空对象的原型(同时也有了prototype的方法，  this.age 就是原型的this方法)
+    // 3.this赋值给这个空对象
+    // 4.执行函数
+    // 5.如果函数没有返回值 就返回这个this对象
+    // 用代码表述上述过程
+    function Constructor(fn, args){
+        var _this = Object.create(fn.prototype); // Object.create()里面穿入一个对象，作为新的object的原型。
+        // 对这个空对象调用fn函数，传入args参数
+        // 改变 fn里this的指向，即下面Person里面this的指向
+        var res = fn.apply(_this, args);   // res是函数的返回值
+        return res ? res : _this;    // 如果有返回值，就返回返回值，没有返回值就返回这个对象
+    }
+    function Person(name, age){
+        this.name = name;
+        this.age = age;
+    }
+    Person.prototype.say = function(){
+        console.log('我叫' + this.name);
+    }
+    var person = Constructor(Person,['张三', 12] );
+    console.log(person);      // Person {name: "张三", age: 12}
+
+    // 继承   extends
+
+    class Human{
+        constructor(name, age, sex, hobby){
+            this.name = name;
+            this.age = age;
+            this.sex = sex;
+            this.hobby = hobby;
+        }
+        // 父类的方法 是放到父类的原型上的
+        desc(){
+            const {name, age, sex, hobby} = this;
+            console.log(`我叫${ name }，性别${ sex }，爱好${ hobby }， 今年${ age }岁。`);
+        }
+        eat(){
+            console.log('I am eating');
+        }
+        checkThis(_this){
+            console.log(_this == this);
+        }
+    }
+    Human.total = 899999;
+    class FEEngineer extends Human{
+        constructor(name, age, sex, hobby,skill,salary){
+            // 子类调用this之前，必须调用父类的构造函数，即可以通过super（）来调用
+            super(name, age, sex, hobby);
+            this.skill = skill;
+            this.salary = salary;
+        }
+        // 这样无法传递父类的属性。  只能创建  只带有子类特殊属性的对象。
+        // constructor(skill,salary){
+        // 	super();
+        // 	this.skill = skill;
+        // 	this.salary = salary;
+        // }
+        say(){
+            console.log(super.eat);        // f eat(){ ... }    super可以访问到父类方法  非静态方法中 super是父类原型，父类方法都是在父类原型上
+            console.log(super.eat);        // 也可以调用
+            console.log(super.checkThis(this));    // true   在调用super的时候，父类的this始终是子类的this
+            console.log(this.skill.join());
+        }
+        static test(){
+            console.log(super.name);    // Human   静态方法中 super就是父类。  super.name是自带的方法，返回父类名称
+            console.log(super.total);  // 可以访问到父类的静态属性
+        }
+    }
+    const feer = new FEEngineer(
+        'xiaohong',
+        12,
+        'Female',
+        'singing',
+        ['es6','vue'],
+        '1k',
+    );
+    feer.desc();  // 我叫xiaohong，性别Female，爱好singing， 今年12岁。
+    feer.say();    // es6,vue
+    FEEngineer.test();    // Human
+
+
+    // super()
+    // 作用1： 作为父类构造函数调用  将子类的this传递给父类的构造函数  然后把父类的构造函数跑一遍
+    // 作用2： 作为对象的方式调用
+    // 1.非静态方法中访问super -> 父类原型
+    // 2.静态方法中访问super -> 父类
+
+    // 在调用super的时候  父类的this 始终是子类的this
+
+
+    // 多态    重写（子类中重写父类方法）
+    class Human{
+        say(){
+            console.log1('I am human');   // I am human
+        }
+    }
+    class Man extends Human{
+        say(){                 // 这里是重写，区别于重载
+            super.say();        // I am human
+            console.log1(' Man');
+        }
+    }
+    class Women extends Human{
+        say(){
+            super.say();          // I am human
+            console.log1('Women');
+        }
+    }
+    new Man().say();     // Man
+    new Women().say();   // Women
+    // 重载
+    class SimpleCalc{
+        addCalc(...args){
+            if(args.length === 0){       // 这里三个return就相当于重载。
+                return this.zero();
+            }
+            if(args.length === 1){
+                return this.onlyOneArgument(args);
+            }
+            return this.add(args);
+        }
+        zero(){
+            return 0;
+        }
+        onlyOneArgument(){
+            return args[0];
+        }
+        add(args){
+            return args.reduce((a,b) => a + b, 0);   // 做累加 a是起始元素，b是遍历元素，0是起始元素默认值
+        }
+    }
+    // 另一种重载操作
+    function post(url,header,parmas){
+        if(!parmas){     // 相当于重载 为一个方法添加多种实现功能   区别于重写（子类中重写父类方法）
+            parmas = header;
+            header = null;   // undefined
+        }
+    }
+    post('https://imooc.com',{
+        a: 1,
+        b: 2,
+    })
+
+    // 利用重载 实现预留接口（只允许子类去实现，相当于java抽象方法）
+    class Monster{
+        constructor(name, level, model){
+            this.model = model;
+            this.name = name;
+            this.level = level;
+        }
+        attack(){
+            throw Error('必须由子类来实现attack攻击方法');
+        }
+    }
+    const ModelMap = {
+        '红眼僵尸'： 1,
+        '绿眼僵尸': 2,
+    }
+    class RedEyeZombie extends Monster{
+        constructor(){
+            super('红眼僵尸'， 10， ModelMap['红眼僵尸']);
+        }
+    }
+    class GreenEyeZombie extends Monster{
+        constructor(){
+            super('绿眼僵尸'， 10， ModelMap['绿眼僵尸']);
+        }
+        attack(){
+            console.log('绿眼僵尸发动攻击');
+        }
+    }
+    const gez = new GreenEyeZombie();
+    gez.attack();       // 绿眼僵尸发动攻击
+    const rez = new RedEyeZombie();
+    rez.attack();      // Error '必须由子类来实现attack攻击方法'
+    // 子类如果没有attack方法，会自动调用父类attack，此时就会报错。这样就达到了必须由子类实现方法的目的。    必须在子类中重写attack方法
 
 </script>
 

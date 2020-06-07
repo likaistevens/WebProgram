@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Switch Picture</title>
+	<style>
+		* {
+		  margin: 0;
+		  padding: 0;
+		}
+
+		body {
+		  background: #fafafa;
+		  background: url('./images/bg.png')
+		}
+
+		::-webkit-scrollbar {
+		  display: none;
+		}
+
+		#wrap {
+		  width: 1065px;
+		  padding-top: 50px;
+		  margin: 0 auto;
+		  padding: 30px;
+		  background: rgb(255, 255, 255);
+		  border-radius: 2px;
+		  margin-top: 100px;
+		}
+
+		/* 整体容器 */
+		.__Img__container {
+		  font-size: 10px;
+		}
+
+		/* 分类容器 */
+		.__Img__container .__Img__classify {
+		  /* text-align: center; */
+		}
+
+		/* 分类按钮 */
+		.__Img__container .__Img__classify .__Img__classify__type-btn {
+		  display: inline-block;
+		  padding: .2em 1em;
+		  font-size: 1.6em;
+		  margin-right: 10px;
+		  cursor: pointer;
+		  border: 1px solid #e95a44;
+		  outline: none;
+		  color: #e95a44;
+		  transition: all .4s;
+		  user-select: none;
+		  border-radius: 2px;
+		}
+
+		/* 激活状态的分类按钮 */
+		.__Img__container .__Img__classify .__Img__classify__type-btn.__Img__type-btn-active {
+		  background: #e95a44;
+		  /* border: 1px solid #9b59b6; */
+		  color: #fff;
+		}
+
+		/* 所有图片容器 */
+		.__Img__container .__Img__img-container {
+		  position: relative;
+		  margin-top: 30px;
+		  width: 1005px;
+		  display: flex;
+		  flex-wrap: wrap;
+		  transition: all .6s cubic-bezier(0.77, 0, 0.175, 1);
+		}
+
+		/* 单个图片容器 */
+		.__Img__container .__Img__img-container figure {
+		  width: 240px;
+		  height: 140px;
+		  position: absolute;
+		  transition: all .6s cubic-bezier(0.77, 0, 0.175, 1);
+		  transform: scale(0, 0);
+		  opacity: 0;
+		  overflow: hidden;
+		  border-radius: 2px;
+		  user-select: none;
+		}
+
+		/* 伪元素遮罩层 */
+		.__Img__container .__Img__img-container figure::before {
+		  display: block;
+		  position: absolute;
+		  width: 100%;
+		  height: 100%;
+		  top: 0;
+		  left: 0;
+		  z-index: 4;
+		  background: rgba(58, 12, 5, 0.5);
+		  content: ' ';
+		  font-size: 0;
+		  opacity: 0;
+		  transition: all .3s;
+		  cursor: pointer;
+		}
+
+		/* 图片 */
+		.__Img__container .__Img__img-container figure img {
+		  display: block;
+		  width: 100%;
+		  height: 100%;
+		  transition: all .3s;
+		}
+
+		/* 图片标题 */
+		.__Img__container .__Img__img-container figure figcaption {
+		  position: absolute;
+		  top: 50%;
+		  left: 50%;
+		  z-index: 7;
+		  opacity: 0;
+		  font-size: 1.5em;
+		  color: rgb(255, 255, 255);
+		  transform: translate(-50%, -50%);
+		  transition: all .3s;
+		  text-align: center;
+		  cursor: pointer;
+		}
+
+		/* 悬停图片的时候标题显示 */
+		.__Img__container .__Img__img-container figure:hover figcaption {
+		  opacity: 1;
+		}
+
+		.__Img__container .__Img__img-container figure:hover img {
+		  transform: scale(1.1, 1.1);
+		}
+
+		/* 悬停图片的时候遮罩显示 */
+		.__Img__container .__Img__img-container figure:hover::before {
+		  opacity: 1;
+		}
+
+		.__Img__overlay {
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: rgba(0, 0, 0, .8);
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  opacity: 0;
+		  transition: all .3s;
+		  display: none;
+		}
+
+		.__Img__overlay .__Img__overlay-prev-btn,
+		.__Img__overlay .__Img__overlay-next-btn {
+		  position: absolute;
+		  width: 50px;
+		  height: 50px;
+		  border-radius: 50%;
+		  border: 2px solid white;
+		  text-align: center;
+		  line-height: 50px;
+		  color: white;
+		  font-size: 2rem;
+		  cursor: pointer;
+		}
+
+		.__Img__overlay .__Img__overlay-prev-btn {
+		  left: 20px;
+		}
+
+		.__Img__overlay .__Img__overlay-next-btn {
+		  right: 20px;
+		}
+
+		.__Img__overlay .__Img__overlay-prev-btn:active,
+		.__Img__overlay .__Img__overlay-next-btn:active {
+		  background: rgb(241, 241, 241, .4);
+		}
+
+		.__Img__overlay .__Img__overlay-next-btn::after {
+		  content: "N";
+		}
+
+		.__Img__overlay .__Img__overlay-prev-btn::after {
+		  content: "P";
+		}
+
+		.__Img__overlay img {
+		  transform: scale(2, 2);
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<!-- <div class="__Img__container">
+      		<ul class="__Img__classify">
+		        <li class="__Img__classify__type-btn __Img__type-btn-active">类别1</li>
+		        <li class="__Img__classify__type-btn">类别2</li>
+	      	</ul>
+	        <div class="__Img__img-container">
+		        <figure>
+		          <img src="./images/1.jpg" alt=""/>
+		          <figcaption>title</figcaption>
+		        </figure>
+	        </div>
+    	</div> -->
+  	</div>
+	<!-- <div class="__Img__overlay">
+	    <div class="__Img__overlay-prev-btn"></div>
+	    <div class="__Img__overlay-next-btn"></div>
+	    <img src="images/1.jpg" alt="">
+	</div> -->
+
+
+<!-- data -->
+<script>
+	const data = [
+
+	  {
+	    type: 'JavaScript',
+	    title: 'ES6快速入门',
+	    alt: 'ES6快速入门',
+	    src: './images/1.jpg'
+	  },
+
+	  {
+	    type: 'JavaScript',
+	    title: 'Javascript实现二叉树算法',
+	    alt: 'Javascript实现二叉树算法',
+	    src: './images/2.jpg'
+	  },
+
+	  {
+	    type: 'JavaScript',
+	    title: 'Canvas绘制时钟',
+	    alt: 'Canvas绘制时钟',
+	    src: './images/3.jpg'
+	  },
+
+	  {
+	    type: 'JavaScript',
+	    title: '基于websocket的火拼俄罗斯',
+	    alt: '基于websocket的火拼俄罗斯',
+	    src: './images/15.jpg'
+	  },
+
+	  {
+	    type: '前端框架',
+	    title: 'React知识点综合运用实例',
+	    alt: 'React知识点综合运用实例',
+	    src: './images/4.jpg'
+	  },
+
+	  {
+	    type: '前端框架',
+	    title: 'React组件',
+	    alt: 'React组件',
+	    src: './images/5.jpg'
+	  },
+
+	  {
+	    type: '前端框架',
+	    title: 'Vue+Webpack打造todo应用',
+	    alt: 'Vue+Webpack打造todo应用',
+	    src: './images/6.jpg'
+	  },
+
+	  {
+	    type: '前端框架',
+	    title: 'Vue.js入门基础',
+	    alt: 'Vue.js入门基础',
+	    src: './images/7.jpg'
+	  },
+
+	  {
+	    type: '前端框架',
+	    title: '使用Vue2.0实现购物车和地址选配功能',
+	    alt: '使用Vue2.0实现购物车和地址选配功能',
+	    src: './images/8.jpg'
+	  },
+
+	  {
+	    type: 'React',
+	    title: 'React知识点综合运用实例',
+	    alt: 'React知识点综合运用实例',
+	    src: './images/4.jpg'
+	  },
+
+	  {
+	    type: 'React',
+	    title: 'React组件',
+	    alt: 'React组件',
+	    src: './images/5.jpg'
+	  },
+
+	  {
+	    type: 'Vue.js',
+	    title: 'Vue+Webpack打造todo应用',
+	    alt: 'Vue+Webpack打造todo应用',
+	    src: './images/6.jpg'
+	  },
+
+	  {
+	    type: 'Vue.js',
+	    title: 'Vue.js入门基础',
+	    alt: 'Vue.js入门基础',
+	    src: './images/7.jpg'
+	  },
+
+	  {
+	    type: 'Vue.js',
+	    title: '使用Vue2.0实现购物车和地址选配功能',
+	    alt: '使用Vue2.0实现购物车和地址选配功能',
+	    src: './images/8.jpg'
+	  }
+	]
+</script>
+<script>
+	(function (window, document){
+		let Img = function(options){
+			this._init(options);
+			this._createElement();
+			this._show();
+
+			this._bind();
+		}
+		const methods = {
+			appendChild(parent, ...children) {
+				children.forEach(el => {
+					parent.appendChild(el);
+				});
+			},
+			$(selector, root = document) {
+				return root.querySelector(selector);
+			},
+			$$(selector, root = document) {
+				return root.querySelectorAll(selector);
+			}
+			};
+		Img.prototype._init = function({data, initType, parasitifer }){
+			this.types = ['全部'];   // 所有的分类
+			this.all = [];    // 所有图片元素
+			this.classified = {'全部': []}; // 按照类型分类后的图片
+			this.curType = initType;    // 当前显示的图片分类
+			this.parasitifer = methods.$(parasitifer);   // 挂载点
+			this.imgContainer = null;   // 所有图片容器
+			this.wrap = null;                  // 整体容器
+			this.typeBtnEls = null;    // 所有分类按钮组成的数组
+			this.figures = null;     // 所有当前显示图片组成的数组
+			this._classify(data);
+			console.log(this.classified);
+		};  
+
+		Img.prototype._classify = function(data){
+			// 归类的最终效果
+			/*classified: {
+				"类型1": [0],
+				"类型2": [1,3],
+				"类型3": [2,3,4],
+			}*/
+			let srcs = [];
+			// forEach(item,index)   默认的第一个参数是循环到的那个元素，第二个参数是这个元素的index
+			// 添加分类
+			data.forEach( ({ title, type, alt, src }, index) => {
+				// 没有这个类  新增
+				if(!this.types.includes(type)){
+					this.types.push(type);
+				}
+				// Object.keys(this.classfied)  返回 this.classfied这个对象的所有keys组成的数组。
+				if(!Object.keys(this.classified).includes(type)){
+					// 新增一个   'type':[]
+					this.classified[type] = [];
+				}
+
+				if(!srcs.includes(src)){
+					// 图片没有生成过
+					// 生成图片
+					// 添加到对应的分类中
+					srcs.push(src);
+					let figcaption = document.createElement('figcaption');
+					let figure = document.createElement('figure');
+					let img = document.createElement('img');
+					img.src = src;
+					img.setAttribute('alt',alt);
+					figcaption.innerText = title;
+					methods.appendChild(figure, img, figcaption);
+					this.all.push(figure);
+					this.classified[type].push(this.all.length - 1);
+				}else{
+					// 去all中 找到对应的图片
+					// 添加到对应的分类中
+					// 如果s1=src  就返回s1
+					this.classified[type].push(srcs.findIndex(s1 => s1 == src));
+				}
+			})
+		};
+
+		Img.prototype._getImgsByType = function(type){
+			// array.map(function(currentValue, index, arr), thisIndex)   currentValue 当前元素的值 必须，其他可选。   对一个数组调用，遍历当前数组内所有元素，返回经过function操作后返回的值
+			// 先从分类器中拿到对应type的所有图片下标数组，然后根据每个下标去all里面寻找图片
+			return type === '全部' ? [...this.all] : this.classified[type].map(index => this.all[index]);
+		};
+
+		Img.prototype._createElement = function(){
+			// 创建分类按钮
+			let typeBtn = [];
+			for(let type of this.types.values()){
+				typeBtn.push(`
+					<li class="__Img__classify__type-btn ${type === this.curType ? '__Img__type-btn-active' : ""}">${ type }</li>
+				`);
+			}
+			// 整体模板
+			let tamplate = `
+				<ul class="__Img__classify">
+					${ typeBtn.join('') }
+	      		</ul>
+	      		<div class="__Img__img-container">
+	        	</div>
+			`;
+			let wrap = document.createElement('div');
+			wrap.className = '__Img__container';
+			wrap.innerHTML = tamplate;
+			this.imgContainer = methods.$('.__Img__img-container', wrap);
+			this._getImgsByType(this.curType);
+			methods.appendChild(this.imgContainer, ...this._getImgsByType(this.curType));
+			this.wrap = wrap;
+			this.typeBtnEls = methods.$$('.__Img__classify__type',wrap);
+			this.figures = methods.$$('figure',wrap);
+
+			// 遮罩层
+			let overlay = document.createElement('div');
+			overlay.className = '__Img__overlay';
+			overlay.innerHTML = `
+				<div class="__Img__overlay-prev-btn"></div>
+				<div class="__Img__overlay-next-btn"></div>
+				<img src="" alt="">
+			`;
+			methods.appendChild(this.wrap, overlay);
+			this.overlay = overlay;
+			this.previewImg = methods.$('img', overlay);
+			// 设置图片的绝对定位
+			this._calcPosition(this.figures);
+		};
+
+		Img.prototype._bind = function(){
+			methods.$('.__Img__classify',this.wrap).addEventListener('click', ({target}) => {
+				console.log(target);
+				if(target.nodeName !== 'LI')	return;
+
+				const type = target.innerText;
+				const els = this._getImgsByType(type);
+				let prevImgs = this.figures.map(figure => methods('img', figure).src);
+				let nextImgs = els.map(figure => methods('img',figure).src);
+
+			})
+		};
+
+		Img.prototype._show = function(){
+
+			methods.appendChild(this.parasitifer, this.wrap);
+			// css里面图片隐藏是采用默认transform设置为scale(0，0)，opacity=0来达到的。  直接修改transform和opacity会因为同步任务的原因，图片直接显示，没有过度动画，可以通过施加一个没有延迟的定时器去实现异步
+			setTimeout(() => {
+					this.figures.forEach(figure => {
+					figure.style.transform = 'scale(1,1) translate(0, 0)';
+					figure.style.opacity = '1';
+				});
+			});
+		};
+
+
+		// 计算每张图片的位置  top left  每个图都是绝对定位的 absolute     计算父容器高度
+		Img.prototype._calcPosition = function(figures){
+			figures.forEach((figure, index) => {
+				figure.style.top = parseInt(index / 4) * 140 + parseInt(index / 4) * 15 + 'px';
+				figure.style.left = parseInt(index % 4) * 240 + parseInt(index % 4) * 15 + 'px';
+				figure.style.transform = 'scale(0, 0) translate(0, -100%)';
+			});
+			// 父容器背景高度
+			let height = Math.ceil(figures.length / 4);
+				// 间距需要减1
+			this.imgContainer.style.height = height * 140 + (height - 1) * 15 + 'px';
+		};
+		window.$Img = Img;
+	})(window, document);
+</script>
+<script>
+	const img = new $Img({
+		data,
+		initType: '全部',
+		parasitifer: '#wrap'
+	});
+</script>
+</body>
+</html>
