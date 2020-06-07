@@ -176,7 +176,7 @@
 
 		.__Img__overlay .__Img__overlay-prev-btn:active,
 		.__Img__overlay .__Img__overlay-next-btn:active {
-		  background: rgb(241, 241, 241, .4);
+		  background: rgba(241, 241, 241, .4);
 		}
 
 		.__Img__overlay .__Img__overlay-next-btn::after {
@@ -319,6 +319,7 @@
 </script>
 <script>
 	(function (window, document){
+		let canChange = true;
 		let Img = function(options){
 			this._init(options);
 			this._createElement();
@@ -426,8 +427,8 @@
 			this._getImgsByType(this.curType);
 			methods.appendChild(this.imgContainer, ...this._getImgsByType(this.curType));
 			this.wrap = wrap;
-			this.typeBtnEls = methods.$$('.__Img__classify__type',wrap);
-			this.figures = methods.$$('figure',wrap);
+			this.typeBtnEls = [...methods.$$('.__Img__classify__type-btn',wrap)];
+			this.figures = [...methods.$$('figure',wrap)];
 
 			// 遮罩层
 			let overlay = document.createElement('div');
@@ -443,18 +444,123 @@
 			// 设置图片的绝对定位
 			this._calcPosition(this.figures);
 		};
+		// 找到切换前和切换后图片相同的图片的下标
+		Img.prototype._diff = function(preImgs, nextImgs){
+			let diffArr = [];
+			// [1, 2, 3, 5, 6]
+			// [3, 9, 11, 12, 14]
+			// [[2, 0]]    prev的下标为2的跟next的下标为0的相同
+			preImgs.forEach((src1, index1) => {
+				// findIndex 根据条件(回调) 按顺序遍历数组 当回调返回true时 就返回当前遍历到的下标     同find一样，只是返回的是下标   效果同indexOf  但是indexOf没法判断NaN
+				// 例如：const res = [1, 7, 6, 3, NaN].findIndex((value, index, arr) => Number.isNaN(value));      //   可以自己写一个判断函数，来获取NaN
+				let index2 = nextImgs.findIndex((src2) => src1 === src2);
 
+				if(index2 != -1)
+					diffArr.push([index1,index2]);
+			});
+			return diffArr;
+		};
 		Img.prototype._bind = function(){
 			methods.$('.__Img__classify',this.wrap).addEventListener('click', ({target}) => {
-				console.log(target);
+				// console.log(target);
 				if(target.nodeName !== 'LI')	return;
+				// 因为后面 图片的显示操作是有600的延迟，如果在这段延迟时间内，切换标签，会带来错误。  所以加一个判断，变化未完成，点击标签无效
+				if(!canChange)	return;
+				canChange = false;
 
 				const type = target.innerText;
-				const els = this._getImgsByType(type);
-				let prevImgs = this.figures.map(figure => methods('img', figure).src);
-				let nextImgs = els.map(figure => methods('img',figure).src);
+				const els = this._getImgsByType(type);    // 当前需要（点击后）显示分类下面的元素
+				let prevImgs = this.figures.map(figure => methods.$('img', figure).src);
+				let nextImgs = els.map(figure => methods.$('img',figure).src);
 
-			})
+				const diffArr = this._diff(prevImgs, nextImgs);
+				// console.log(diffArr);
+				diffArr.forEach(([, i2]) => {
+					// 在当前的图片集合中去找 i2 下标的图片   i2是nextImg里面需要显示的那些
+					// 对遍历到的每个对象都执行函数操作 只有 每个对象操作完都返回true才会获得结果true，
+					// some()是 有一个true就可以
+
+					// this.figures.every((figure, index) => {
+					// 	let src = methods.$('img', figure).src;
+					// 	if(src === nextImgs[i2]){
+					// 		// 区别于 stringObject.slice(start,end) 不包含end String.slice() 与 Array.slice()
+					// 		// arrayObject.splice(index,howmany,item1,.....,itemX) index和howmany是必须，起始坐标和多少个，howmane=0，不删除
+					// 		this.figures.splice(index, 1);
+					// 		return false;
+					// 	}
+					// 	return true;
+					// });
+					// forEach 是自己写的方法  上面every是老师的方法
+					this.figures.forEach((figure, index) => {
+						let src = methods.$('img', figure).src;
+						if(src === nextImgs[i2]){
+							this.figures.splice(index, 1);
+						}
+					})
+				});
+				// 计算当前需要显示的这些图片的位置
+				this._calcPosition(els);
+				let needAppendEls = [];    // 需要新加入的（上一个分类没有，这个分类有）
+				if(diffArr.length){   // 存在不相同的
+					let nextElsIndex = diffArr.map(([, i2]) => i2);
+					// els是点击后需要显示的
+					els.forEach((figure, index) => {
+						// nextElsIndex是不同的元素
+						// 需要显示的图片  不存在于  不同的元素 这个集合中。 说明是相同的，就需要append
+						if(!nextElsIndex.includes(index))
+							needAppendEls.push(figure);
+					});
+				}else{   // 没有不相同的  els里面就都是需要新增加的
+					needAppendEls = els;
+				}
+				this.figures.forEach(el => {
+					el.style.transform = 'scale(0,0) translate(0%, 100%)';
+					el.style.opacity = '0';
+				})
+
+				methods.appendChild(this.imgContainer, ...needAppendEls);
+				setTimeout(() => {
+					els.forEach(el => {
+						el.style.transform = 'scale(1,1) translate(0,0)';
+						el.style.opacity = '1';
+					})
+				})
+				// 动画完成之后 从container里面移除元素
+				setTimeout(() => {
+					this.figures.forEach(figure => {
+						this.imgContainer.removeChild(figure);
+					});
+					this.figures = els;
+					canChange = true;
+				}, 600);   // 动画样式transition设置的是600，
+
+				this.typeBtnEls.forEach(btn => (btn.className = '__Img__classify__type-btn'));
+
+				target.className = '__Img__classify__type-btn __Img__type-btn-active';
+			});
+			// 事件代理
+			this.imgContainer.addEventListener('click', ({ target }) => {
+				// 此处 addEventListener的回调函数默认传入 MouseEvent， 通过解构赋值拿到mouseEvent里面的target
+				if(target.nodeName !== 'FIGURE' && target.nodeName !== 'FIGCAPTION')
+					return;
+				// 如果对象是figcaption即图片上的标注字 就把target换成图片，便于后面统一操作
+				if(target.nodeName === 'FIGCAPTION')
+					target = target.parentNode;
+				const src = methods.$('img', target).src;
+				this.previewImg.src = src;
+				this.overlay.style.display = 'flex';   // 和block差不多
+				// 异步 上面处理完成之后 再显示遮罩层
+				setTimeout(() => {
+					this.overlay.style.opacity = '1';
+				})
+			});
+
+			this.overlay.addEventListener('click', () => {
+				this.overlay.style.opacity = '0';
+				setTimeout(() => {
+					this.overlay.style.display = 'none';   // 仅仅设置opacity为0是看不见，但是仍然在，导致我们不能点击其他元素
+				}, 300)   // overlay隐藏的动画效果时间是300
+			});
 		};
 
 		Img.prototype._show = function(){
