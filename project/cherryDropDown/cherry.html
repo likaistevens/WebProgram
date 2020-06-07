@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .cherry-container{
+            overflow: hidden;
+            background: gray;
+            position: relative;
+            left: 50%;
+            margin-left: -300px;
+            width: 600px;
+            height: 600px;
+        }
+        .cherry{
+            position: relative;
+            top: 0;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+        }
+        .btn{
+            width: 50px;
+            height: 30px;
+        }
+
+    </style>
+</head>
+<body>
+    <input type="button" value="start" class="btn" id="start">
+    <input type="button" value="reset" class="btn" id="reset">
+    <div class="cherry-container">
+<!--        <img class="cherry" src="cherry.png">-->
+<!--        <img class="cherry" src="cherry.png">-->
+<!--        <img class="cherry" src="cherry.png">-->
+<!--        <img class="cherry" src="cherry.png">-->
+<!--        <img class="cherry" src="cherry.png">-->
+    </div>
+
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script src="cherry.js"></script>
+<script>
+    let $start = document.querySelector('#start');
+    let $reset = document.querySelector('#reset');
+    $start.addEventListener('click',() => {
+        const Cherry = new $Cherry({
+            numbers: 3,
+        });
+    });
+    $reset.addEventListener('click',() => {
+
+    })
+
+</script>
+</html>
