@@ -325,7 +325,6 @@
 			this._init(options);
 			this._createElement();
 			this._show();
-
 			this._bind();
 		}
 		const methods = {
@@ -353,8 +352,7 @@
 			this.typeBtnEls = null;    // 所有分类按钮组成的数组
 			this.figures = null;     // 所有当前显示图片组成的数组
 			this._classify(data);
-			console.log(this.classified);
-		};  
+		};
 
 		Img.prototype._classify = function(data){
 			// 归类的最终效果
@@ -579,7 +577,7 @@
 		};
 
 		Img.prototype._show = function(){
-
+			console.log("11");
 			methods.appendChild(this.parasitifer, this.wrap);
 			// css里面图片隐藏是采用默认transform设置为scale(0，0)，opacity=0来达到的。  直接修改transform和opacity会因为同步任务的原因，图片直接显示，没有过度动画，可以通过施加一个没有延迟的定时器去实现异步
 			setTimeout(() => {
