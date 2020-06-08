@@ -1,0 +1,9 @@
+.div2 {
+  width: 200px;
+  height: 200px;
+  background-color: #e03434;
+  background-image: url("./img/hello.jepg");
+  background-image: url("./img/abc");
+  background-image: url("./img/abc"); }
+
+/*# sourceMappingURL=scss.css.map */

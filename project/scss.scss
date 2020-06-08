@@ -1,0 +1,21 @@
+//变量名 $ 开头
+$width: 300px;
+$height: 300px;
+$color: #e03434;
+
+$str : 'hello.jepg';
+$strNoQout: abc;
+
+//默认 !default
+//同一个变量定义两次，后一次会自动覆盖前一次。 但是加了 !default 哪怕出现在后面 也不会覆盖
+$baseWidth: 100px;
+$baseWidth: 200px;
+$baseWidth: 300px !default;
+.div2{
+  width: $baseWidth;     // 200px
+  height: $baseWidth;    // 200px
+  background-color: $color;
+  background-image: url("./img/" + $str);   // 字符串拼接
+  background-image: url("./img/" + $strNoQout);   // 字符串变量没有引号 也可以
+  background-image: url("./img/#{$strNoQout}");   // 模板字符串
+}
