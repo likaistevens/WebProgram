@@ -12,6 +12,7 @@ Error: Undefined variable: "$widthInner".
 42: 
 43: // import
 44: // 以下四种import情况，不会编译。   1.结尾 .css      2.开头  http://   3. url()   4.  media queries
+45: // @import "base.css";   属于以上四种情况， sass会直接原封不动保存这个import，并不会编译
 
 Backtrace:
 scss.scss:40
@@ -61,4 +62,4 @@ D:/Ruby26-x64/bin/scss:23:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$widthInner\".\A         on line 40 of scss.scss\A \A 35:   height: 300px;\A 36:   $widthInner: 100px;\A 37:   width: $widthInner;   // 可以作用于自己的作用域\A 38: }\A 39: .div2{\A 40:   width: $widthInner;   // 不能引用另一个作用域内的变量\A 41: }\A 42: \A 43: // import\A 44: // 以下四种import情况，不会编译。   1.结尾 .css      2.开头  http://   3. url()   4.  media queries"; }
+  content: "Error: Undefined variable: \"$widthInner\".\A         on line 40 of scss.scss\A \A 35:   height: 300px;\A 36:   $widthInner: 100px;\A 37:   width: $widthInner;   // 可以作用于自己的作用域\A 38: }\A 39: .div2{\A 40:   width: $widthInner;   // 不能引用另一个作用域内的变量\A 41: }\A 42: \A 43: // import\A 44: // 以下四种import情况，不会编译。   1.结尾 .css      2.开头  http://   3. url()   4.  media queries\A 45: // @import \"base.css\";   属于以上四种情况， sass会直接原封不动保存这个import，并不会编译"; }

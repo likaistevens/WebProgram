@@ -1,0 +1,268 @@
+//变量名 $ 开头
+$width: 300px;
+$height: 300px;
+$color: #e03434;
+
+
+
+//默认 !default
+//同一个变量定义两次，后一次会自动覆盖前一次。 但是加了 !default 哪怕出现在后面 也不会覆盖
+$baseWidth: 100px;
+$baseWidth: 200px;
+$baseWidth: 300px !default;
+.div2{
+  width: $baseWidth;     // 200px
+  height: $baseWidth;    // 200px
+  background-color: $color;
+}
+
+$str : 'hello.jepg';
+$strNoQout: abc;
+$class: '.div';
+$styleKey: 'height';
+#{$class} {       // 类名也可以拼接
+  width: $width;
+  #{$styleKey}: $height;    // 属性名拼接
+  background-image: url("./img/" + $str);   // 字符串拼接
+  background-image: url("./img/" + $strNoQout);   // 字符串变量没有引号 也可以
+  background-image: url("./img/#{$strNoQout}");   // 模板字符串
+}
+
+
+// 变量作用域
+$width: 300px;
+.div{
+  height: 300px;
+  $widthInner: 100px;
+  width: $widthInner;   // 可以作用于自己的作用域
+}
+.div2{
+  width: $widthInner;   // 不能引用另一个作用域内的变量
+}
+
+// import
+// 以下四种import情况，不会编译。   1.结尾 .css      2.开头  http://   3. url()   4.  media queries
+// @import "base.css";   属于以上四种情况， sass会直接原封不动保存这个import，并不会编译
+@import "base";     // 可以正常引入sass文件。  如果sass文件为 _ 开头，则默认不会被监视，不会单独编译成css， import之后会被编译成css样式写入当前css中
+// 对于base2.scss  不是下划线开头  所以会被监视，单独编译成css
+// import可以写在任意选地方，  会在相应的地方按顺序生成css。   所以  会存在import之后的样式覆盖了之前的样式，只需要再import的sass里面给样式加上 !default， 就不会覆盖
+
+
+// sass数据类型
+// number类型
+$width: 300px;
+$zoomValue: 2;
+// color类型
+$color: red;
+$colorHex: #ffe932;
+// string类型
+$str: 'hello.jpeg';
+// list类型
+$list: (100px, 2, 'string', #ffe932);     // 可以多种元素混合
+.div{
+  width: nth($list, 1);    // 取出第1个元素，    注意 sass里面list下标从1开始
+  zoom: index($list, 'string');   // 找到 'string' 是list的第几个元素
+}
+// map类型
+$map: (top: 1px, left: 2px, bottom: 3px, right: 4px);   // 注意是用圆括号
+.div{
+  top: map-get($map, top);    // 获取 top的值
+}
+.div{     // map循环方法   每一个key和value  in  map
+  @each $key, $value in $map{
+    #{$key}: $value;
+  }
+}
+
+// sass的运算
+$number1: 100px;
+$number2: 200px;
+$width: $number1 + $number2;
+.div{
+  width: $width;
+  font: (10px/8);   // 1.25px
+  font: (10px*8);   // 80px     计算的时候 只能一个有单位
+  width: $width/2;  // 变量运算不需要括号
+  margin-left: (5px + 8px/2);
+}
+// 颜色运算
+$color1: #010203;
+$color2: #030405;
+$color3: #050201;
+.div{
+  color: $color1 + $color2;     // color: #040608;
+  color: mix($color1, $color2, $color3);    // 更推荐用mix方法
+  color: red($color1);     // 获取color1里面的红色的数值
+  color: green($color2);
+  color: blue($color3);
+  color: rgb(red($color1), green($color2), blue($color3));   // 获取到的rbg数值 重新写入rgb中
+}
+// 字符串
+$str: 'index.jpeg';
+.div{
+  background-image: url("imges/" + $str);
+}
+// @mixin代码块
+@mixin helloMixin{    // 命名一个样式  然后一起传入某个对象样式里面
+  display: inline-block;
+
+  font: {
+    size: 20px;
+    weight: 500;
+  };
+  color: red;
+}
+.div{
+  width: 100px;    // mixin和普通样式 可以混合
+  @include helloMixin;   // 导入上面定义的样式
+}
+// mixin嵌套
+@mixin helloMixin2{
+  padding: 10px;
+  @include helloMixin;
+  background-color: red;
+}
+.div{
+  @include helloMixin2;
+}
+// 参数mixin
+@mixin helloMixin3($color, $width){
+  border: {
+    color: $color;
+    width: $width;
+    style: dashed;
+  };
+}
+.div{
+  @include helloMixin3(blue, 2px);    // 向mixin里面传入参数
+}
+
+// 继承
+.div{
+  border: 1px;
+  background-color: red;
+}
+.divex {
+  @extend .div;     // 继承上面一个样式。
+  border-width: 3px;
+}
+// 关联属性继承
+.div1{
+  border: 1px;
+  background-color: red;
+}
+.div1.other{     // div1和other相关联    divext继承div1的时候 同时会跟other关联起来
+  background-image: url("/hello.jpeg");
+}
+.divext{
+  @extend .div1;
+}
+/*
+编译结果
+.div1, .divext {
+  border: 1px;
+  background-color: red; }
+
+.div1.other, .other.divext {
+  background-image: url("/hello.jpeg"); }
+*/
+
+// 链式继承
+.div1{
+  border: 1px solid #000;
+}
+.div2{
+  @extend .div1;
+  color: blue;
+}
+.div3{
+  @extend .div2;
+  color: red;     // 链式继承 属性重复的时候 不会把相同的覆盖
+}
+// 伪类继承
+a:hover{
+  text-decoration: underline;
+}
+.hoverlink{
+  color: red;
+  @extend :hover;
+}
+
+// scss嵌套
+.div{
+  width: 100px;
+  .div-inner{               // 在.div 下的.div-inner才套用这个样式  相当于  .div .div-inner{  }
+    height: 100px;
+    border: {           // 对于复杂的样式  也可以采用嵌套  分开写
+      left: 1px solid #000;
+      right: 1px solid #000;
+    };
+    background: {
+      image: url("/images/1.jpg");
+      color: red;
+      size: 100px;
+    };
+  }
+}
+
+// 条件控制
+// if
+$type: 'tony';
+p{                               // if 语句写在里面
+  @if $type == 'bufy'{           // p { color: green; }
+    color: red;
+  } @else if $type == 'tim'{
+    color: blue;
+  } @else if $type == 'tony'{
+    color: green;
+  } @else {
+    color: black;
+  }
+}
+@if $type == 'bufy'{           // if写在外面
+  .div{                        // .div { color: blue; }
+    color: red;
+  }
+}@else {
+  .div{
+    color: blue;
+  }
+}
+
+// for
+@for $i from 1 through 3{     // 包括 3
+  // @for $i from 1 to 3{     // 不包括 3
+  .item#{$i}{      // 占位符号 写法
+    width: 1px * $i;
+  }
+}
+/*编译结果
+.item1 { width: 1px; }
+.item2 { width: 2px; }
+.item3 { width: 3px; }*/
+
+// for list
+$list: (1,2,3,4,5);
+@for $i from 1 through length($list){       // 遍历数组
+  .item#{$i}{
+    width: 1px * $i;
+  }
+}
+
+// while
+$i: 6;
+@while $i > 0{
+  .item#{$i}{
+    width: 1px * $i;
+  }
+  $i: $i - 2;
+}
+
+// each 循环遍历map
+$map: (top: 1px, left: 2px, bottom: 3px, right: 4px);
+.div{
+  @each $key , $value in $map{
+    #{ $key }: $value;
+  }
+}
+// 编译结果  .div { top: 1px; left: 2px; bottom: 3px; right: 4px; }
