@@ -58,6 +58,7 @@
 
     function timeElapse(c) {
         var e = Date();
+        console.log(e);
         var f = (Date.parse(e) - Date.parse(c)) / 1000;
         var g = Math.floor(f / (3600 * 24));
         f = f % (3600 * 24);

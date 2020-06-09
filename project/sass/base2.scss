@@ -1,6 +1,6 @@
-$map: (top: 1px, left: 2px, bottom: 3px, right: 4px);
+@mixin foo($args1,$args2){
+ keywords($args);
+}
 .div{
-  @each $key , $value in $map{
-    #{ $key }: $value;
-  }
+  @include foo($arg1:'abc', $arg2: 'efg');
 }

@@ -266,3 +266,62 @@ $map: (top: 1px, left: 2px, bottom: 3px, right: 4px);
   }
 }
 // 编译结果  .div { top: 1px; left: 2px; bottom: 3px; right: 4px; }
+
+
+// 函数
+// number函数
+percentage($number);
+round($number);
+ceil($number);
+floor($number);
+abs($number);
+min($number...);
+max($number...);
+random(n);     // 0-n 之间随机整数
+.div{
+  zoom: min($number1, $number2);
+}
+// list函数
+length($list);
+nth($list, $n);         // 获取下标元素  从 1 开始
+set-nth($list, $n, $value);   // 替换
+join($list1, $list2);    // 拼接
+append($list1, $val, [$seperator]);   // 尾部添加
+index($list, $value);    // 指定元素下标
+.div{
+  $list: (1,'p', 3 , 5);
+  zoom: nth($list, 2);
+  @debug join($list, (6,7,8));   // 操作如果没有意义，无法被编译，可以用@debug执行，不会影响整个程序
+}
+// 字符串函数
+unquote($string);      // 去除引号
+quote($string);    // 添加引号
+str-length($string);    // 获取字符串长度
+str-insert($string，$insert, $index);    // 在指定位置插入
+str-index($string, $substring);   // 返回指定字符在字符串的位置
+to-upper-case($string);   // 大写
+to-lower-case($string);   // 小写
+// map函数
+map-get($map, $key);
+map-merge($map1, $map2);
+map-remove($map, $key);
+map-keys($map);     // 返回所有key
+map-values($map);   // 返回所有value
+map-has-key($map, $key);   // 根据key判断是否有value   返回true / false
+keywords($args);    // 返回一个函数的参数，这个参数可以动态的设置key和value
+/*
+@mixin foo($args...){
+  @debug keywords($args);
+}
+@include foo($arg1:'abc', $arg2: 'efg');*/
+
+// 自定义函数
+@function px2rem($px){   // 将px转化成rem
+  $rem: 37.5px;
+  // @debug $rem;
+  @return ($px/$rem) + rem;
+}
+$rem1: 100px;
+.div{
+  width: px2rem($rem1);
+}
