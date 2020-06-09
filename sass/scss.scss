@@ -3,7 +3,19 @@ $width: 300px;
 $height: 300px;
 $color: #e03434;
 
-
+// 父元素选择器  &   谁是父元素  & 就替代谁
+@mixin clearfix{
+  &:after{     // 父元素选择器    谁是父元素  & 就替代谁
+  }
+}
+.btn{
+  padding: 8px;
+  display: inline-block;
+  font-size: $baseFontSize;
+  &.cur {    // 父元素选择器 &  替代父元素。 先选择btn的父元素，然后父元素下的cur。  还是自己
+    color: $redColor;
+  }
+}
 
 //默认 !default
 //同一个变量定义两次，后一次会自动覆盖前一次。 但是加了 !default 哪怕出现在后面 也不会覆盖
