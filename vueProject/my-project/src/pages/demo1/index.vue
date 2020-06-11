@@ -21,6 +21,8 @@
       console.log("beforeMount");
     },
     mounted(){
+      console.log(this.$route.params.userId);
+      console.log(this.$route.query);
       console.log("mounted");
     },
     beforeDestory(){

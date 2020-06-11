@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import demo1 from '@/pages/demo1/index.vue'
 import demo2 from '@/pages/demo2/index.vue'
+import demo3 from '@/pages/demo3/index.vue'
+
 
 Vue.use(Router)
 
@@ -14,7 +16,7 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/demo1',         // 地址栏输入这个路径  会去找到下面的文件
+      path: '/demo1/:userId',         // 地址栏输入这个路径  会去找到下面的文件
       name: 'demo1',
       component: demo1
     },
@@ -22,6 +24,11 @@ export default new Router({
       path: '/demo2',
       name: 'demo2',
       component: demo2
+    },
+    {
+      path: '/demo3',
+      name: 'demo3',
+      component: demo3
     },
   ]
 })
