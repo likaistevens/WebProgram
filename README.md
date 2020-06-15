@@ -9,7 +9,7 @@
       [jQuery](/webProgram/Note/jQuery.html/)、
       [ES6](/webProgram/Note/ES6.html/)、
       [Ajax](/webProgram/Note/Ajax.html/)、
-      [Sass](/webProgram/Note/Sass/)
+      [Sass](/webProgram/Note/sass/)
     2. Project  
       1. [购物网站](/webProgram/project/购物网站/)</br>	
       2. [图片分类](/webProgram/project/switchPic/)</br>
