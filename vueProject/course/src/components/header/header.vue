@@ -5,8 +5,8 @@
       ><li>课程</li
     ><li>实战</li
     ><li>职业路线</li
-    ><li class="header-search"><img src="../../assets/search.png" alt=""></li
-    ><li class="header-history"><img src="../../assets/history.png" alt=""></li>
+    ><li class="header-search"><img src="assets/online-course/search.png" alt=""></li
+    ><li class="header-history"><img src="src\assets\online-course\history.png" alt=""></li>
     </ul>
   </div>
 </template>
@@ -32,7 +32,8 @@
     height: 44px;
   }
   .header-ul img{
-    width: 18px;
+    width: 18px !important;
+    height: 18px !important;
   }
   .header-ul .header-search{
     padding-left: 59px;

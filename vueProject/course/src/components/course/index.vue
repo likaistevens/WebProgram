@@ -1,7 +1,7 @@
 <template>
   <ul class="c-course">
     <!--      点击里面的每个元素 都会进行跳转-->
-    <router-link to="/detail">
+    <router-link to="/online-course/detail">
       <li v-for="item in courseArray">
         <img :src="item.imgUrl" alt="">
         <h1>{{item.title}}</h1>
@@ -44,5 +44,8 @@
     font-size: 12px;
     padding: 8px 0 0 124px;
     color: #71777D;
+  }
+  body, html{
+    overflow: auto !important;
   }
 </style>

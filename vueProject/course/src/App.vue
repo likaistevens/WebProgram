@@ -1,12 +1,24 @@
 <template>
-  <div id="app">
-    <router-view/>
+  <div id="app" class="g-container">
+    <div class="g-view-container">
+<!--      所有一级路由都会在这里切换-->
+      <router-view></router-view>
+    </div>
+    <div class="g-footer-container">
+      <c-tabbar>
+
+      </c-tabbar>
+    </div>
   </div>
 </template>
 
 <script>
+  import CTabbar from 'components/tabbar'
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+    CTabbar,
+  }
 }
 </script>
 
