@@ -3,7 +3,8 @@
 -------------------------
 * webProgram
     *包含从0开始的前端学习记录，笔记，项目*
-    1. Note   > 学习笔记
+    1. Note</br>
+      学习笔记
         HTML5、CSS3、JavaScript、jQuery、ES6、Ajax、Sass、Scss、Vue
     2. Project
         + 列表一
