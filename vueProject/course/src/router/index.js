@@ -9,7 +9,7 @@ import Index from 'pages/index'
 //
 // import mallHome from 'pages/mall/home/index';
 // import mallCategory from 'pages/mall/category/index';
-// import mallCart from 'pages/mall/cart/index';
+// import mallCart from 'pages/mall/recommend/index';
 // import mallPersonal from 'pages/mall/personal/index';
 // import mallSearch from 'pages/mall/search/index';
 // import mallProduct from 'pages/mall/product/index';

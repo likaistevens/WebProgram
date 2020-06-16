@@ -5,9 +5,16 @@
       <home-header></home-header>
     </header>
 
-    <home-slider/>
+    <me-scroll :data="recommends">
+      <home-slider></home-slider>
+      <home-nav></home-nav>
+<!--      接收事件，当recommends加载完之后，更新滚动条-->
+      <home-recommend @loaded="getRecommend"></home-recommend>
+    </me-scroll>
+
     <div class="g-backtop-container"></div>
 <!--    放置一个router-view，此路由下的二级路由会在这里切换    一级路由切换的位置在入口App.vue-->
+<!--    当地址变成二级路由的地址，router/index.js里面的二级路由页面就会塞到这里-->
     <router-view></router-view>
   </div>
 </template>
@@ -15,13 +22,35 @@
 <script>
   import HomeHeader from './header';
   import HomeSlider from './slider';
-    export default {
-        name: "mallHome",
+  import HomeNav from './nav';
+  import HomeRecommend from './recommend';
+
+  import MeScroll from "base/scroll";
+  import recommend from "./recommend";
+
+  export default {
+      name: "mallHome",
 
       components: {
-          HomeHeader,
-          HomeSlider,
+        HomeHeader,
+        HomeSlider,
+        MeScroll,
+        HomeRecommend,
+        HomeNav,
+      },
+    data() {
+      return {
+        recommends: [],
       }
+    },
+    methods: {
+        updateScroll() {
+
+        },
+      getRecommend(recommends) {
+          this.recommends = recommends;
+      }
+    }
     }
 </script>
 

@@ -2,13 +2,14 @@
 <!--  从base/slider这个基础组件出发，包装一下成为home的业务组件-->
  <div class="slider-wapper">
 <!--   这里的v-if是需要等数据处理完之后才会渲染me-slider这个组件。不然就会存在一个异步问题，数据没获取完，组件已经渲染上去了，切换图片的时候就会产生跳跃-->
+   <me-loading v-if="!sliders.length"></me-loading>
    <me-slider
      :data="sliders"
      :direction="direction"
      :loop="loop"
      :interval="interval"
      :pagination="pagination"
-     v-if="sliders.length"
+     v-else
    >
      <swiper-slide v-for="(item, index) in sliders" :key="index">
        <a :href="item.linkUrl" alt="" class='slider-link'>
@@ -24,9 +25,12 @@
     import { SwiperSlide } from 'vue-awesome-swiper';
     import { sliderOptions } from "./config";
     import { getHomeSlider } from "../../../api/home";
+    import MeLoading from "base/loading";
 
     export default {
       data() {
+        // swiper常用选项配置
+        // https://www.swiper.com.cn/api/freemode/44.html
         return {
           direction: sliderOptions.direction,
           loop: sliderOptions.loop,
@@ -51,6 +55,7 @@
       components: {
         MeSlider,
         SwiperSlide,
+        MeLoading,
       }
     }
 </script>

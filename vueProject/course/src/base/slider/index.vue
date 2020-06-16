@@ -50,7 +50,8 @@
       },
       data() {
         return {
-          keyId: Math.random()
+          keyId: Math.random(),
+          swiperOption: {},
         };
       },
       watch: {
@@ -61,7 +62,6 @@
           this.swiperOption.loop = newData.length === 1 ? false : this.loop;
           this.keyId = Math.random();
         }
-
       },
       created() {
         this.init();

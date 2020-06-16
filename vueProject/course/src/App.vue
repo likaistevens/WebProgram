@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="g-container">
-    <div class="g-view-container">
-<!--      所有一级路由都会在这里切换-->
+    <div class="g-view-container" ref="one">
+<!--      所有一级路由都会在这里切换。  在router/index.js里面，切换到里面任何的一级路由的path，都会将该页面塞到这里-->
       <router-view></router-view>
     </div>
     <div class="g-footer-container">
@@ -18,6 +18,10 @@ export default {
   name: 'App',
   components:{
     CTabbar,
+  },
+  methods:{
+  },
+  mounted() {
   }
 }
 </script>
