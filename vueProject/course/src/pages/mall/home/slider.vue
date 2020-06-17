@@ -42,9 +42,13 @@
       },
       methods: {
         getSliders(){
-          getHomeSlider().then(data => {
+          // 后面本身就是个promise对象，可以直接返回
+           return getHomeSlider().then(data => {
             this.sliders = data;
           })
+        },
+        update(){
+          return this.getSliders();
         },
       },
       // 通常在created里面获取数据

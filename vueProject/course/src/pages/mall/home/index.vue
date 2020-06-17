@@ -5,8 +5,8 @@
       <home-header></home-header>
     </header>
 
-    <me-scroll :data="recommends">
-      <home-slider></home-slider>
+    <me-scroll :data="recommends" pullDown @pull-down="pullToRefresh">
+      <home-slider ref="slider"></home-slider>
       <home-nav></home-nav>
 <!--      接收事件，当recommends加载完之后，更新滚动条-->
       <home-recommend @loaded="getRecommend"></home-recommend>
@@ -49,7 +49,15 @@
         },
       getRecommend(recommends) {
           this.recommends = recommends;
+      },
+      pullToRefresh(end){
+          this.$refs.slider.update().then(end);
+          // setTimeout(() => {
+          //   console.log('下拉刷新');
+          //   end();
+          // }, 5000);
       }
+
     }
     }
 </script>

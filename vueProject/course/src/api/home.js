@@ -4,6 +4,19 @@ import { SUCC_CODE, TIMEOUT, HOME_RECOMMEND_PAGE_SIZE, jsonpOptions} from './con
 
 import jsonp from "assets/js/jsonp";
 
+// 打乱数组的顺序   刷新幻灯片的时候用到
+const shuffule = (arr) => {
+  const arrLength = arr.length;
+  let i = arrLength;
+  let rndNum;
+
+  while( i-- ){
+    if(i != (rndNum = Math.floor(Math.random() * arrLength))){
+      [arr[i], arr[rndNum]] = [arr[rndNum], arr[i]];
+    }
+  }
+  return arr;
+}
 // 获取幻灯片数据--ajax
 export const getHomeSlider = () => {
   // 之前获取数据之后 需要用回调函数返回数据  axios解决异步问题  本身就返回一个promise对象
@@ -14,11 +27,24 @@ export const getHomeSlider = () => {
     }).then(res => {
     // 这里res是全部数据，但其实很多信息不需要，所以需要加工，先判断数据有效性，然后处理
     if(res.data.code === SUCC_CODE ) {
-      return res.data.slider;
+      // res.data.slider 获取到的所有幻灯片
+      let sliders = res.data.slider;
+      // 从sliders数组里面随机取一个  slider是只包含一张幻灯片的一个单元素数组
+      const slider = [sliders[Math.floor(Math.random() * sliders.length)]];
 
-      throw new Error('获取数据失败');
+      // filter遍历sliders数组内每个元素，当后面函数返回真(即随机百分之五十概率)，则返回该元素(保留该元素)
+      // 相当于每次获取数据之后，百分之五十左右的会被存储下来展示  随机筛选出来的数组，塞进shuffle打乱，作为新的sliders
+      sliders = shuffule(sliders.filter(() => Math.random() >= 0.5));
+
+      // 如果筛选之后sliders里面一个都没有，就把随机选出来的那个作为sliders
+      if(sliders.length === 0){
+        sliders = slider;
+      }
+      return sliders;
+      // return res.data.slider;
     }
- }).catch(err => {
+    throw new Error('获取数据失败');
+  }).catch(err => {
    if(err){
      console.log(err);
    }
