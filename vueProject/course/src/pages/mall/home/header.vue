@@ -14,6 +14,14 @@
       components: {
           MeNavbar,
       },
+      methods: {
+          show(){
+            this.visible = true;
+          },
+          hide(){
+            this.visible = false;
+          },
+      },
       data() {
         return {
           visible: true
@@ -30,7 +38,13 @@
     /*默认样式中设置所有背景色为白色，两者优先级相同时，白色背景色写在后面，就会覆盖透明背景色，此处加入这个选择器提高优先级*/
     &.mine-navbar{
       background-color: transparent;
+      transition: background-color 0.5s;
     }
+
+    &.header-transition {
+      background-color: $header-bgc-translucent;
+    }
+
     .iconfont{
       color: $icon-color-default;
       font-size: $icon-font-size;

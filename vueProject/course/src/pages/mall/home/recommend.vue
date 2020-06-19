@@ -40,20 +40,32 @@
       this.getRecommend(1);
     },
     methods: {
+      update(){
+        return this.getRecommend();
+      },
       getRecommend(){
         if(this.curPage > this.totalPage){
-          return;
+          // 返回一个失败的Promise实例。传入的参数会原封不动抛出去
+          return Promise.reject(new Error('没有更多'));
         }
-        getHomeRecommend(this.curPage).then(data => {
-          console.log(data);
-          this.curPage ++;
-          this.totalPage = data.totalPage;
-          // this.recommends = data.itemList;
-          // 如果直接采用上述方法赋值，那么每次recommend都会是一个page内item的数量，我们需要随着curPage的增加，this.recommend里面存储的item越来越多
-          // concat 返回一个新的数组。该数组是通过把所有 arrayX 参数添加到 arrayObject 中生成的。如果要进行 concat() 操作的参数是数组，那么添加的是数组中的元素，而不是数组。
-          this.recommends = this.recommends.concat(data.itemList);
-          // 抛出loaded事件，并传出参数     此事件用于更新滚动条
-          this.$emit('loaded', this.recommends);
+        return getHomeRecommend(this.curPage).then(data => {
+          return new Promise(resolve => {
+            if(data){
+              // console.log(data);
+              this.curPage ++;
+              this.totalPage = data.totalPage;
+              // this.recommends = data.itemList;
+              // 如果直接采用上述方法赋值，那么每次recommend都会是一个page内item的数量，我们需要随着curPage的增加，this.recommend里面存储的item越来越多
+              // concat 返回一个新的数组。该数组是通过把所有 arrayX 参数添加到 arrayObject 中生成的。如果要进行 concat() 操作的参数是数组，那么添加的是数组中的元素，而不是数组。
+              this.recommends = this.recommends.concat(data.itemList);
+              // 抛出loaded事件，并传出参数     此事件用于更新滚动条
+              this.$emit('loaded', this.recommends);
+              this.$emit('loadPullUp', this.recommends);
+
+              // 只有上面if判断通过，data有值，才resolve，然后后面可以继续then
+              resolve();
+            }
+          })
         });
       },
     },
