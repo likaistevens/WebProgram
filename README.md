@@ -23,4 +23,3 @@
  	多个小型vue项目的合集  
  	- [online-course](/vueProject/webApp/src/pages/online-course/)  
   - [mall](/vueProject/webApp/src/pages/mall/)  
-
