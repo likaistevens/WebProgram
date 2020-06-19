@@ -22,5 +22,4 @@
  2. [webApp](/vueProject/webApp/)  
  	多个小型vue项目的合集  
  	- [online-course](/vueProject/webApp/src/pages/online-course/)</br>	
- 	- [online-course](/vueProject/webApp/src/pages/online-course/)</br>	
  	- [mall](/vueProject/webApp/src/pages/mall/)</br>	
