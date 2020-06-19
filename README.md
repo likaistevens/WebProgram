@@ -11,7 +11,7 @@
    [Ajax](/webProgram/Note/Ajax.html/)、
    [Sass](/webProgram/Note/sass/)
  2. Project  
-   [购物网站](/webProgram/project/购物网站/)：包含多个页面常用小组件的开发。</br>	
+   [购物网站](/webProgram/project/购物网站/)：包含使用原生js开发多个页面常用小组件。</br>	
    [图片分类](/webProgram/project/switchPic/)</br>
    [挂号网站](/webProgram/project/挂号网站/)</br>
    [头条](/webProgram/project/头条/)</br>
