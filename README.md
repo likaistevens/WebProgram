@@ -17,8 +17,9 @@
    [头条](/webProgram/project/头条/)</br>
 ### *vueProject*  
  *(包含所有的vue项目)*
- 1. [学习记录](/vueProject/my-project/)  	
- 	vue学习笔记主要在src/pages/demo2/index.vue。 另外大量学习记录包含在webApp/mall项目下
+ 1. [学习记录](/vueProject/my-project/)</br>
+ 	vue学习笔记主要在src/pages/demo2/index.vue。</br> 
+  另外大量学习记录包含在webApp/mall项目下
  2. [webApp](/vueProject/webApp/)  
  	多个小型vue项目的合集  
  	- [online-course](/vueProject/webApp/src/pages/online-course/)</br>	
