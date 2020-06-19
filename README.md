@@ -1,6 +1,6 @@
 # WebProgram
 ## 记录前端的学习过程
-### * webProgram  
+### *webProgram*  
  *(包含从0开始的前端学习记录，笔记，项目)*
  1. Note  *(学习笔记)*  
    [HTML5](/webProgram/Note/HTML.html/)、
@@ -15,7 +15,7 @@
    [图片分类](/webProgram/project/switchPic/)</br>
    [挂号网站](/webProgram/project/挂号网站/)</br>
    [头条](/webProgram/project/头条/)</br>
-### * vueProject  
+### *vueProject*  
  *(包含所有的vue项目)*
  1. [学习记录](/vueProject/my-project/)  	
  	vue学习笔记主要在src/pages/demo2/index.vue。 另外大量学习记录包含在webApp/mall项目下
