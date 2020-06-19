@@ -11,11 +11,15 @@
    [Ajax](/webProgram/Note/Ajax.html/)、
    [Sass](/webProgram/Note/sass/)
  2. Project  
-   [购物网站](/webProgram/project/购物网站/)</br>	
+   [购物网站](/webProgram/project/购物网站/)：包含多个页面常用小组件的开发。</br>	
    [图片分类](/webProgram/project/switchPic/)</br>
    [挂号网站](/webProgram/project/挂号网站/)</br>
    [头条](/webProgram/project/头条/)</br>
 ### * vueProject  
  *(包含所有的vue项目)*
-
+ 1. [学习记录](/vueProject/my-project/)  	
+ 	vue学习笔记主要在src/pages/demo2/index.vue。 另外大量学习记录包含在webApp/mall项目下
+ 2. [webApp](/vueProject/webApp/)  	
+ 	多个小型vue项目的合集
+ 	- 
 
