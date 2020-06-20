@@ -82,6 +82,9 @@ class TodoList extends Component{
     }
 
     render() {
+        // 当组件初次创建的时候，render函数会被执行一次
+        // 当state数据发生变更的时候，render函数会被重新执行
+        // 当props数据发生变更的时候，render函数会被重新执行
         return (
             <Fragment>
                  {/*label标签具有for属性。规定 label 与哪个表单元素绑定。 react里for表示循环，所以这里要用htmlFor*/}
