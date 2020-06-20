@@ -1,0 +1,28 @@
+1.父组件给子组件通讯，
+直接传递参数，传递方法
+<TodoItem
+    content={value}
+    key={index}
+    index={index}
+    // 除了可以把参数传递给子组件，还可以吧方法传递给子组件
+    deleteFunction={this.handleItemClick}
+/>
+2.子组件给父组件通讯
+需要调用父组件的方法，并且，一定要注意在父组件中改变父组件方法的this的指向
+this.handleItemClick = this.handleItemClick.bind(this);
+const { deletFunction , index } = this.props;   // 跟上述一样，做了个解构赋值
+deletFunction(index);
+
+
+React特点
+1.声明式开发
+不操作DOM，只对数据进行操作，DOM会自动更新
+2.可以与其他框架并存
+React只对html里某一个DOM元素进行操作。与html里其他任何东西都无关。所以，html里与React无关的东西，都可以用别的Vue，jQuery等操作
+3.组件化
+4.单项数据流
+只能父组件改变子组件的数据，因为子组件的值是父组件传来的    content={value}， 父组件操作传入的值就可以改变子组件的值
+子组件想改变父组件的数据，只能采用上述方法，用子组件调用父组件方法。实质还是父组件改变自己的数据
+5.函数式编程
+有利于前端自动化测试
+

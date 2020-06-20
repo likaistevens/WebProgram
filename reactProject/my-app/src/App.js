@@ -1,5 +1,8 @@
 import React from 'react';
 
+// JSX两种标签
+// 1.普通html标签
+// 2.组件标签 <App />  首字母必须要大写
 function App() {
   return (
     <div>
@@ -8,19 +11,6 @@ function App() {
   );
 }
 
-// 之前版本写法
-// App这个类继承了Component。 其实Component相当于React.Component
-// 我们把继承了Component的类就叫做 React组件
-/*
-class App extends Component{
-    render() {
-        return (
-            <div>
-                hello React
-            </div>
-        );
-    }
-}
-*/
+
 
 export default App;
