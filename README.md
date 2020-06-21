@@ -27,4 +27,6 @@
 ## *reactProject*  
  *(包含所有的react学习记录和项目)*
  1. [学习记录](/reactProject/my-app/)</br>
+ 2. Project    
+ 	- [my-news](/reactProject/my-news/)</br>	
 
