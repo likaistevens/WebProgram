@@ -21,7 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9d72fe0f-c98a-4d78-80f8-2966c756c47c" name="Default Changelist" comment="2020.6.9">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vueProject/my-project/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/vueProject/my-project/src/router/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +92,9 @@
       <workItem from="1591733061605" duration="1581000" />
       <workItem from="1591735361101" duration="3693000" />
       <workItem from="1591741990727" duration="672000" />
+      <workItem from="1593964397182" duration="249000" />
+      <workItem from="1593964678604" duration="531000" />
+      <workItem from="1594005070545" duration="3719000" />
     </task>
     <task id="LOCAL-00001" summary="first version">
       <created>1591417381314</created>
@@ -133,7 +135,7 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ORDER">
@@ -150,12 +152,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first version" />

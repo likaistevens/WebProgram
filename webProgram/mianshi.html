@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .red{
+            backgrount-color: red;
+        }
+        .yellow{
+            backgrount-color: yellow;
+        }
+        .green{
+            backgrount-color: green;
+        }
+        #light{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="light"></div>
+</body>
+
+<script>
+    var $light = document.querySelector('#light');
+    console.log($light);
+    function changeColor() {
+        return Promise.resolve();
+    }
+    function run() {
+        for(var i = 0; i < 10; i++){
+            changeColor()
+                .then(resolve => {
+                    $light.className = 'red';
+                    return true;
+                })
+                .then(resolve => {
+                    setTimeout(function () {
+                        $light.className = 'yellow';
+                    }, 3000)
+                    return true;
+                })
+                .then(resolve => {
+                    setTimeout(function () {
+                        $light.className = 'green';
+                    }, 1000)
+                    return true;
+                });
+        }
+        // while(){
+        //
+        // }
+    }
+    run();
+
+
+
+</script>
+<script>
+
+    const tree = {
+        value: 'a',
+        left: {
+            value: 'b',
+            right: {
+                value: 'c',
+                left: {
+                    value: 'd'
+                },
+                right: {
+                    value: 'e'
+                }
+            }
+        },
+        right: {
+            value: 'f',
+            left: {
+                value: 'g'
+            },
+            right: {
+                value: 'h'
+            }
+        }
+    }
+    function BFS(root){
+        var queue = [];
+        var res = [];
+        queue.push(root);
+        // console.log(queue.shift());
+        console.log(queue.length);
+        while(queue.length !== null){
+            console.log(queue.shift());
+            var temp = queue.shift();
+            res.push(temp.value);
+            queue.push(temp.left);
+            queue.push(temp.right);
+        }
+        return res;
+    }
+    BFS(tree);
+</script>
+
+<script>
+    var $light = document.querySelector('#light');
+    console.log($light);
+    function changeColor(color,timer) {
+        return new Promise((resolve,reject)=>{
+            setTimeout(()=>{
+                var light = document.querySelector('#light');
+                light.style.backgroundColor=color
+                resolve(color);
+            },timer)
+        })
+    }
+    function run() {
+        changeColor('red',1000).then(color=>{
+            console.log(color,'begin')
+            return changeColor('yellow',3000)
+        }).then((color)=>{
+            console.log(color, 'begin')
+            return changeColor('green',5000)
+        }).then((color)=>{
+            console.log(color, 'begin')
+            run()
+        })
+        // while(){
+        //
+        // }
+    }
+    run();
+
+
+
+</script>
+<script>
+
+    const tree = {
+        value: 'a',
+        left: {
+            value: 'b',
+            right: {
+                value: 'c',
+                left: {
+                    value: 'd'
+                },
+                right: {
+                    value: 'e'
+                }
+            }
+        },
+        right: {
+            value: 'f',
+            left: {
+                value: 'g'
+            },
+            right: {
+                value: 'h'
+            }
+        }
+    }
+    function BFS(root) {
+        var queue = [];
+        var res = [];
+        queue.push(root);
+        // console.log(queue.shift());
+        //console.log(root.value);
+        while (queue.length !== 0) {
+            //console.log(queue.shift());
+            var size = queue.length;
+            for (i = 0; i < size; i++) {
+                var temp = queue.shift();
+                console.log(temp.value);
+                res.push(temp.value);
+                if (temp.left)
+                    queue.push(temp.left);
+                if (temp.right)
+                    queue.push(temp.right);
+            }
+
+        }
+        console.log(res);
+    }
+    BFS(tree);
+</script>
+
+</html>
