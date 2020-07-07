@@ -1,0 +1,17 @@
+.app-header-logo{
+    position: absolute;
+    height: 45px;
+    float: right;
+    top: 50%;
+    margin-top: -22.5px;
+    left: 50px;
+}
+.app-header-menu{
+    float: left;
+    margin-left: 20px !important;
+    border-bottom: none !important;
+}
+.ant-menu-item{
+    position: absolute;
+    left: 150px;
+}

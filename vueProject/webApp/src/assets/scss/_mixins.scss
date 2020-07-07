@@ -1,0 +1,34 @@
+@import "variables";
+
+// flex-center    垂直水平居中flx布局 默认 行排列
+@mixin flex-center($direction: row) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: $direction;
+}
+
+// flex-between   中间拉伸布局 两边元素先放，中间元素填满
+@mixin flex-between() {
+  display: flex;
+  justify-content: space-between;   // 水平方向两边撑开
+  align-items: center;     //垂直方向居中
+}
+
+//ellipsis  文字溢出
+@mixin ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+//multi line ellipsis  多行文字溢出
+@mixin multiline-ellipsis($num: 2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $num;
+  -webkit-box-orient: vertical;
+  white-space: normal !important;
+  word-wrap: break-word;
+}

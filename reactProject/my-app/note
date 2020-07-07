@@ -1,0 +1,46 @@
+1.父组件给子组件通讯，
+直接传递参数，传递方法
+<TodoItem
+    content={value}
+    key={index}
+    index={index}
+    // 除了可以把参数传递给子组件，还可以吧方法传递给子组件
+    deleteFunction={this.handleItemClick}
+/>
+2.子组件给父组件通讯
+需要调用父组件的方法，并且，一定要注意在父组件中改变父组件方法的this的指向
+父组件把方法传递给子组件，并改变this指向
+<TodoItem deleteFunction={this.handleItemClick} index={index} />
+this.handleItemClick = this.handleItemClick.bind(this);
+子组件接收并调用
+const { deleteFunction , index } = this.props;   // 跟上述一样，做了个解构赋值
+deleteFunction(index);
+
+
+React特点
+1.声明式开发
+不操作DOM，只对数据进行操作，DOM会自动更新
+2.可以与其他框架并存
+React只对html里某一个DOM元素进行操作。与html里其他任何东西都无关。所以，html里与React无关的东西，都可以用别的Vue，jQuery等操作
+3.组件化
+4.单项数据流
+只能父组件改变子组件的数据，因为子组件的值是父组件传来的    content={value}， 父组件操作传入的值就可以改变子组件的值
+子组件想改变父组件的数据，只能采用上述方法，用子组件调用父组件方法。实质还是父组件改变自己的数据
+5.函数式编程
+有利于前端自动化测试
+
+
+
+生命周期函数指的是组件在某一时刻会自动执行的函数
+constructor不是生命周期函数，虽然它是组件生成的时候就会执行一次，但是ES6中所有类都有constructor。   	render是生命周期函数
+1.Initialization 这个阶段，没有生命周期函数，只有constructor执行了，这个周期内设置props和state
+2.Mounting  这个阶段有三个生命周期函数 componentWillMount ---> render ---> componentDidMount
+   mounting只会在组件挂载上去的时候执行一次，数据发生变化也不会重新执行mounting
+3.Updation  当数据发生变化的时候执行。数据不改变，这个周期永远都不执行
+          对于props 有  componentWillReceiveProps ---> shouldComponentUpdate ---> componentWillUpdate ---> render ---> componentDidUpdate
+          对于states有 shouldComponentUpdate ---> componentWillUpdate ---> render ---> componentDidUpdate
+  	这个周期有个重点： 正常情况下，每次更新数据，都会执行updation这个周期内所有函数，其中包括render(),可是很多时候，数据改变并不需要重新渲染页面，会浪费资源。
+  	此时，可以在shouldComponentUpdate函数下返回false
+  	shouldComponentUpdate(){  console.log('shouldComponentUpdate执行了');   return false; }
+  	其中会打印输出，但是后面的componentWillUpdate, render, componentDidUpdate都不会执行了
+4.Unmounting  组件即将从页面移除，移除之前执行componentWillUnmounting
