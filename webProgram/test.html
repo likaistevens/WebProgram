@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<!--<script src="1.js"></script>-->
+<!--<script src="2.js"></script>-->
+<script>
+    // let array = {
+    //     0: 'name',
+    //     1: 'age',
+    //     2: 'sex',
+    //     3: ['user1','user2','user3'],
+    //     'length': 4
+    // }
+    // let arr = Array.from(array)
+    // console.log(arr) // ['name','age','sex',['user1','user2','user3']]
+
+    const test = function () {                // 注意 这里必须是function，不能是箭头函数，箭头函数没有arguments
+        console.log(arguments);   // arguments 是所有函数都有的一个类数组对象
+
+        // let args = [].slice.call(arguments);
+        // // 本质是 let args = Array.prototype.slice.call(arguments);
+        //
+        // // let [...args] = arguments;    // 解构赋值， 数组里面有一个变量 args , ...args 表明用args装所有的内容，   [b, ...a] = [1,2,3,4]   b = 1, a = [2,3,4]
+        // // let args = [...arguments];    // ...arguments 相当于 把arguments的所有内容 暴露出来 放到一个数组。      [...a, ...b]  把 a b合成到一个数组
+        // args.forEach(item => {
+        //     console.log(item);
+        // })
+    };
+    test(1,2,3);
+</script>
+
+</html>
