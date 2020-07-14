@@ -1986,297 +1986,561 @@
 
 </script>
 
-<!--再学ES6-->
+<!--------------------再学ES6--------------------------------->
 <script>
-//  --------------------------------- 作用域 ---------------------------------
-{
-    // window全局作用域  全局变量
-    var abc = 123;
-    bcd = 234;
-    // var 定义的这个abc肯定是全局变量。  且是挂在window下面的。    window.abc可以访问到
-    // bcd不直接定义，也是挂在在window下，可以访问到。 window.bcd       window是个全局对象。
-    // 区别，bcd不能说是变量，只能说是window的属性；  变量不能删除，属性可以删除
-    delete abc;    // false     也可以是 delete window.abc   变量，不能被删除，还是可以访问。
-    delete bcd;    // true      也可以是 delete window.bcd   删除了，访问不到
+    //  --------------------------------- 作用域 ---------------------------------
+    {
+        // window全局作用域  全局变量
+        var abc = 123;
+        bcd = 234;
+        // var 定义的这个abc肯定是全局变量。  且是挂在window下面的。    window.abc可以访问到
+        // bcd不直接定义，也是挂在在window下，可以访问到。 window.bcd       window是个全局对象。
+        // 区别，bcd不能说是变量，只能说是window的属性；  变量不能删除，属性可以删除
+        delete abc;    // false     也可以是 delete window.abc   变量，不能被删除，还是可以访问。
+        delete bcd;    // true      也可以是 delete window.bcd   删除了，访问不到
 
-    var abc = 123;
-    // 这个全局变量，可以在整个文件访问到。  例如：index.html 里引入 1.js 和 2.js。  其中1.js里面定义了var abc。 那么2.js也可以访问到
+        var abc = 123;
+        // 这个全局变量，可以在整个文件访问到。  例如：index.html 里引入 1.js 和 2.js。  其中1.js里面定义了var abc。 那么2.js也可以访问到
 
-    // 函数内部没有var定义的变量，不具备函数作用域，是全局作用域下
-    function test1(){
-        ab = 45;     // 函数执行之后，这个变量可以在全局都访问到
-        delete ab;   // true   这个和上面bcd一样，相当于window的属性。不是变量
-        ab = 35;
-    }
-    test1();
-
-    // 函数作用域 局部作用域
-    function test2() {
-        var a = 3;
-        if(a === 3){
-            var b = 4;  // var只有函数作用域与全局作用域。 if后面的{}是块状作用域，var没法封锁块级作用域
-            let c = 5;  // let可以在当前块级作用域下封锁，块级作用域以外访问不到c
-            console.log('aaa');
-        }else{
-            console.log('bbb')
+        // 函数内部没有var定义的变量，不具备函数作用域，是全局作用域下
+        function test1(){
+            ab = 45;     // 函数执行之后，这个变量可以在全局都访问到
+            delete ab;   // true   这个和上面bcd一样，相当于window的属性。不是变量
+            ab = 35;
         }
-        console.log(b);   // 4
-        console.log(c);   // 报错 拿不到c
-        return a + 4;
-    }
-    console.log(test2());  // 7
-    console.log(a);        // 报错 不能拿到a
+        test1();
 
-    // 动态作用域
-    a = 3;
-    function test() {
-        var a = 5;
-        console.log(this.a);
-        console.log(a);   // 5
-    }
-    test();  // 3   5     此时test里面的this指向的是当前函数所处的环境。此时就是全局window
-    test.bind( {a: 100} )();  // 100  5    bind改变了test里面this的指向。指向了一个新的对象。 这个对象里面a=100
-
-    // 作用域链的理解：对于一个变量，引擎从当前作用域开始查找变量，如果找不到，就会向上一级继续查找。当抵达最外层全局作用域时，无论找到还是没有找到，查找过程中都会停止。
-    // 看一个例子：
-    for(var i = 0; i < 3; i++){
-        setTimeout(function () {
-            console.log(i);
-        }, 1000)
-    }
-    // 最后结果，会一次输出3个i。  i当前的作用域是全局。 setTimeout里面，i会向上去找，向上没有函数作用域，直接就找到了全局。 此时，i已经执行完了循环，i=3。
-    for(let i = 0; i < 3; i++){
-        setTimeout(function () {
-            console.log(i);
-        }, 1000)
-    }
-    // 1s之后，会按顺序一次性输出0 1 2。   因为let把当前的i限制在for这个块级作用域下。 setTimeout访问时只会到当前所处的for循环体里去找i
-
-    // 再看一个例子
-    var liList = document.querySelectorAll('li') // 共5个li
-    for(var i=0; i<liList.length; i++){
-        liList[i].onclick = function(){
-            console.log(i)
+        // 函数作用域 局部作用域
+        function test2() {
+            var a = 3;
+            if(a === 3){
+                var b = 4;  // var只有函数作用域与全局作用域。 if后面的{}是块状作用域，var没法封锁块级作用域
+                let c = 5;  // let可以在当前块级作用域下封锁，块级作用域以外访问不到c
+                console.log('aaa');
+            }else{
+                console.log('bbb')
+            }
+            console.log(b);   // 4
+            console.log(c);   // 报错 拿不到c
+            return a + 4;
         }
-    }
-    // var声明i  每个li点击后 都是弹出5。
-    var liList = document.querySelectorAll('li') // 共5个li
-    for(var i=0; i<liList.length; i++){
-        liList[i].onclick = function(){
-            console.log(i)
-        }
-    }
-    // let声明i  每个i可以顺利的打印出 0 1 2 3 4
-    // 解释：
-    // 1.i的声明被提升。
-    // 2.当运行for循环时为i赋值，并为每个li绑定事件(注意：运行for循环时只是绑定了事件但是并没有执行事件）。
-    // 3.当触发事件时（注意：此时for循环执行完了），现在需要控制台打印i的值，于是i便沿着作用域链寻找它的值。
-    // 4.当用var声明时，i会在全局作用域中找到它的值，为5.
-    // 5.当用let声明时，i会在for的第一行找到它的值，每次的值不一样，分别为0、1、2、3、4.
+        console.log(test2());  // 7
+        console.log(a);        // 报错 不能拿到a
 
-    // 同理，看一个问题
-    // Question： 生成十个按钮，每个点击的时候弹出1 - 10
-    // 利用自运行函数，可以成功。
-    var i = 0;
-    for (i = 1; i <= 10; i++) {
-        // 一个自运行的函数 (function (i))(i)       相当于(function (i))(1)   (function (i))(2)   (function (i))(3) ...
-        // 这个函数里面的i是独立的作用域，是最后（i）传进来的
-        (function (i) {
+        // 动态作用域
+        a = 3;
+        function test() {
+            var a = 5;
+            console.log(this.a);
+            console.log(a);   // 5
+        }
+        test();  // 3   5     此时test里面的this指向的是当前函数所处的环境。此时就是全局window
+        test.bind( {a: 100} )();  // 100  5    bind改变了test里面this的指向。指向了一个新的对象。 这个对象里面a=100
+
+        // 作用域链的理解：对于一个变量，引擎从当前作用域开始查找变量，如果找不到，就会向上一级继续查找。当抵达最外层全局作用域时，无论找到还是没有找到，查找过程中都会停止。
+        // 看一个例子：
+        for(var i = 0; i < 3; i++){
+            setTimeout(function () {
+                console.log(i);
+            }, 1000)
+        }
+        // 最后结果，会一次输出3个i。  i当前的作用域是全局。 setTimeout里面，i会向上去找，向上没有函数作用域，直接就找到了全局。 此时，i已经执行完了循环，i=3。
+        for(let i = 0; i < 3; i++){
+            setTimeout(function () {
+                console.log(i);
+            }, 1000)
+        }
+        // 1s之后，会按顺序一次性输出0 1 2。   因为let把当前的i限制在for这个块级作用域下。 setTimeout访问时只会到当前所处的for循环体里去找i
+
+        // 再看一个例子
+        var liList = document.querySelectorAll('li') // 共5个li
+        for(var i=0; i<liList.length; i++){
+            liList[i].onclick = function(){
+                console.log(i)
+            }
+        }
+        // var声明i  每个li点击后 都是弹出5。
+        var liList = document.querySelectorAll('li') // 共5个li
+        for(var i=0; i<liList.length; i++){
+            liList[i].onclick = function(){
+                console.log(i)
+            }
+        }
+        // let声明i  每个i可以顺利的打印出 0 1 2 3 4
+        // 解释：
+        // 1.i的声明被提升。
+        // 2.当运行for循环时为i赋值，并为每个li绑定事件(注意：运行for循环时只是绑定了事件但是并没有执行事件）。
+        // 3.当触发事件时（注意：此时for循环执行完了），现在需要控制台打印i的值，于是i便沿着作用域链寻找它的值。
+        // 4.当用var声明时，i会在全局作用域中找到它的值，为5.
+        // 5.当用let声明时，i会在for的第一行找到它的值，每次的值不一样，分别为0、1、2、3、4.
+
+        // 同理，看一个问题
+        // Question： 生成十个按钮，每个点击的时候弹出1 - 10
+        // 利用自运行函数，可以成功。
+        var i = 0;
+        for (i = 1; i <= 10; i++) {
+            // 一个自运行的函数 (function (i))(i)       相当于(function (i))(1)   (function (i))(2)   (function (i))(3) ...
+            // 这个函数里面的i是独立的作用域，是最后（i）传进来的
+            (function (i) {
+                var btn = document.createElement('button');
+                btn.innerText = i;
+                btn.onclick = function () {
+                    alert(i);
+                };
+                document.body.appendChild(btn);
+            })(i)
+        }
+        // 去掉自运行的函数，结果会生成1-10个按钮，但是弹出来的永远是11
+        var i = 0;
+        for (i = 1; i <= 10; i++) {
+            var btn = document.createElement('button');
+            // 这个i会遵循1-10的循环，所以生成按钮内容都是1-10
+            btn.innerText = i;
+            //  这里的i并不参与循环，相当于给每个按钮绑定一个事件。此时alert里面的值没确定。每次点击按钮的时候，alert（i）就会向上去找i，此时i已经结束循环了，变成11
+            btn.onclick = function () {
+                alert(i);
+            };
+            document.body.appendChild(btn);
+        }
+
+        // 用let就和其他java等语言一样，这个i只作用于当前for循环的作用域内，不需要自运行函数
+        for (let i = 1; i <= 10; i++) {
             var btn = document.createElement('button');
             btn.innerText = i;
             btn.onclick = function () {
                 alert(i);
             };
             document.body.appendChild(btn);
-        })(i)
-    }
-    // 去掉自运行的函数，结果会生成1-10个按钮，但是弹出来的永远是11
-    var i = 0;
-    for (i = 1; i <= 10; i++) {
-        var btn = document.createElement('button');
-        // 这个i会遵循1-10的循环，所以生成按钮内容都是1-10
-        btn.innerText = i;
-        //  这里的i并不参与循环，相当于给每个按钮绑定一个事件。此时alert里面的值没确定。每次点击按钮的时候，alert（i）就会向上去找i，此时i已经结束循环了，变成11
-        btn.onclick = function () {
-            alert(i);
-        };
-        document.body.appendChild(btn);
+        }
     }
 
-    // 用let就和其他java等语言一样，这个i只作用于当前for循环的作用域内，不需要自运行函数
-    for (let i = 1; i <= 10; i++) {
-        var btn = document.createElement('button');
-        btn.innerText = i;
-        btn.onclick = function () {
-            alert(i);
-        };
-        document.body.appendChild(btn);
-    }
-}
+    //  --------------------------------- let/const ---------------------------------
 
-//  --------------------------------- let/const ---------------------------------
-
-//  --------------------------------- 数组 ---------------------------------
-{
+    //  --------------------------------- 数组 ---------------------------------
     // ES5中数组遍历的方法
-    const arr = [1,2,3,4,5];
-    // 1. for循环
-    for(let i = 0; i < arr.length; i++){
-        console.log(arr[i]);
-    }
-    // 2. Array.forEach
-    // 官方API： array.forEach(function(currentValue, index, arr), thisValue)
-    // currentValue	必需。当前元素    index	可选。当前元素的索引值。    arr	可选。当前元素所属的数组对象。
-    // thisValue	可选。传递给函数的值一般用 "this" 值。    如果这个参数为空， "undefined" 会传递给 "this" 值
-    arr.forEach(function (item) {
-        console.log(item);
-    })
-    // forEach 相对于for循环，写法简洁。 但是无法使用break和continue。
-    // 3. Array.every
-    // 官方API： array.every(function(currentValue,index,arr), thisValue)
-    // currentValue	必需。当前元素    index	可选。当前元素的索引值。    arr	可选。当前元素所属的数组对象。
-    // thisValue	可选。传递给函数的值一般用 "this" 值。    如果这个参数为空， "undefined" 会传递给 "this" 值
-    arr.every(function (item) {
-        console.log(item);
-        return true;      // 必须回调函数中，返回true，才可以继续遍历。否则停止
-    })
-    // every表示break
-    arr.every(function (item) {
-        if(item === 3){
-            return false;
+    {
+        const arr = [1,2,3,4,5];
+        // 1. for循环
+        for(let i = 0; i < arr.length; i++){
+            console.log(arr[i]);
         }
-        console.log(item);
-        return true;
-    })
-    // every表示continue
-    arr.every(function (item) {
-        if(item !== 3){
-            console.log(item);
-        }
-        return true;
-    })
-    // every和forEach长得很像，且都是ES5的产物，但是，forEach没法使用break和continue。 every却可以控制。
-    // 必须回调函数中，返回true，才可以继续遍历。否则停止
-    // 4. for in
-    // js中的for in 是为object设计的，用来遍历object。 但是由于数组也是object，所以也可以用。 但是会有个bug
-    // 常规遍历。 index是数组下标（其实是object的key），后面arr[index]是对应的数组元素（其实是object的value）
-    for (let index in arr){
-        console.log(index, arr[index]);
-    }
-    // 由于数组是对象，所以可以添加属性。  我们给数组添加个属性，再来遍历
-    arr.a = 8;
-    // 再次遍历 会发现，遍历出来了 index = a， arr[index] = 8 这一对.   显然这是不对的。  这就是for in的一个小问题
-
-    // for in 可以用continue和break 但是注意 判断条件必须用  == 而不是  ===
-    // == 只判断值，不检查类型   === 既检查值，又检查类型。
-    // 而 for in循环的时候，找到的index是字符串类型，不是数字。  在浏览器中打印出来的index是灰色的，表示字符串，而arr[index]是蓝色的，表示number。
-    for (let index in arr){
-        if(index == 2){
-            // if(index === '2'){     // 把2改成字符串 也可以。
-            // if(index * 1 === 2){   // 也可以利用隐式转化，把字符串变成number
-            continue;
-            // break;       // break也可以用
-        }
-        console.log(index, arr[index]);
-    }
-    // ES6中的遍历方法
-    // 5. for of
-    for(let item of arr){
-        console.log(item);
-    }
-    // ES5中所有的遍历方法，都是为数组和object设置的。 但是，除了数组和object是iterable， 还有其他类数组也是iterable的，可遍历的。
-    // ES6中允许自己构造对象，且可以按照ES6的标准把它塑造成iterable的对象。
-    // ES6中的for of就可以对所有的array，object以及其他iterable的对象进行遍历
-}
-
-{
-    // 伪数组
-    // 常见 arguments， getElementByTag() 等获取到的都是伪数组。  他们可遍历，有长度（长度不可变），但是不能调用数组的方法。
-    // arguments是collection       documents.querySelectorAll('img')  是NodeList
-    // ES5中  伪数组 ---> 数组   三种方法
-    let args1 = [].slice.call(arguments);
-    let [...args2] = arguments;    // 解构赋值， 数组里面有一个变量 args , ...args 表明用args装所有的内容，   [b, ...a] = [1,2,3,4]   b = 1, a = [2,3,4]
-    let args3 = [...arguments];    // ...arguments 相当于 把arguments的所有内容 暴露出来 放到一个数组。      [...a, ...b]  把 a b合成到一个数组
-    // example
-    const test = function () {                // 注意 这里必须是function，不能是箭头函数，箭头函数没有arguments
-        console.log(arguments);   // arguments 是所有函数都有的一个类数组对象
-        console.log(arguments instanceof Array);   // false    它不是一个数组
-
-        let args = [].slice.call(arguments);
-        // 本质是 let args = Array.prototype.slice.call(arguments);
-
-        // let [...args] = arguments;    // 解构赋值， 数组里面有一个变量 args , ...args 表明用args装所有的内容，   [b, ...a] = [1,2,3,4]   b = 1, a = [2,3,4]
-        // let args = [...arguments];    // ...arguments 相当于 把arguments的所有内容 暴露出来 放到一个数组。      [...a, ...b]  把 a b合成到一个数组
-        args.forEach(item => {
+        // 2. Array.forEach
+        // 官方API： array.forEach(function(currentValue, index, arr), thisValue)
+        // currentValue	必需。当前元素    index	可选。当前元素的索引值。    arr	可选。当前元素所属的数组对象。
+        // thisValue	可选。传递给函数的值一般用 "this" 值。    如果这个参数为空， "undefined" 会传递给 "this" 值
+        arr.forEach(function (item) {
             console.log(item);
         })
-    };
-    test(1,2,3);
-    // ES6中  伪数组 ---> 数组
-    // Array.from 把伪数组转化成数组
-    let args4 = Array.from(arguments);
+        // forEach 相对于for循环，写法简洁。 但是无法使用break和continue。
+        // forEach 会在循环开始锁定元素， 无法进行增删改。 for循环可以
+        // 3. Array.every
+        // 官方API： array.every(function(currentValue,index,arr), thisValue)
+        // currentValue	必需。当前元素    index	可选。当前元素的索引值。    arr	可选。当前元素所属的数组对象。
+        // thisValue	可选。传递给函数的值一般用 "this" 值。    如果这个参数为空， "undefined" 会传递给 "this" 值
+        arr.every(function (item) {
+            console.log(item);
+            return true;      // 必须回调函数中，返回true，才可以继续遍历。否则停止
+        })
+        // every表示break
+        arr.every(function (item) {
+            if(item === 3){
+                return false;
+            }
+            console.log(item);
+            return true;
+        })
+        // every表示continue
+        arr.every(function (item) {
+            if(item !== 3){
+                console.log(item);
+            }
+            return true;
+        })
+        // every和forEach长得很像，且都是ES5的产物，但是，forEach没法使用break和continue。 every却可以控制。
+        // 必须回调函数中，返回true，才可以继续遍历。否则停止
+        // 4. for in
+        // js中的for in 是为object设计的，用来遍历object。 但是由于数组也是object，所以也可以用。 但是会有个bug
+        // 常规遍历。 index是数组下标（其实是object的key），后面arr[index]是对应的数组元素（其实是object的value）
+        for (let index in arr){
+            console.log(index, arr[index]);
+        }
+        // 由于数组是对象，所以可以添加属性。  我们给数组添加个属性，再来遍历
+        arr.a = 8;
+        // 再次遍历 会发现，遍历出来了 index = a， arr[index] = 8 这一对.   显然这是不对的。  这就是for in的一个小问题
 
-    // 什么样的算伪数组？ 或者说 怎么样的对象才可以转化为数组？
-    // 看一下浏览器输出的 Arguments对象 前面是数组内容，注意有个length属性。
-    Arguments = {
-        0: 1,
-        1: 2,
-        2: 3,
-        callee: ƒ (),
-        length: 3,
-        // Symbol(Symbol.iterator): ƒ values(),
-        __proto__: Object,
+        // for in 可以用continue和break 但是注意 判断条件必须用  == 而不是  ===
+        // == 只判断值，不检查类型   === 既检查值，又检查类型。
+        // 而 for in循环的时候，找到的index是字符串类型，不是数字。  在浏览器中打印出来的index是灰色的，表示字符串，而arr[index]是蓝色的，表示number。
+        for (let index in arr){
+            if(index == 2){
+                // if(index === '2'){     // 把2改成字符串 也可以。
+                // if(index * 1 === 2){   // 也可以利用隐式转化，把字符串变成number
+                continue;
+                // break;       // break也可以用
+            }
+            console.log(index, arr[index]);
+        }
+        // ES6中的遍历方法
+        // 5. for of
+        for(let item of arr){
+            console.log(item);
+        }
+        // ES5中所有的遍历方法，都是为数组和object设置的。 但是，除了数组和object是iterable， 还有其他类数组也是iterable的，可遍历的。
+        // ES6中允许自己构造对象，且可以按照ES6的标准把它塑造成iterable的对象。
+        // ES6中的for of就可以对所有的array，object以及其他iterable的对象进行遍历
     }
 
-    let array1 = {
-        0: 'name',
-        1: 'age',
-        2: 'sex',
-        3: ['user1','user2','user3'],
-        'length': 4
+    // 伪数组
+    {
+        // 常见 arguments， getElementByTag() 等获取到的都是伪数组。  他们可遍历，有长度（长度不可变），但是不能调用数组的方法。
+        // arguments是collection       documents.querySelectorAll('img')  是NodeList
+        // ES5中  伪数组 ---> 数组   三种方法
+        let args1 = [].slice.call(arguments);
+        let [...args2] = arguments;    // 解构赋值， 数组里面有一个变量 args , ...args 表明用args装所有的内容，   [b, ...a] = [1,2,3,4]   b = 1, a = [2,3,4]
+        let args3 = [...arguments];    // ...arguments 相当于 把arguments的所有内容 暴露出来 放到一个数组。      [...a, ...b]  把 a b合成到一个数组
+        // example
+        const test = function () {                // 注意 这里必须是function，不能是箭头函数，箭头函数没有arguments
+            console.log(arguments);   // arguments 是所有函数都有的一个类数组对象
+            console.log(arguments instanceof Array);   // false    它不是一个数组
+
+            let args = [].slice.call(arguments);
+            // 本质是 let args = Array.prototype.slice.call(arguments);
+
+            // let [...args] = arguments;    // 解构赋值， 数组里面有一个变量 args , ...args 表明用args装所有的内容，   [b, ...a] = [1,2,3,4]   b = 1, a = [2,3,4]
+            // let args = [...arguments];    // ...arguments 相当于 把arguments的所有内容 暴露出来 放到一个数组。      [...a, ...b]  把 a b合成到一个数组
+            args.forEach(item => {
+                console.log(item);
+            })
+        };
+        test(1,2,3);
+        // ES6中  伪数组 ---> 数组
+        // Array.from 把伪数组转化成数组
+        let args4 = Array.from(arguments);
+
+        // 什么样的算伪数组？ 或者说 怎么样的对象才可以转化为数组？
+        // 看一下浏览器输出的 Arguments对象 前面是数组内容，注意有个length属性。
+        Arguments = {
+            0: 1,
+            1: 2,
+            2: 3,
+            callee: ƒ (),
+            length: 3,
+            // Symbol(Symbol.iterator): ƒ values(),
+            __proto__: Object,
+        }
+
+        let array1 = {
+            0: 'name',
+            1: 'age',
+            2: 'sex',
+            3: ['user1','user2','user3'],
+            'length': 4
+        }
+        let arr1 = Array.from(array1)
+        console.log(arr1) // ['name','age','sex',['user1','user2','user3']]
+        // 去掉length属性，arr将会是一个长度为0的空数组，
+        // 如果将代码修改一下，就是具有length属性，但是对象的属性名不再是数字类型的，而是其他字符串型的，代码如下：
+        let array2 = {
+            'name': 'name',
+            'age': 'age',
+            'sex': 'sex',
+            'user': ['user1','user2','user3'],
+            'length': 4
+        }
+        let arr2 = Array.from(array2)
+        console.log(arr2)  // [ undefined, undefined, undefined, undefined ]
+        // 会发现结果是长度为4，元素均为undefined的数组，由此可见，要将一个类数组对象转换为一个真正的数组，必须具备以下条件：
+        // （1）具有length属性----指定数组的长度。如果没有，转换后的数组是一个空数组。
+        // （2）存储对象按照索引方式---属性名必须为数值型或字符串型的数字，属性名可以加引号，也可以不加
+        { length: 5}   // 这就是一个伪数组
+
+        // 2、将Set解构的数据转换为数组
+        let arr3 = [1,2,3,4,5,6,7,8,9]
+        let set3 = new Set(arr3)
+        console.log(Array.from(set3))  // [1,2,3,4,5,6,7,8,9]
+
+        // 3、将字符串转换为数组
+        let  str = 'hello world!';
+        console.log(Array.from(str)) // ["h", "e", "l", "l", "o", " ", "w", "o", "r", "l", "d", "!"]
+
+        // 4、将Map解构转为数组，最方便的做法就是使用扩展运算符(...)
+        const myMap = new Map().set(true, 7)
+        console.log(myMap); //Map(1) {true => 7}
+        console.log([...myMap]); //[true ,7]
+
+        // Array.from还可以接受第二个参数，作用类似于数组的map方法，用来对每个元素进行处理，将处理后的值放入返回的数组。如下：
+        let arr = [1,2,3,4,5,6,7,8,9]
+        let set = new Set(arr)
+        console.log(Array.from(set, item => item + 1)) // [2,3,4,5,6,7,8,9,10]
+        // 初始化一个 全为1 的数组
+        let array = Array.from( {length: 5} , function () { return 1 });
     }
-    let arr1 = Array.from(array1)
-    console.log(arr1) // ['name','age','sex',['user1','user2','user3']]
-    // 去掉length属性，arr将会是一个长度为0的空数组，
-    // 如果将代码修改一下，就是具有length属性，但是对象的属性名不再是数字类型的，而是其他字符串型的，代码如下：
-    let array2 = {
-        'name': 'name',
-        'age': 'age',
-        'sex': 'sex',
-        'user': ['user1','user2','user3'],
-        'length': 4
+
+    // 创建一个新数组
+    {
+        // ES5创建新数组
+        let array1 = Array(5);   // 全为空 长度为5
+        let array2 = [];         // 字面量形式， 没有指定长度   元素一个个push进去
+        let array3 = ['', '']    // 字面量形式，指定长度
+
+        // ES6创建新数组
+        let array4 = Array.from( {length: 5} , function () { return 1 });    // Array.form 初始化一个数组
+        let array5 = Array.of(1,2,3,4,5);              // 把元素直接放到数组中
+        let array6 = Array(5).fill(1);                 //  创建一个长度为5的新数组，全部填充为1
+        // Array.fill(value, start, end);
+        let arr = [1, 2, 3, 4, 5];
+        arr.fill(8, 2, 4);      // [1, 2, 8, 8, 5]
     }
-    let arr2 = Array.from(array2)
-    console.log(arr2)  // [ undefined, undefined, undefined, undefined ]
-    // 会发现结果是长度为4，元素均为undefined的数组，由此可见，要将一个类数组对象转换为一个真正的数组，必须具备以下条件：
-    // （1）必须具有length属性，指定数组的长度。如果没有，转换后的数组是一个空数组。
-    // （2）属性名必须为数值型或字符串型的数字，属性名可以加引号，也可以不加
 
+    // 数组中查找元素
+    {
+        // ES5 查找某个元素 filter
+        // filter   关注满足条件的所有值
+        let array1 = [1, 2, 3, 4];
+        let find1 = array1.filter(function (item) {
+            return item === 2;
+        });
+        // 遍历一遍数组 把能让callback为true的元素，放到新的数组中再返回新数组
+        // 针对于查找所有符合条件的元素，都找到并返回。   但如果，我们只关心是否含有就可以，不需要找到所有。filter就会消耗性能。
 
-    2、将Set解构的数据转换为数组
+        // find   只返回第一个满足条件的值
+        let array2 = [1, 2, 3, 4];
+        let find2 = array2.filter(function (item) {
+            return item === 2;            // 2
+            // return item % 2 === 0;      // 2   返回第一个
+            // return item === 6;         // undefined    找不到
+        })
 
-    let arr = [1,2,3,4,5,6,7,8,9]
-    let set = new Set(arr)
-    console.log(Array.from(set))  // [1,2,3,4,5,6,7,8,9]
-    Array.from还可以接受第二个参数，作用类似于数组的map方法，用来对每个元素进行处理，将处理后的值放入返回的数组。如下：
+        // findIndex   返回第一个满足条件的下标
+        let array3 = [1, 2, 3, 4];
+        let find3 = array3.findIndex(function (item) {
+            return item === 2;            // 1
+            // return item % 2 === 0;      // 1   返回第一个
+            // return item === 6;         // -1    找不到返回-1
+        })
+    }
 
-let arr = [1,2,3,4,5,6,7,8,9]
-    let set = new Set(arr)
-    console.log(Array.from(set, item => item + 1)) // [2,3,4,5,6,7,8,9,10]
-    3、将字符串转换为数组
+    // 几个API的区别
+    {
+        // 1. map  不改变原数组，对每个元素操作后放到新数组中，返回新数组.  如果callback是类似于filter的操作，新数组将存储的是boolean
+        var newArray = arr.map(function callback(currentValue, index, array){
+            //对每个元素的处理
+        });
+        var a1 = [1,2,3,4];
+        var newa1 = a1.map(function(x){
+            return x = x+1;
+        });
+        console.log(newa1,a1);     // newa : 2 3 4 5   //a: 1 2 3 4
 
-    let  str = 'hello world!';
-    console.log(Array.from(str)) // ["h", "e", "l", "l", "o", " ", "w", "o", "r", "l", "d", "!"]
-    4、将Map解构转为数组，最方便的做法就是使用扩展运算符(...)
+        var a2 = [1,2,3,4];
+        var newa2 = a2.map(function(x){
+            return x > 1;
+        });
+        console.log(newa2,a2);       //newa :false true true true     //a: 1 2 3 4
 
+        // 2. filter  不改变原数组，把能让callback函数返回true的元素，放到新数组中，返回新数组。 筛选
+        var newArray = arr.filter(function callback(curValue, index , array){
+            //函数代码
+        });
+        var a3 = [1,2,3,4];
+        var newa3 = a3.filter(function(x){
+            return x > 1;
+        });
+        console.log(newa3,a3);    //newa : 2 3 4    //a: 1 2 3 4
 
-    const myMap = new Map().set(true, 7)
-    console.log(myMap); //Map(1) {true => 7}
-    console.log([...myMap]); //[true ,7]
+        // 3. forEach 每一个元素执行一次提供的函数。 不能增删改 不会修改原数组，不会产生新数组。
+        var a4 = [1,2,3,4];
+        var newa4 = a4.forEach(function(x){
+            return x > 1;
+        });
+        console.log(newa4,a4);  //undifined  //1 2 3 4
+    }
 
+    //  --------------------------------- 类 ---------------------------------
+    // 类的构造
+    {
+        // ---------------ES5中函数直接模拟类
+        {
+            function Animal(type) {
+                this.type = type;
+                this.eat = function () {
+                    console.log('animal');
+                }
+            }
+            let dog = new Animal('dog');
+            let cat = new Animal('cat');
+            dog.eat();   // animal
+            cat.eat();   // animal
+            dog.__proto__.eat = function () {
+                console.log('dog');
+            };
+            dog.eat();   // animal
+            dog.__proto__.eat(); // dog
+            cat.eat();   // animal
+            dog.eat = function () {
+                console.log('dog');
+            };
+            dog.eat();   // dog
+            cat.eat();   // animal
+        }
+        // ---------------ES5中原型链模拟类
+        {
+            function Animal(type) {
+                this.type = type;
+            }
+            // 公用的东西 写在原型链上
+            Animal.prototype.eat = function () {
+                console.log('animal')
+            };
+            let dog = new Animal('dog');
+            let cat = new Animal('cat');
+            dog.eat();   // animal
+            cat.eat();   // animal
+            dog.eat = function() {
+                // 直接修改实例的方法，只会影响到这一个实例
+                console.log('dog');
+            };
+            dog.eat();   // dog
+            cat.eat();   // animal
+            // 实例的__proto__指向构造他的构造函数， 修改了构造函数的方法，所有该类的实例的方法，都会被修改
+            dog.__proto__.eat = function () {
+                console.log('dog');
+            };
+            dog.eat();   // dog
+            cat.eat();   // dog
 
+            typeof Animal;    // function
+        }
+        // ---------------ES6中的类
+        {
+            class Animal {
+                constructor(type) {
+                    this.type = type;
+                }
+                eat (){
+                    console.log('animal');
+                }
+            }
+            let dog = new Animal('dog');
+            let cat = new Animal('cat');
+            dog.eat();   // animal
+            cat.eat();   // animal
+            // 直接修改实例的方法，只会影响到这一个实例
+            dog.eat = function() {
+                console.log('dog');
+            };
+            dog.eat();   // dog
+            cat.eat();   // animal
+            // 实例的__proto__指向构造他的构造函数， 修改了构造函数的方法，所有该类的实例的方法，都会被修改
+            dog.__proto__.eat = function () {
+                console.log('dog');
+            };
+            dog.eat();   // dog
+            cat.eat();   // dog
 
-}
+            typeof Animal;    // function
+        }
+        // ES5中利用原型链来模拟class 和 ES6中的class是一模一样的。  class是原型链模拟的语法糖。  语法不一样，但本质是一样的
+    }
+
+    // getter和setter  属性保护
+    {
+        {
+            class Animal {
+                constructor(type) {
+                    this.type = type;
+                }
+                // 这里是属性  类似于函数，前面加上get/set
+                get age () {
+                    return 4;
+                }
+            }
+            let dog = new Animal('dog');
+            console.log(dog.age);   // 4
+            dog.age = 5;
+            console.log(dog.age);   // 4
+            // get写死了，age没法发生改变
+        }
+        {
+            class Animal {
+                constructor(type) {
+                    this.type = type;
+                }
+                get age () {
+                    return 4;
+                }
+                set age (val) {
+                    this.realAge = val;
+                }
+            }
+            let dog = new Animal('dog');
+            console.log(dog.age);   // 4
+            dog.age = 5;      // 修改了age的set方法，修改age的时候，实际修改realAge
+            console.log(dog.realAge);   // 5
+            // 这里有个常见错误， 在把get写死之后， set里面写 this.age = val。  这样，this.age又回去调用get。 这就死循环了。
+        }
+        {
+            // 属性保护    Animal相当于一个闭包， 把私有属性放在class外面。
+            let _age = 4;
+            class Animal {
+                constructor(type) {
+                    this.type = type;
+                }
+                get age () {
+                    return _age;
+                }
+                set age (val) {
+                    if(val < 10 && val > 4)
+                        _age = val;
+                }
+            }
+        }
+
+    }
+
+    // static 静态方法
+    {
+        // 如果某些操作不依赖具体实例，那它就是静态的，反之如果某些操作是依赖具体实例的（例如访问一个特定会员的名称），那它就应该是实例化的。
+        // 或者 没有this 就可以考虑用静态
+
+        // ES5 中 静态方法的写法
+        {
+            function Animal(type) {
+                this.type = type;
+            }
+            // ES5 中的静态方法，就直接写在类下。   类.方法名    通过类来调用
+            Animal.walk = function () {
+                console.log('I am walking');
+            };
+            Animal.prototype.eat = function () {
+                // 类来调用静态方法
+                Animal.walk();
+                console.log('animal')
+            };
+            let dog = new Animal('dog');
+            dog.eat();   // I am walking     animal
+        }
+        // ES6 中 静态方法的写法
+        {
+            class Animal {
+                constructor(type) {
+                    this.type = type;
+                }
+                eat (){
+                    // 调用静态方法都是 类来调用
+                    Animal.walk();
+                    console.log('animal');
+                }
+                // ES6 直接在类中 方法前加上 static 就是静态方法
+                static walk() {
+                    console.log('I am walking');
+                }
+            }
+            let dog = new Animal('dog');
+            dog.eat();   // I am walking     animal
+        }
+    }
+
 
 </script>
 </body>
