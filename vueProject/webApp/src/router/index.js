@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from 'pages/index'
 
-// 这是一次性全部引入的写法， 通常采用动态引入 即 component: () => import('pages/mall/home/index'),
+// 这是一次性全部引入的写法， 通常采用动态引入 即进入相关页面才加载对应资源。  component: () => import('pages/mall/home/index'),
 // 详情可参照vue-router官方文档
 // import courseHome from 'pages/online-course/home'
 // import courseDetail from 'pages/online-course/detail'

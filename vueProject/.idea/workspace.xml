@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0eb8856b-4e8b-4c88-bb4c-040a69f2824d" name="Default Changelist" comment="" />
+    <list default="true" id="0eb8856b-4e8b-4c88-bb4c-040a69f2824d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webApp/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webApp/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webApp/src/assets/js/jsonp.js" beforeDir="false" afterPath="$PROJECT_DIR$/webApp/src/assets/js/jsonp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webApp/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webApp/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../webProgram/Note/ES6.html" beforeDir="false" afterPath="$PROJECT_DIR$/../webProgram/Note/ES6.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../webProgram/test.html" beforeDir="false" afterPath="$PROJECT_DIR$/../webProgram/test.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +27,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/course/build" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -36,11 +43,12 @@
       <option name="presentableId" value="Default" />
       <updated>1592540664092</updated>
       <workItem from="1592540666843" duration="96000" />
+      <workItem from="1595234905752" duration="197000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1592540756861">

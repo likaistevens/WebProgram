@@ -14,16 +14,16 @@
 
 <script>
   import CTabbar from 'components/tabbar'
-export default {
-  name: 'App',
-  components:{
-    CTabbar,
-  },
-  methods:{
-  },
-  mounted() {
+  export default {
+    name: 'App',
+    components:{
+      CTabbar,
+    },
+    methods:{
+    },
+    mounted() {
+    }
   }
-}
 </script>
 
 <style>
